@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const distDir = path.resolve(__dirname, "../dist");
+const indexHtmlPath = path.join(distDir, "index.html");
 
 const siteUrl = (process.env.VITE_SITE_URL || "https://atlaswear.lovable.app").replace(
   /\/$/,
@@ -27,7 +28,15 @@ const routes = [
 ];
 
 mkdirSync(distDir, { recursive: true });
-copyFileSync(path.join(distDir, "index.html"), path.join(distDir, "404.html"));
+copyFileSync(indexHtmlPath, path.join(distDir, "404.html"));
+
+routes
+  .filter((route) => route !== "/" && !route.includes("?"))
+  .forEach((route) => {
+    const routeDir = path.join(distDir, route.replace(/^\//, ""));
+    mkdirSync(routeDir, { recursive: true });
+    copyFileSync(indexHtmlPath, path.join(routeDir, "index.html"));
+  });
 
 writeFileSync(
   path.join(distDir, "robots.txt"),
