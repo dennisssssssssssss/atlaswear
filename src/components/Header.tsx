@@ -18,6 +18,7 @@ const Header = () => {
 
   const navLinks = [
     { to: '/shop', label: t('Shop', 'Magazin') },
+    { to: '/catalog', label: t('Catalog', 'Catalog') },
     { to: '/shop?category=clothing', label: t('Clothing', 'Imbracaminte') },
     { to: '/shop?category=shoes', label: t('Shoes', 'Incaltaminte') },
     { to: '/shop?category=bags', label: t('Bags', 'Genti') },

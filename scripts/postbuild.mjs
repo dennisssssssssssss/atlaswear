@@ -13,6 +13,7 @@ const siteUrl = (process.env.VITE_SITE_URL || "https://atlaswear.lovable.app").r
 
 const routes = [
   "/",
+  "/catalog",
   "/shop",
   "/shop?category=dresses",
   "/shop?category=clothing",

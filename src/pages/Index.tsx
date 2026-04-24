@@ -95,13 +95,13 @@ const Index = () => {
                 {t('Shop Women', 'Vezi colectia de femei')}
               </Button>
             </Link>
-            <Link to="/shop?category=dresses">
+            <Link to="/catalog">
               <Button
                 variant="gold-outline"
                 size="lg"
                 className="text-sm px-10"
               >
-                {t('Shop Dresses', 'Vezi rochiile')}
+                {t('Full Women Catalog', 'Catalog complet femei')}
               </Button>
             </Link>
           </div>
@@ -152,6 +152,43 @@ const Index = () => {
                 </Link>
               </motion.div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-16 border-y border-border bg-surface/60">
+        <div className="container">
+          <div className="grid lg:grid-cols-[1.2fr_0.8fr] gap-8 items-center">
+            <div>
+              <p className="text-xs tracking-[0.4em] uppercase text-gold mb-3">
+                {t('Source Catalog', 'Catalog sursa')}
+              </p>
+              <h2 className="font-heading text-3xl md:text-4xl mb-4">
+                {t(
+                  'All women categories now live in one place.',
+                  'Toate categoriile de femei sunt acum intr-un singur loc.',
+                )}
+              </h2>
+              <p className="text-muted-foreground max-w-2xl">
+                {t(
+                  'Use the full catalog page to browse the large source sets cleanly, including bags, shoes, accessories, and a modest dress edit for church-ready styling.',
+                  'Foloseste pagina de catalog complet ca sa rasfoiesti curat seturile mari din surse, inclusiv genti, pantofi, accesorii si un edit de rochii mai modeste pentru styling potrivit si pentru biserica.',
+                )}
+              </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-3 lg:justify-end">
+              <Link to="/catalog">
+                <Button variant="gold" className="w-full sm:w-auto">
+                  {t('Browse Full Catalog', 'Rasfoieste catalogul complet')}
+                </Button>
+              </Link>
+              <Link to="/catalog#modest-edit">
+                <Button variant="gold-outline" className="w-full sm:w-auto">
+                  {t('Modest Dress Edit', 'Edit de rochii modeste')}
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </section>

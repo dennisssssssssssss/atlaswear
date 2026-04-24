@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 
 import { motion } from 'framer-motion';
 
+import { Button } from '@/components/ui/button';
 import ProductCard from '@/components/ProductCard';
 import {
   categories,
@@ -99,6 +100,25 @@ const Shop = () => {
             {currentCategoryName}
           </h1>
         </motion.div>
+
+        <div className="mb-10 rounded-2xl border border-border bg-surface px-6 py-5 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+          <div>
+            <p className="text-xs tracking-[0.28em] uppercase text-gold mb-2">
+              {t('Need More?', 'Vrei mai mult?')}
+            </p>
+            <p className="text-sm text-muted-foreground max-w-2xl">
+              {t(
+                'The curated storefront stays clean here, while the full women source catalog lives on the separate catalog page.',
+                'Storefront-ul curatat ramane aici, iar catalogul complet de femei din surse sta pe pagina separata de catalog.',
+              )}
+            </p>
+          </div>
+          <Link to="/catalog">
+            <Button variant="gold-outline">
+              {t('Open Full Catalog', 'Deschide catalogul complet')}
+            </Button>
+          </Link>
+        </div>
 
         <div className="flex flex-col lg:flex-row gap-10">
           <aside className="lg:w-56 shrink-0 space-y-8">

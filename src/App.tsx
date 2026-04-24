@@ -12,6 +12,7 @@ import { CurrencyProvider } from "@/contexts/CurrencyContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 
 import Checkout from "./pages/Checkout";
+import Catalog from "./pages/Catalog";
 import Contact from "./pages/Contact";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -41,6 +42,7 @@ const App = () => (
               <CartDrawer />
               <Routes>
                 <Route path="/" element={<Index />} />
+                <Route path="/catalog" element={<Catalog />} />
                 <Route path="/shop" element={<Shop />} />
                 <Route path="/product/:id" element={<ProductDetail />} />
                 <Route path="/checkout" element={<Checkout />} />
