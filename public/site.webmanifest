@@ -1,0 +1,14 @@
+{
+  "name": "ATLAS Wear",
+  "short_name": "ATLAS",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ],
+  "theme_color": "#111111",
+  "background_color": "#111111",
+  "display": "standalone"
+}

@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
 
-type Lang = 'en' | 'ro';
+import type { Lang } from '@/lib/i18n';
 
 interface LanguageContextType {
   lang: Lang;
