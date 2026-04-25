@@ -1,43 +1,85 @@
-import { useMemo, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useMemo } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
 
-import CatalogCollectionCard from '@/components/CatalogCollectionCard';
-import { Button } from '@/components/ui/button';
+import CatalogCollectionCard from "@/components/CatalogCollectionCard";
+import SourceProductCard from "@/components/SourceProductCard";
+import { Button } from "@/components/ui/button";
 import {
-  CatalogSectionId,
-  catalogSections,
+  sourceCategoryLabels,
+  type SourceCategory,
+} from "@/data/source-products";
+import {
   catalogSourceLabels,
   womenCatalogCollections,
-} from '@/data/women-catalog';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { usePageMeta } from '@/hooks/use-page-meta';
-import { getLocalizedText } from '@/lib/i18n';
+} from "@/data/women-catalog";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { usePageMeta } from "@/hooks/use-page-meta";
+import { useSourceProducts } from "@/hooks/use-source-products";
+import { getLocalizedText } from "@/lib/i18n";
+import { getCollectionCategories } from "@/lib/source-catalog";
+import { cn } from "@/lib/utils";
 
 const Catalog = () => {
   const { lang, t } = useLanguage();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [query, setQuery] = useState('');
+  const { data: sourceProducts = [], isLoading, isError } = useSourceProducts();
 
-  const sectionIds = new Set(catalogSections.map((section) => section.id));
-  const sourceIds = new Set(womenCatalogCollections.map((item) => item.source));
+  const activeCategory = searchParams.get("category") as SourceCategory | null;
+  const activeBrand = searchParams.get("brand");
+  const activeSource = searchParams.get("source");
+  const query = searchParams.get("q") ?? "";
 
-  const activeSection = searchParams.get('section') as CatalogSectionId | null;
-  const activeSource = searchParams.get('source');
+  const categoryIds = useMemo(
+    () =>
+      Array.from(new Set(sourceProducts.map((item) => item.category))).sort(
+        (left, right) =>
+          getLocalizedText(sourceCategoryLabels[left], lang).localeCompare(
+            getLocalizedText(sourceCategoryLabels[right], lang),
+          ),
+      ),
+    [lang, sourceProducts],
+  );
 
-  const validSection = activeSection && sectionIds.has(activeSection);
-  const validSource = activeSource && sourceIds.has(activeSource);
+  const sourceIds = useMemo(
+    () =>
+      Array.from(
+        new Set([
+          ...sourceProducts.map((item) => item.source),
+          ...womenCatalogCollections.map((collection) => collection.source),
+        ]),
+      ),
+    [sourceProducts],
+  );
 
-  const filteredCollections = useMemo(() => {
+  const availableBrands = useMemo(() => {
+    const categoryFiltered = activeCategory
+      ? sourceProducts.filter((item) => item.category === activeCategory)
+      : sourceProducts;
+
+    const sourceFiltered = activeSource
+      ? categoryFiltered.filter((item) => item.source === activeSource)
+      : categoryFiltered;
+
+    return Array.from(new Set(sourceFiltered.map((item) => item.brand))).sort((a, b) =>
+      a.localeCompare(b),
+    );
+  }, [activeCategory, activeSource, sourceProducts]);
+
+  const filteredItems = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
 
-    return womenCatalogCollections.filter((collection) => {
-      if (validSection && collection.section !== activeSection) {
+    return sourceProducts.filter((item) => {
+      if (activeCategory && item.category !== activeCategory) {
         return false;
       }
 
-      if (validSource && collection.source !== activeSource) {
+      if (activeBrand && item.brand !== activeBrand) {
+        return false;
+      }
+
+      if (activeSource && item.source !== activeSource) {
         return false;
       }
 
@@ -45,216 +87,279 @@ const Catalog = () => {
         return true;
       }
 
-      const localizedName = getLocalizedText(collection.name, lang).toLowerCase();
+      const sourceLabel = getLocalizedText(
+        catalogSourceLabels[item.source],
+        lang,
+      ).toLowerCase();
+      const categoryLabel = getLocalizedText(
+        sourceCategoryLabels[item.category],
+        lang,
+      ).toLowerCase();
+
+      return [item.name, item.brand, sourceLabel, categoryLabel].some((value) =>
+        value.toLowerCase().includes(normalizedQuery),
+      );
+    });
+  }, [activeBrand, activeCategory, activeSource, lang, query, sourceProducts]);
+
+  const filteredCollections = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase();
+
+    return womenCatalogCollections.filter((collection) => {
+      if (
+        activeSource &&
+        collection.source !== activeSource
+      ) {
+        return false;
+      }
+
+      if (activeCategory) {
+        if (!getCollectionCategories(collection.section).includes(activeCategory)) {
+          return false;
+        }
+      }
+
+      if (!normalizedQuery) {
+        return true;
+      }
+
+      const collectionName = getLocalizedText(collection.name, lang).toLowerCase();
       const sourceLabel = getLocalizedText(
         catalogSourceLabels[collection.source],
         lang,
       ).toLowerCase();
 
       return (
-        localizedName.includes(normalizedQuery) ||
+        collectionName.includes(normalizedQuery) ||
         sourceLabel.includes(normalizedQuery)
       );
     });
-  }, [activeSection, activeSource, lang, query, validSection, validSource]);
+  }, [activeCategory, activeSource, lang, query]);
 
-  const modestCollections = useMemo(
-    () =>
-      womenCatalogCollections.filter((collection) =>
-        collection.tags.includes('modest'),
-      ),
-    [],
+  const modestItems = useMemo(
+    () => sourceProducts.filter((item) => item.tags.includes("modest")).slice(0, 12),
+    [sourceProducts],
   );
 
   usePageMeta({
-    title: t('Full Women Catalog', 'Catalog complet femei'),
-    description: t(
-      'Browse the full women catalog with dresses, bags, shoes, accessories, and a modest dress edit.',
-      'Rasfoieste catalogul complet de femei cu rochii, genti, pantofi, accesorii si un edit modest de rochii.',
-    ),
-    path: '/catalog',
+    title: t("sourceCatalog.title"),
+    description: t("sourceCatalog.description"),
+    path: searchParams.toString() ? `/catalog?${searchParams.toString()}` : "/catalog",
   });
 
+  const updateParam = (key: string, value?: string) => {
+    const nextParams = new URLSearchParams(searchParams);
+
+    if (value) {
+      nextParams.set(key, value);
+    } else {
+      nextParams.delete(key);
+    }
+
+    setSearchParams(nextParams);
+  };
+
   return (
-    <div className="min-h-screen pt-24 pb-20">
+    <div className="min-h-screen bg-background px-4 pt-32 pb-20 text-foreground">
       <div className="container">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           className="max-w-4xl"
         >
-          <p className="text-xs tracking-[0.4em] uppercase text-gold mb-3">
-            {t('Full Women Catalog', 'Catalog complet femei')}
+          <p className="text-xs uppercase tracking-[0.4em] text-gold">
+            {t("sourceCatalog.eyebrow")}
           </p>
-          <h1 className="font-heading text-4xl md:text-6xl leading-[0.95]">
-            {t(
-              'Everything women, organized cleanly.',
-              'Tot ce tine de femei, organizat curat.',
-            )}
+          <h1 className="mt-4 font-heading text-4xl leading-[0.95] md:text-6xl">
+            {t("sourceCatalog.title")}
           </h1>
-          <p className="text-muted-foreground text-lg mt-5 max-w-2xl">
-            {t(
-              'This page gathers the full women source catalog we mapped for you: dresses, shoes, bags, accessories, and a modest-ready edit for church-friendly silhouettes.',
-              'Pagina asta aduna catalogul complet de femei pe care l-am mapat pentru tine: rochii, pantofi, genti, accesorii si un edit mai modest pentru siluete potrivite si pentru biserica.',
-            )}
+          <p className="mt-5 max-w-3xl text-base leading-8 text-muted-foreground">
+            {t("sourceCatalog.description")}
           </p>
-          <div className="flex flex-col sm:flex-row gap-3 mt-8">
+
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link to="/shop">
-              <Button variant="gold">
-                {t('See Curated Storefront', 'Vezi storefront-ul curatat')}
-              </Button>
+              <Button variant="gold">{t("sourceCatalog.storefrontCta")}</Button>
             </Link>
             <a href="#modest-edit">
-              <Button variant="gold-outline">
-                {t('Open Modest Edit', 'Vezi editul modest')}
-              </Button>
+              <Button variant="gold-outline">{t("sourceCatalog.modestTitle")}</Button>
             </a>
           </div>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-4 mt-12">
-          <div className="rounded-2xl border border-border bg-surface p-5">
-            <p className="text-xs tracking-[0.28em] uppercase text-gold mb-2">
-              {t('Collections', 'Colectii')}
+        <div className="mt-12 grid gap-4 md:grid-cols-3">
+          <div className="rounded-3xl border border-border bg-card p-5">
+            <p className="text-xs uppercase tracking-[0.28em] text-gold">
+              {t("sourceCatalog.importedStat")}
             </p>
-            <p className="text-3xl font-heading">{womenCatalogCollections.length}</p>
+            <p className="mt-3 font-heading text-4xl">{sourceProducts.length}</p>
           </div>
-          <div className="rounded-2xl border border-border bg-surface p-5">
-            <p className="text-xs tracking-[0.28em] uppercase text-gold mb-2">
-              {t('Sources', 'Surse')}
+          <div className="rounded-3xl border border-border bg-card p-5">
+            <p className="text-xs uppercase tracking-[0.28em] text-gold">
+              {t("sourceCatalog.collectionStat")}
             </p>
-            <p className="text-3xl font-heading">{sourceIds.size}</p>
+            <p className="mt-3 font-heading text-4xl">{womenCatalogCollections.length}</p>
           </div>
-          <div className="rounded-2xl border border-border bg-surface p-5">
-            <p className="text-xs tracking-[0.28em] uppercase text-gold mb-2">
-              {t('Modest Edit', 'Edit modest')}
+          <div className="rounded-3xl border border-border bg-card p-5">
+            <p className="text-xs uppercase tracking-[0.28em] text-gold">
+              {t("sourceCatalog.modestStat")}
             </p>
-            <p className="text-3xl font-heading">{modestCollections.length}</p>
+            <p className="mt-3 font-heading text-4xl">
+              {sourceProducts.filter((item) => item.tags.includes("modest")).length}
+            </p>
           </div>
         </div>
 
         <section id="modest-edit" className="scroll-mt-24 py-16">
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
+          <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div>
-              <p className="text-xs tracking-[0.4em] uppercase text-gold mb-3">
-                {t('Church & Modest', 'Biserica si modest')}
+              <p className="text-xs uppercase tracking-[0.4em] text-gold">
+                {t("sourceCatalog.modestEyebrow")}
               </p>
-              <h2 className="font-heading text-3xl md:text-4xl">
-                {t('Modest Dress Edit', 'Edit de rochii modeste')}
+              <h2 className="mt-4 font-heading text-3xl md:text-4xl">
+                {t("sourceCatalog.modestTitle")}
               </h2>
             </div>
-            <p className="text-sm text-muted-foreground max-w-xl">
-              {t(
-                'I pulled together the collections that skew more covered, midi or maxi, and easier to style in a cleaner, church-friendly direction.',
-                'Am strans aici colectiile care merg mai mult pe croieli acoperite, midi sau maxi, si care sunt mai usor de stilizat intr-o directie mai cuminte, buna si pentru biserica.',
-              )}
+            <p className="max-w-2xl text-sm leading-7 text-muted-foreground">
+              {t("sourceCatalog.modestDescription")}
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {modestCollections.slice(0, 12).map((collection, index) => (
-              <CatalogCollectionCard
-                key={collection.id}
-                collection={collection}
-                index={index}
-              />
-            ))}
+          <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
+            {isLoading
+              ? Array.from({ length: 4 }, (_, index) => (
+                  <div
+                    key={`modest-skeleton-${index}`}
+                    className="h-[420px] animate-pulse rounded-3xl border border-border bg-card"
+                  />
+                ))
+              : modestItems.map((item, index) => (
+                  <SourceProductCard key={item.id} item={item} index={index} />
+                ))}
           </div>
         </section>
 
-        <section className="py-8">
-          <div className="flex flex-col xl:flex-row gap-6 xl:items-end xl:justify-between mb-8">
+        <section className="rounded-[2rem] border border-border bg-card p-6">
+          <div className="flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
             <div>
-              <p className="text-xs tracking-[0.4em] uppercase text-gold mb-3">
-                {t('Browse Everything', 'Rasfoieste tot')}
+              <p className="text-xs uppercase tracking-[0.28em] text-gold">
+                {t("shop.filters")}
               </p>
-              <h2 className="font-heading text-3xl md:text-4xl">
-                {t('All Women Collections', 'Toate colectiile de femei')}
-              </h2>
+              <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
+                {t("sourceCatalog.snapshotNote")}
+              </p>
             </div>
 
             <div className="w-full xl:w-[340px]">
               <input
-                type="text"
+                type="search"
                 value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder={t(
-                  'Search collections or sources',
-                  'Cauta colectii sau surse',
-                )}
-                className="w-full bg-surface border border-border rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-gold transition-colors"
+                onChange={(event) => updateParam("q", event.target.value || undefined)}
+                placeholder={t("sourceCatalog.searchPlaceholder")}
+                className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground outline-none transition-colors focus:border-gold placeholder:text-muted-foreground"
               />
             </div>
           </div>
 
-          <div className="space-y-6">
+          <div className="mt-8 grid gap-6 lg:grid-cols-3">
             <div>
-              <p className="text-xs tracking-[0.28em] uppercase text-gold mb-3">
-                {t('Section', 'Sectiune')}
+              <p className="text-xs uppercase tracking-[0.22em] text-gold">
+                {t("sourceCatalog.category")}
               </p>
-              <div className="flex flex-wrap gap-2">
+              <div className="mt-4 flex flex-wrap gap-2">
                 <button
-                  onClick={() => {
-                    searchParams.delete('section');
-                    setSearchParams(searchParams);
-                  }}
-                  className={`px-4 py-2 text-xs uppercase tracking-[0.2em] border rounded-full transition-colors ${
-                    !validSection
-                      ? 'border-gold text-gold'
-                      : 'border-border text-muted-foreground hover:text-foreground'
-                  }`}
+                  type="button"
+                  onClick={() => updateParam("category")}
+                  className={cn(
+                    "rounded-full border px-4 py-2 text-xs uppercase tracking-[0.2em] transition-colors",
+                    !activeCategory
+                      ? "border-gold bg-gold text-primary-foreground"
+                      : "border-border text-muted-foreground hover:text-foreground",
+                  )}
                 >
-                  {t('All', 'Toate')}
+                  {t("common.all")}
                 </button>
-                {catalogSections.map((section) => (
+                {categoryIds.map((category) => (
                   <button
-                    key={section.id}
-                    onClick={() => {
-                      searchParams.set('section', section.id);
-                      setSearchParams(searchParams);
-                    }}
-                    className={`px-4 py-2 text-xs uppercase tracking-[0.2em] border rounded-full transition-colors ${
-                      activeSection === section.id
-                        ? 'border-gold text-gold'
-                        : 'border-border text-muted-foreground hover:text-foreground'
-                    }`}
+                    key={category}
+                    type="button"
+                    onClick={() => updateParam("category", category)}
+                    className={cn(
+                      "rounded-full border px-4 py-2 text-xs uppercase tracking-[0.2em] transition-colors",
+                      activeCategory === category
+                        ? "border-gold bg-gold text-primary-foreground"
+                        : "border-border text-muted-foreground hover:text-foreground",
+                    )}
                   >
-                    {getLocalizedText(section.label, lang)}
+                    {getLocalizedText(sourceCategoryLabels[category], lang)}
                   </button>
                 ))}
               </div>
             </div>
 
             <div>
-              <p className="text-xs tracking-[0.28em] uppercase text-gold mb-3">
-                {t('Source', 'Sursa')}
+              <p className="text-xs uppercase tracking-[0.22em] text-gold">
+                {t("sourceCatalog.brand")}
               </p>
-              <div className="flex flex-wrap gap-2">
+              <div className="mt-4 flex flex-wrap gap-2">
                 <button
-                  onClick={() => {
-                    searchParams.delete('source');
-                    setSearchParams(searchParams);
-                  }}
-                  className={`px-4 py-2 text-xs uppercase tracking-[0.2em] border rounded-full transition-colors ${
-                    !validSource
-                      ? 'border-gold text-gold'
-                      : 'border-border text-muted-foreground hover:text-foreground'
-                  }`}
+                  type="button"
+                  onClick={() => updateParam("brand")}
+                  className={cn(
+                    "rounded-full border px-4 py-2 text-xs uppercase tracking-[0.2em] transition-colors",
+                    !activeBrand
+                      ? "border-gold bg-gold text-primary-foreground"
+                      : "border-border text-muted-foreground hover:text-foreground",
+                  )}
                 >
-                  {t('All Sources', 'Toate sursele')}
+                  {t("common.all")}
                 </button>
-                {Array.from(sourceIds).map((source) => (
+                {availableBrands.map((brand) => (
+                  <button
+                    key={brand}
+                    type="button"
+                    onClick={() => updateParam("brand", brand)}
+                    className={cn(
+                      "rounded-full border px-4 py-2 text-xs uppercase tracking-[0.2em] transition-colors",
+                      activeBrand === brand
+                        ? "border-gold bg-gold text-primary-foreground"
+                        : "border-border text-muted-foreground hover:text-foreground",
+                    )}
+                  >
+                    {brand}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <p className="text-xs uppercase tracking-[0.22em] text-gold">
+                {t("sourceCatalog.source")}
+              </p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => updateParam("source")}
+                  className={cn(
+                    "rounded-full border px-4 py-2 text-xs uppercase tracking-[0.2em] transition-colors",
+                    !activeSource
+                      ? "border-gold bg-gold text-primary-foreground"
+                      : "border-border text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  {t("sourceCatalog.seeAllSources")}
+                </button>
+                {sourceIds.map((source) => (
                   <button
                     key={source}
-                    onClick={() => {
-                      searchParams.set('source', source);
-                      setSearchParams(searchParams);
-                    }}
-                    className={`px-4 py-2 text-xs uppercase tracking-[0.2em] border rounded-full transition-colors ${
+                    type="button"
+                    onClick={() => updateParam("source", source)}
+                    className={cn(
+                      "rounded-full border px-4 py-2 text-xs uppercase tracking-[0.2em] transition-colors",
                       activeSource === source
-                        ? 'border-gold text-gold'
-                        : 'border-border text-muted-foreground hover:text-foreground'
-                    }`}
+                        ? "border-gold bg-gold text-primary-foreground"
+                        : "border-border text-muted-foreground hover:text-foreground",
+                    )}
                   >
                     {getLocalizedText(catalogSourceLabels[source], lang)}
                   </button>
@@ -262,26 +367,75 @@ const Catalog = () => {
               </div>
             </div>
           </div>
+        </section>
 
-          <div className="mt-10">
-            {filteredCollections.length === 0 ? (
-              <div className="rounded-2xl border border-border bg-surface p-10 text-center text-muted-foreground">
-                {t(
-                  'No collections matched these filters yet.',
-                  'Nu s-au gasit colectii pentru filtrele astea.',
-                )}
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-                {filteredCollections.map((collection, index) => (
-                  <CatalogCollectionCard
-                    key={collection.id}
-                    collection={collection}
-                    index={index}
-                  />
-                ))}
-              </div>
-            )}
+        <section id="catalog-results" className="py-10">
+          <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="text-xs uppercase tracking-[0.28em] text-gold">
+                {t("sourceCatalog.results", { count: filteredItems.length })}
+              </p>
+              <h2 className="mt-3 font-heading text-3xl md:text-4xl">
+                {t("sourceCatalog.title")}
+              </h2>
+            </div>
+          </div>
+
+          {isLoading ? (
+            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+              {Array.from({ length: 8 }, (_, index) => (
+                <div
+                  key={`source-skeleton-${index}`}
+                  className="h-[420px] animate-pulse rounded-3xl border border-border bg-card"
+                />
+              ))}
+            </div>
+          ) : filteredItems.length === 0 ? (
+            <div className="rounded-[2rem] border border-border bg-card p-10 text-center">
+              <h2 className="font-heading text-3xl">{t("shop.noProductsTitle")}</h2>
+              <p className="mt-4 text-muted-foreground">
+                {isError ? t("common.notFound") : t("sourceCatalog.empty")}
+              </p>
+              <Button
+                variant="gold"
+                className="mt-6"
+                onClick={() => setSearchParams(new URLSearchParams())}
+              >
+                {t("common.resetFilters")}
+              </Button>
+            </div>
+          ) : (
+            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+              {filteredItems.map((item, index) => (
+                <SourceProductCard key={item.id} item={item} index={index} />
+              ))}
+            </div>
+          )}
+        </section>
+
+        <section className="border-t border-border pt-16">
+          <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="text-xs uppercase tracking-[0.28em] text-gold">
+                {t("sourceCatalog.collectionEyebrow")}
+              </p>
+              <h2 className="mt-3 font-heading text-3xl md:text-4xl">
+                {t("sourceCatalog.collectionTitle")}
+              </h2>
+            </div>
+            <p className="max-w-2xl text-sm leading-7 text-muted-foreground">
+              {t("sourceCatalog.collectionDescription")}
+            </p>
+          </div>
+
+          <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
+            {filteredCollections.map((collection, index) => (
+              <CatalogCollectionCard
+                key={collection.id}
+                collection={collection}
+                index={index}
+              />
+            ))}
           </div>
         </section>
       </div>

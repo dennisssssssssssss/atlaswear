@@ -1,279 +1,302 @@
-import { useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useEffect, useMemo, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 
-import { ArrowLeft, ChevronDown, ChevronUp } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { ArrowLeft } from "lucide-react";
+import { motion } from "framer-motion";
 
-import { Button } from '@/components/ui/button';
-import { siteConfig } from '@/config/site';
+import { Button } from "@/components/ui/button";
+import { publicTelegramUrl, siteConfig } from "@/config/site";
 import {
-  categories,
+  getCategoryLabel,
   getLocalizedText,
+  getProductCompareAt,
   getProductPrice,
   products,
-} from '@/data/products';
-import { useCart } from '@/contexts/CartContext';
-import { useCurrency } from '@/contexts/CurrencyContext';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { usePageMeta } from '@/hooks/use-page-meta';
+} from "@/data/products";
+import { useCurrency } from "@/contexts/CurrencyContext";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { usePageMeta } from "@/hooks/use-page-meta";
+import {
+  buildProductTelegramLink,
+  buildProductWhatsappLink,
+} from "@/lib/contact";
 
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const product = products.find((item) => item.id === id);
+  const product = products.find((entry) => entry.id === id);
   const { formatPrice } = useCurrency();
   const { lang, t } = useLanguage();
-  const { addItem } = useCart();
 
   const [selectedImage, setSelectedImage] = useState(0);
-  const [selectedSize, setSelectedSize] = useState('');
-  const [selectedColor, setSelectedColor] = useState('');
-  const [showDescription, setShowDescription] = useState(true);
-  const [showShipping, setShowShipping] = useState(false);
+  const [selectedSize, setSelectedSize] = useState("");
+  const [selectedColor, setSelectedColor] = useState("");
+
+  useEffect(() => {
+    setSelectedImage(0);
+    setSelectedSize(product?.sizes[0] ?? "");
+    setSelectedColor(product?.colors[0]?.id ?? "");
+  }, [product]);
 
   usePageMeta({
-    title: product ? getLocalizedText(product.name, lang) : 'Product',
+    title: product ? `${product.brand} ${product.name}` : t("product.notFoundTitle"),
     description: product
       ? getLocalizedText(product.description, lang)
       : siteConfig.defaultDescription,
-    path: product ? `/product/${product.id}` : '/shop',
+    path: product ? `/product/${product.id}` : "/shop",
     image: product?.images[0],
+    noindex: !product,
   });
+
+  const whatsappLink = useMemo(
+    () => (product ? buildProductWhatsappLink(product, lang, selectedSize) : ""),
+    [lang, product, selectedSize],
+  );
+
+  const telegramLink = useMemo(
+    () => (product ? buildProductTelegramLink(product, lang, selectedSize) : ""),
+    [lang, product, selectedSize],
+  );
 
   if (!product) {
     return (
-      <div className="min-h-screen pt-24 flex items-center justify-center">
-        <p className="text-muted-foreground">
-          {t('Product not found', 'Produs negasit')}
-        </p>
+      <div className="min-h-screen bg-background px-4 pt-32 pb-20 text-foreground">
+        <div className="container max-w-2xl rounded-[2rem] border border-border bg-card p-10 text-center">
+          <p className="text-xs uppercase tracking-[0.35em] text-gold">ATLAS</p>
+          <h1 className="mt-4 font-heading text-4xl">{t("product.notFoundTitle")}</h1>
+          <p className="mt-4 text-muted-foreground">
+            {t("product.notFoundDescription")}
+          </p>
+          <Link
+            to="/shop"
+            className="mt-8 inline-flex text-sm uppercase tracking-[0.22em] text-gold transition-colors hover:text-gold-light"
+          >
+            {t("common.backToShop")}
+          </Link>
+        </div>
       </div>
     );
   }
 
-  const handleAddToCart = () => {
-    if (!selectedSize || !selectedColor) {
-      return;
-    }
+  const imageClass =
+    product.imageFit === "contain"
+      ? "h-full w-full object-contain bg-[#f8f5ef] p-8"
+      : "h-full w-full object-cover";
 
-    addItem(product, selectedSize, selectedColor);
-  };
-
-  const price = getProductPrice(product);
-  const productName = getLocalizedText(product.name, lang);
-  const productDescription = getLocalizedText(product.description, lang);
-  const categoryLabel =
-    categories.find((entry) => entry.id === product.category)?.label ?? product.category;
-  const selectedColorLabel =
-    product.colors.find((color) => color.id === selectedColor)?.name ?? '';
-  const mainImageClass =
-    product.imageFit === 'contain'
-      ? 'w-full h-full object-contain bg-[#f8f5ef] p-6'
-      : 'w-full h-full object-cover';
-  const thumbImageClass =
-    product.imageFit === 'contain'
-      ? 'w-full h-full object-contain bg-[#f8f5ef] p-1'
-      : 'w-full h-full object-cover';
+  const selectedColorLabel = product.colors.find(
+    (color) => color.id === selectedColor,
+  )?.name;
+  const compareAt = getProductCompareAt(product);
+  const hasSecondaryChannel = Boolean(publicTelegramUrl);
 
   return (
-    <div className="min-h-screen pt-20 pb-20">
+    <div className="min-h-screen bg-background px-4 pt-32 pb-20 text-foreground">
       <div className="container">
         <Link
           to="/shop"
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-gold transition-colors mb-8"
+          className="inline-flex items-center gap-2 text-sm uppercase tracking-[0.22em] text-muted-foreground transition-colors hover:text-gold"
         >
-          <ArrowLeft size={16} /> {t('Back to Shop', 'Inapoi la magazin')}
+          <ArrowLeft size={16} />
+          {t("common.backToShop")}
         </Link>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
+        <div className="mt-8 grid gap-10 xl:grid-cols-[1.05fr_0.95fr]">
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
             className="space-y-4"
           >
-            <div className="aspect-[3/4] overflow-hidden rounded bg-surface">
-              <img
-                src={product.images[selectedImage]}
-                alt={productName}
-                className={mainImageClass}
-              />
+            <div className="overflow-hidden rounded-[2rem] border border-border bg-card">
+              <div className="aspect-[4/5] overflow-hidden">
+                <img
+                  src={product.images[selectedImage]}
+                  alt={`${product.brand} ${product.name}`}
+                  className={imageClass}
+                />
+              </div>
             </div>
 
             {product.images.length > 1 ? (
-              <div className="flex gap-3">
+              <div className="grid grid-cols-4 gap-3 md:grid-cols-6">
                 {product.images.map((image, index) => (
                   <button
                     key={image}
+                    type="button"
                     onClick={() => setSelectedImage(index)}
-                    className={`w-20 h-20 rounded overflow-hidden border-2 transition-colors ${
-                      selectedImage === index ? 'border-gold' : 'border-transparent'
+                    className={`overflow-hidden rounded-2xl border ${
+                      selectedImage === index ? "border-gold" : "border-border"
                     }`}
                   >
-                    <img
-                      src={image}
-                      alt=""
-                      className={thumbImageClass}
-                      loading="lazy"
-                    />
+                    <div className="aspect-square overflow-hidden">
+                      <img
+                        src={image}
+                        alt=""
+                        className={`h-full w-full ${
+                          product.imageFit === "contain"
+                            ? "object-contain bg-[#f8f5ef] p-2"
+                            : "object-cover"
+                        }`}
+                        loading="lazy"
+                      />
+                    </div>
                   </button>
                 ))}
-              </div>
-            ) : null}
-
-            {product.youtubeUrl ? (
-              <div className="aspect-video rounded overflow-hidden">
-                <iframe
-                  src={product.youtubeUrl.replace('watch?v=', 'embed/')}
-                  className="w-full h-full"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  title={productName}
-                />
               </div>
             ) : null}
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 }}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.06 }}
+            className="rounded-[2rem] border border-border bg-card p-6 md:p-8"
           >
-            <p className="text-xs tracking-[0.4em] uppercase text-gold mb-2">
-              {getLocalizedText(categoryLabel, lang)}
+            <div className="flex flex-wrap gap-2">
+              <span className="rounded-full border border-border px-3 py-1 text-[10px] uppercase tracking-[0.24em] text-gold">
+                {getCategoryLabel(product.category, lang)}
+              </span>
+              <span className="rounded-full border border-border px-3 py-1 text-[10px] uppercase tracking-[0.24em] text-foreground">
+                {t("common.authenticSealed")}
+              </span>
+              {product.bestPrice ? (
+                <span className="rounded-full bg-gold px-3 py-1 text-[10px] uppercase tracking-[0.24em] text-primary-foreground">
+                  {t("common.bestPrice")}
+                </span>
+              ) : null}
+            </div>
+
+            <p className="mt-6 text-xs uppercase tracking-[0.28em] text-muted-foreground">
+              {product.brand}
             </p>
-            <h1 className="font-heading text-3xl md:text-4xl mb-4">
-              {productName}
+            <h1 className="mt-3 font-heading text-4xl leading-tight md:text-5xl">
+              {product.name}
             </h1>
 
-            <div className="flex items-center gap-3 mb-8">
-              {product.onSale && product.salePrice ? (
-                <>
-                  <span className="text-2xl text-gold">
-                    {formatPrice(product.salePrice)}
-                  </span>
-                  <span className="text-lg text-muted-foreground line-through">
-                    {formatPrice(product.priceUSD)}
-                  </span>
-                </>
-              ) : (
-                <span className="text-2xl text-muted-foreground">
-                  {formatPrice(price)}
+            <div className="mt-5 flex items-center gap-3">
+              <span className="text-2xl">{formatPrice(getProductPrice(product))}</span>
+              {compareAt ? (
+                <span className="text-base text-muted-foreground line-through">
+                  {formatPrice(compareAt)}
                 </span>
-              )}
+              ) : null}
             </div>
 
-            <div className="mb-6">
-              <h3 className="text-xs tracking-[0.3em] uppercase text-muted-foreground mb-3">
-                {t('Size', 'Marime')}
-              </h3>
-              <div className="flex flex-wrap gap-2">
-                {product.sizes.map((size) => (
-                  <button
-                    key={size}
-                    onClick={() => setSelectedSize(size)}
-                    className={`px-4 py-2 text-sm border rounded transition-colors ${
-                      selectedSize === size
-                        ? 'border-gold text-gold'
-                        : 'border-border text-muted-foreground hover:border-foreground hover:text-foreground'
-                    }`}
-                  >
-                    {size}
-                  </button>
-                ))}
-              </div>
-            </div>
+            <p className="mt-5 text-sm uppercase tracking-[0.22em] text-gold">
+              {t("product.trustLine")}
+            </p>
 
-            <div className="mb-8">
-              <h3 className="text-xs tracking-[0.3em] uppercase text-muted-foreground mb-3">
-                {t('Color', 'Culoare')}
-              </h3>
-              <div className="flex gap-3">
-                {product.colors.map((color) => (
-                  <button
-                    key={color.id}
-                    onClick={() => setSelectedColor(color.id)}
-                    className={`w-8 h-8 rounded-full border-2 transition-all ${
-                      selectedColor === color.id
-                        ? 'border-gold scale-110'
-                        : 'border-border'
-                    }`}
-                    style={{ backgroundColor: color.hex }}
-                    title={getLocalizedText(color.name, lang)}
-                  />
-                ))}
-              </div>
-              {selectedColorLabel ? (
-                <p className="mt-3 text-sm text-muted-foreground">
-                  {getLocalizedText(selectedColorLabel, lang)}
+            {product.sizes.length > 0 ? (
+              <div className="mt-8">
+                <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">
+                  {t("product.sizes")}
                 </p>
-              ) : null}
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {product.sizes.map((size) => (
+                    <button
+                      key={size}
+                      type="button"
+                      onClick={() => setSelectedSize(size)}
+                      className={`rounded-full border px-4 py-2 text-sm transition-colors ${
+                        selectedSize === size
+                          ? "border-gold bg-gold text-primary-foreground"
+                          : "border-border text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      {size}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+
+            {product.colors.length > 0 ? (
+              <div className="mt-8">
+                <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">
+                  {t("product.variants")}
+                </p>
+                <div className="mt-3 flex flex-wrap items-center gap-3">
+                  {product.colors.map((color) => (
+                    <button
+                      key={color.id}
+                      type="button"
+                      onClick={() => setSelectedColor(color.id)}
+                      className={`flex items-center gap-3 rounded-full border px-3 py-2 transition-colors ${
+                        selectedColor === color.id
+                          ? "border-gold bg-background"
+                          : "border-border"
+                      }`}
+                    >
+                      <span
+                        className="h-4 w-4 rounded-full border border-black/10"
+                        style={{ backgroundColor: color.hex }}
+                        aria-hidden
+                      />
+                      <span className="text-sm text-muted-foreground">
+                        {getLocalizedText(color.name, lang)}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+                {selectedColorLabel ? (
+                  <p className="mt-3 text-sm text-muted-foreground">
+                    {getLocalizedText(selectedColorLabel, lang)}
+                  </p>
+                ) : null}
+              </div>
+            ) : null}
+
+            <div className="mt-8 rounded-3xl border border-border bg-background/70 p-5">
+              <p className="text-xs uppercase tracking-[0.22em] text-gold">
+                {t("product.orderTitle")}
+              </p>
+              <p className="mt-3 text-sm leading-7 text-muted-foreground">
+                {t("product.instructions")}
+              </p>
+
+              <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+                <a
+                  href={whatsappLink || "/contact"}
+                  target={whatsappLink ? "_blank" : undefined}
+                  rel={whatsappLink ? "noreferrer" : undefined}
+                  className="sm:flex-1"
+                >
+                  <Button variant="gold" className="w-full">
+                    {t("product.orderCtaWhatsApp")}
+                  </Button>
+                </a>
+
+                <a
+                  href={telegramLink || "/contact"}
+                  target={telegramLink ? "_blank" : undefined}
+                  rel={telegramLink ? "noreferrer" : undefined}
+                  className="sm:flex-1"
+                >
+                  <Button
+                    variant={hasSecondaryChannel ? "gold-outline" : "outline"}
+                    className="w-full"
+                  >
+                    {hasSecondaryChannel
+                      ? t("product.orderCtaTelegram")
+                      : t("product.orderCtaFallback")}
+                  </Button>
+                </a>
+              </div>
             </div>
 
-            <Button
-              variant="gold"
-              size="lg"
-              className="w-full text-sm mb-8"
-              onClick={handleAddToCart}
-              disabled={!selectedSize || !selectedColor}
-            >
-              {!selectedSize || !selectedColor
-                ? t('Select size & color', 'Selecteaza marimea si culoarea')
-                : `${t('Add to Cart', 'Adauga in cos')} - ${formatPrice(price)}`}
-            </Button>
+            <div className="mt-8 border-t border-border pt-8">
+              <h2 className="font-heading text-2xl">{t("product.description")}</h2>
+              <p className="mt-4 text-base leading-8 text-muted-foreground">
+                {getLocalizedText(product.description, lang)}
+              </p>
 
-            <div className="border-t border-border">
-              <button
-                onClick={() => setShowDescription((current) => !current)}
-                className="w-full flex items-center justify-between py-4 text-sm tracking-wider uppercase"
-              >
-                {t('Description', 'Descriere')}
-                {showDescription ? (
-                  <ChevronUp size={16} />
-                ) : (
-                  <ChevronDown size={16} />
-                )}
-              </button>
-              {showDescription ? (
-                <div className="pb-4 space-y-4">
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {productDescription}
-                  </p>
-                  {product.details.length > 0 ? (
-                    <ul className="space-y-2 text-sm text-muted-foreground">
-                      {product.details.map((detail) => (
-                        <li key={detail.en} className="flex items-start gap-2">
-                          <span className="mt-1 h-1.5 w-1.5 rounded-full bg-gold shrink-0" />
-                          <span>{getLocalizedText(detail, lang)}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  ) : null}
-                </div>
-              ) : null}
-            </div>
-
-            <div className="border-t border-border">
-              <button
-                onClick={() => setShowShipping((current) => !current)}
-                className="w-full flex items-center justify-between py-4 text-sm tracking-wider uppercase"
-              >
-                {t('Shipping Info', 'Informatii livrare')}
-                {showShipping ? (
-                  <ChevronUp size={16} />
-                ) : (
-                  <ChevronDown size={16} />
-                )}
-              </button>
-              {showShipping ? (
-                <div className="text-sm text-muted-foreground pb-4 leading-relaxed space-y-2">
-                  <p>
-                    {t('Romania:', 'Romania:')}{' '}
-                    {siteConfig.shipping.romaniaWindow}
-                  </p>
-                  <p>
-                    {t('International:', 'International:')}{' '}
-                    {siteConfig.shipping.internationalWindow}
-                  </p>
-                  <p>{siteConfig.shipping.dutiesNote}</p>
-                </div>
+              {product.details.length > 0 ? (
+                <ul className="mt-6 space-y-3 text-sm leading-7 text-muted-foreground">
+                  {product.details.map((detail) => (
+                    <li key={detail.en} className="flex gap-3">
+                      <span className="mt-3 h-1.5 w-1.5 shrink-0 rounded-full bg-gold" />
+                      <span>{getLocalizedText(detail, lang)}</span>
+                    </li>
+                  ))}
+                </ul>
               ) : null}
             </div>
           </motion.div>

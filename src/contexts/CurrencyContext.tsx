@@ -3,94 +3,149 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
-} from 'react';
+} from "react";
 
-export type Currency = 'USD' | 'EUR' | 'RON';
+import { detectInitialLanguage } from "@/lib/i18n";
+
+export type Currency = "RON" | "EUR" | "USD";
 
 interface CurrencyContextType {
   currency: Currency;
-  setCurrency: (currency: Currency) => void;
-  convert: (usd: number) => number;
-  symbol: string;
-  formatPrice: (usd: number) => string;
+  setCurrency: (nextCurrency: Currency) => void;
+  convertFromRon: (amountRon: number) => number;
+  formatPrice: (amountRon: number) => string;
+  isLoadingRates: boolean;
 }
 
-const symbols: Record<Currency, string> = {
-  USD: '$',
-  EUR: '\u20AC',
-  RON: 'lei',
-};
+const CURRENCY_STORAGE_KEY = "atlas-currency";
 
 const fallbackRates: Record<Currency, number> = {
-  USD: 1,
-  EUR: 0.92,
-  RON: 4.57,
+  RON: 1,
+  EUR: 0.2,
+  USD: 1 / 4.6,
+};
+
+const defaultCurrency = (): Currency => {
+  if (typeof window === "undefined") {
+    return "RON";
+  }
+
+  const stored = window.localStorage.getItem(CURRENCY_STORAGE_KEY);
+  if (stored === "RON" || stored === "EUR" || stored === "USD") {
+    return stored;
+  }
+
+  return detectInitialLanguage() === "ro" ? "RON" : "USD";
 };
 
 const CurrencyContext = createContext<CurrencyContextType | null>(null);
 
+const numberFormats: Record<Currency, Intl.NumberFormat> = {
+  RON: new Intl.NumberFormat("ro-RO", {
+    style: "currency",
+    currency: "RON",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }),
+  EUR: new Intl.NumberFormat("en-IE", {
+    style: "currency",
+    currency: "EUR",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }),
+  USD: new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }),
+};
+
 export const CurrencyProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [currency, setCurrencyState] = useState<Currency>(() => {
-    return (localStorage.getItem('atlas-currency') as Currency) || 'USD';
-  });
-  const [rates, setRates] =
-    useState<Record<Currency, number>>(fallbackRates);
+  const [currency, setCurrencyState] = useState<Currency>(defaultCurrency);
+  const [rates, setRates] = useState<Record<Currency, number>>(fallbackRates);
+  const [isLoadingRates, setIsLoadingRates] = useState(true);
 
   useEffect(() => {
-    fetch('https://open.er-api.com/v6/latest/USD')
-      .then((response) => response.json())
-      .then((data) => {
-        if (data?.rates) {
+    let isActive = true;
+
+    const loadRates = async () => {
+      try {
+        const response = await fetch(
+          "https://api.frankfurter.app/latest?from=RON&to=EUR,USD",
+        );
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch rates: ${response.status}`);
+        }
+
+        const data = (await response.json()) as {
+          rates?: Partial<Record<Exclude<Currency, "RON">, number>>;
+        };
+
+        if (isActive && data.rates) {
           setRates({
-            USD: 1,
-            EUR: data.rates.EUR || fallbackRates.EUR,
-            RON: data.rates.RON || fallbackRates.RON,
+            RON: 1,
+            EUR: data.rates.EUR ?? fallbackRates.EUR,
+            USD: data.rates.USD ?? fallbackRates.USD,
           });
         }
-      })
-      .catch(() => {});
+      } catch {
+        if (isActive) {
+          setRates(fallbackRates);
+        }
+      } finally {
+        if (isActive) {
+          setIsLoadingRates(false);
+        }
+      }
+    };
+
+    void loadRates();
+
+    return () => {
+      isActive = false;
+    };
   }, []);
 
   const setCurrency = useCallback((nextCurrency: Currency) => {
     setCurrencyState(nextCurrency);
-    localStorage.setItem('atlas-currency', nextCurrency);
+
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem(CURRENCY_STORAGE_KEY, nextCurrency);
+    }
   }, []);
 
-  const convert = useCallback(
-    (usd: number) => {
-      return Math.round(usd * rates[currency] * 100) / 100;
+  const convertFromRon = useCallback(
+    (amountRon: number) => {
+      const converted = amountRon * rates[currency];
+      return Math.round(converted * 100) / 100;
     },
     [currency, rates],
   );
 
   const formatPrice = useCallback(
-    (usd: number) => {
-      const converted = convert(usd);
+    (amountRon: number) => numberFormats[currency].format(convertFromRon(amountRon)),
+    [convertFromRon, currency],
+  );
 
-      if (currency === 'RON') {
-        return `${converted.toFixed(2)} lei`;
-      }
-
-      return `${symbols[currency]}${converted.toFixed(2)}`;
-    },
-    [convert, currency],
+  const value = useMemo(
+    () => ({
+      currency,
+      setCurrency,
+      convertFromRon,
+      formatPrice,
+      isLoadingRates,
+    }),
+    [convertFromRon, currency, formatPrice, isLoadingRates, setCurrency],
   );
 
   return (
-    <CurrencyContext.Provider
-      value={{
-        currency,
-        setCurrency,
-        convert,
-        symbol: symbols[currency],
-        formatPrice,
-      }}
-    >
-      {children}
-    </CurrencyContext.Provider>
+    <CurrencyContext.Provider value={value}>{children}</CurrencyContext.Provider>
   );
 };
 
@@ -98,7 +153,7 @@ export const useCurrency = () => {
   const context = useContext(CurrencyContext);
 
   if (!context) {
-    throw new Error('useCurrency must be used within CurrencyProvider');
+    throw new Error("useCurrency must be used within CurrencyProvider");
   }
 
   return context;

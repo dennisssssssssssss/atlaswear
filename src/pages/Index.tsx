@@ -1,281 +1,221 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
-import { ArrowRight } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { ArrowRight, ShieldCheck, Sparkles, Truck, Wallet } from "lucide-react";
+import { motion } from "framer-motion";
 
-import ProductCard from '@/components/ProductCard';
-import { Button } from '@/components/ui/button';
-import { toast } from '@/components/ui/use-toast';
-import {
-  hasNewsletterChannel,
-  publicSupportEmail,
-  siteConfig,
-} from '@/config/site';
-import { categories, getLocalizedText, products } from '@/data/products';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { usePageMeta } from '@/hooks/use-page-meta';
+import ProductCard from "@/components/ProductCard";
+import { Button } from "@/components/ui/button";
+import { categories, products } from "@/data/products";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { usePageMeta } from "@/hooks/use-page-meta";
+import { getLocalizedText } from "@/lib/i18n";
+
+const trustItems = [
+  {
+    icon: ShieldCheck,
+    titleKey: "home.trustAuthentic" as const,
+    descriptionKey: "home.trustAuthenticDesc" as const,
+  },
+  {
+    icon: Sparkles,
+    titleKey: "home.trustSealed" as const,
+    descriptionKey: "home.trustSealedDesc" as const,
+  },
+  {
+    icon: Truck,
+    titleKey: "home.trustShipping" as const,
+    descriptionKey: "home.trustShippingDesc" as const,
+  },
+  {
+    icon: Wallet,
+    titleKey: "home.trustPricing" as const,
+    descriptionKey: "home.trustPricingDesc" as const,
+  },
+];
 
 const Index = () => {
   const { lang, t } = useLanguage();
-  const [email, setEmail] = useState('');
-  const featuredProducts = products.filter((product) => product.featured);
-  const firstActiveSocial = siteConfig.socialLinks.find((link) =>
-    Boolean(link.url),
-  );
 
-  usePageMeta({ path: '/' });
+  usePageMeta({ path: "/" });
 
-  const handleNewsletterSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    if (!publicSupportEmail) {
-      toast({
-        title: t(
-          'Updates are not live yet',
-          'Lista de update-uri nu este live inca',
-        ),
-        description: t(
-          'Follow the brand on social until the contact inbox is configured.',
-          'Urmareste brandul pe social media pana cand inboxul de contact este configurat.',
-        ),
-      });
-      return;
-    }
-
-    window.location.href = `mailto:${publicSupportEmail}?subject=${encodeURIComponent(
-      'ATLAS updates request',
-    )}&body=${encodeURIComponent(
-      `Please add this email to the ATLAS updates list:\n\n${email}`,
-    )}`;
-
-    toast({
-      title: t('Email draft prepared', 'Draftul de email este pregatit'),
-      description: t(
-        'Your email app should open so you can confirm the request directly.',
-        'Aplicatia ta de email ar trebui sa se deschida ca sa poti confirma cererea direct.',
-      ),
-    });
-    setEmail('');
-  };
+  const newArrivals = [...products]
+    .sort((left, right) => right.addedAt.localeCompare(left.addedAt))
+    .slice(0, 8);
 
   return (
-    <div className="min-h-screen">
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0">
-          <img
-            src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=1920&q=80"
-            alt="ATLAS CO. Hero"
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-background/70" />
-        </div>
+    <div className="min-h-screen bg-background text-foreground">
+      <section className="relative overflow-hidden px-4 pt-32 pb-20 md:pt-40 md:pb-28">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(194,162,96,0.2),transparent_40%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.08),transparent_35%)]" />
+        <div className="container relative">
+          <div className="grid gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <p className="text-xs uppercase tracking-[0.42em] text-gold">
+                {t("hero.kicker")}
+              </p>
+              <h1 className="mt-6 max-w-4xl font-heading text-5xl leading-[0.95] md:text-7xl">
+                {t("hero.title")}
+              </h1>
+              <p className="mt-6 max-w-2xl text-base leading-8 text-muted-foreground md:text-lg">
+                {t("hero.description")}
+              </p>
 
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.3 }}
-          className="relative text-center px-4 max-w-3xl"
-        >
-          <p className="text-xs tracking-[0.5em] uppercase text-gold mb-6">
-            {t("The Women's Edit", 'Editia pentru femei')}
-          </p>
-          <h1 className="font-heading text-5xl md:text-7xl lg:text-8xl font-semibold leading-[0.9] mb-8">
-            ATLAS CO.
-          </h1>
-          <p className="text-muted-foreground text-lg md:text-xl max-w-lg mx-auto mb-10">
-            {t(
-              'Curated women pieces, premium silhouettes, and launch pricing designed to move fast.',
-              'Piese curate pentru femei, siluete premium si preturi de lansare gandite sa fie foarte atractive.',
-            )}
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/shop">
-              <Button variant="gold" size="lg" className="text-sm px-10">
-                {t('Shop Women', 'Vezi colectia de femei')}
-              </Button>
-            </Link>
-            <Link to="/catalog">
-              <Button
-                variant="gold-outline"
-                size="lg"
-                className="text-sm px-10"
-              >
-                {t('Full Women Catalog', 'Catalog complet femei')}
-              </Button>
-            </Link>
-          </div>
-        </motion.div>
-      </section>
-
-      <section className="py-20 md:py-28">
-        <div className="container">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="text-center mb-14"
-          >
-            <p className="text-xs tracking-[0.4em] uppercase text-gold mb-3">
-              {t('Collections', 'Colectii')}
-            </p>
-            <h2 className="font-heading text-3xl md:text-4xl">
-              {t('Shop by Category', 'Cumpara pe categorii')}
-            </h2>
-          </motion.div>
-
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            {categories.map((category, index) => (
-              <motion.div
-                key={category.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <Link
-                  to={`/shop?category=${category.id}`}
-                  className="group block relative overflow-hidden rounded aspect-[3/4]"
-                >
-                  <img
-                    src={category.image}
-                    alt={getLocalizedText(category.label, lang)}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/20 to-transparent" />
-                  <div className="absolute bottom-0 left-0 right-0 p-4">
-                    <h3 className="text-sm tracking-[0.2em] uppercase font-medium">
-                      {getLocalizedText(category.label, lang)}
-                    </h3>
-                  </div>
+              <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+                <Link to="/shop">
+                  <Button variant="gold" size="lg" className="w-full sm:w-auto">
+                    {t("hero.ctaShop")}
+                  </Button>
                 </Link>
-              </motion.div>
-            ))}
+                <Link to="/catalog">
+                  <Button
+                    variant="gold-outline"
+                    size="lg"
+                    className="w-full sm:w-auto"
+                  >
+                    {t("hero.ctaCatalog")}
+                  </Button>
+                </Link>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.55, delay: 0.1 }}
+              className="grid gap-4 sm:grid-cols-2"
+            >
+              {products.slice(0, 4).map((product) => (
+                <div
+                  key={product.id}
+                  className="overflow-hidden rounded-[2rem] border border-border bg-card"
+                >
+                  <div className="aspect-[4/5] overflow-hidden">
+                    <img
+                      src={product.images[0]}
+                      alt={`${product.brand} ${product.name}`}
+                      className={`h-full w-full ${
+                        product.imageFit === "contain"
+                          ? "object-contain bg-[#f8f5ef] p-6"
+                          : "object-cover"
+                      }`}
+                      loading="lazy"
+                    />
+                  </div>
+                  <div className="p-4">
+                    <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground">
+                      {product.brand}
+                    </p>
+                    <p className="mt-2 font-heading text-xl">{product.name}</p>
+                  </div>
+                </div>
+              ))}
+            </motion.div>
           </div>
         </div>
       </section>
 
-      <section className="py-16 border-y border-border bg-surface/60">
-        <div className="container">
-          <div className="grid lg:grid-cols-[1.2fr_0.8fr] gap-8 items-center">
-            <div>
-              <p className="text-xs tracking-[0.4em] uppercase text-gold mb-3">
-                {t('Source Catalog', 'Catalog sursa')}
-              </p>
-              <h2 className="font-heading text-3xl md:text-4xl mb-4">
-                {t(
-                  'All women categories now live in one place.',
-                  'Toate categoriile de femei sunt acum intr-un singur loc.',
-                )}
-              </h2>
-              <p className="text-muted-foreground max-w-2xl">
-                {t(
-                  'Use the full catalog page to browse the large source sets cleanly, including bags, shoes, accessories, and a modest dress edit for church-ready styling.',
-                  'Foloseste pagina de catalog complet ca sa rasfoiesti curat seturile mari din surse, inclusiv genti, pantofi, accesorii si un edit de rochii mai modeste pentru styling potrivit si pentru biserica.',
-                )}
-              </p>
-            </div>
+      <section className="border-y border-border bg-card/60 px-4 py-8">
+        <div className="container grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {trustItems.map((item) => {
+            const Icon = item.icon;
 
-            <div className="flex flex-col sm:flex-row gap-3 lg:justify-end">
-              <Link to="/catalog">
-                <Button variant="gold" className="w-full sm:w-auto">
-                  {t('Browse Full Catalog', 'Rasfoieste catalogul complet')}
-                </Button>
-              </Link>
-              <Link to="/catalog#modest-edit">
-                <Button variant="gold-outline" className="w-full sm:w-auto">
-                  {t('Modest Dress Edit', 'Edit de rochii modeste')}
-                </Button>
-              </Link>
-            </div>
-          </div>
+            return (
+              <div
+                key={item.titleKey}
+                className="rounded-3xl border border-border bg-background/70 p-5"
+              >
+                <Icon size={18} className="text-gold" />
+                <h2 className="mt-4 text-sm uppercase tracking-[0.24em] text-foreground">
+                  {t(item.titleKey)}
+                </h2>
+                <p className="mt-3 text-sm leading-7 text-muted-foreground">
+                  {t(item.descriptionKey)}
+                </p>
+              </div>
+            );
+          })}
         </div>
       </section>
 
-      <section className="py-20 bg-surface">
+      <section className="px-4 py-20 md:py-24">
         <div className="container">
-          <div className="flex items-end justify-between mb-14">
+          <div className="mb-10 flex items-end justify-between gap-6">
             <div>
-              <p className="text-xs tracking-[0.4em] uppercase text-gold mb-3">
-                {t('Curated', 'Selectat')}
+              <p className="text-xs uppercase tracking-[0.35em] text-gold">
+                {t("home.newArrivalsEyebrow")}
               </p>
-              <h2 className="font-heading text-3xl md:text-4xl">
-                {t('Featured Pieces', 'Piese selectate')}
+              <h2 className="mt-4 font-heading text-4xl">
+                {t("home.newArrivalsTitle")}
               </h2>
             </div>
-
             <Link
               to="/shop"
-              className="hidden sm:flex items-center gap-2 text-sm text-gold hover:text-gold-light transition-colors tracking-wider uppercase"
+              className="hidden items-center gap-2 text-sm uppercase tracking-[0.24em] text-gold transition-colors hover:text-gold-light md:inline-flex"
             >
-              {t('View All', 'Vezi tot')} <ArrowRight size={16} />
+              {t("nav.shop")}
+              <ArrowRight size={16} />
             </Link>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {featuredProducts.map((product, index) => (
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+            {newArrivals.map((product, index) => (
               <ProductCard key={product.id} product={product} index={index} />
             ))}
           </div>
         </div>
       </section>
 
-      <section className="py-20 md:py-28">
-        <div className="container max-w-2xl text-center">
-          <p className="text-xs tracking-[0.4em] uppercase text-gold mb-3">
-            {t('Stay Connected', 'Ramai conectat')}
+      <section className="bg-card px-4 py-20 md:py-24">
+        <div className="container">
+          <p className="text-xs uppercase tracking-[0.35em] text-gold">
+            {t("home.categoriesEyebrow")}
           </p>
-          <h2 className="font-heading text-3xl md:text-4xl mb-4">
-            {t('Join the Journey', 'Alatura-te calatoriei')}
+          <h2 className="mt-4 font-heading text-4xl">
+            {t("home.categoriesTitle")}
           </h2>
-          <p className="text-muted-foreground mb-8">
-            {t(
-              'Be the first to know about new drops, exclusive offers, and stories from around the world.',
-              'Fii primul care afla despre lansari, oferte exclusive si povesti din intreaga lume.',
-            )}
-          </p>
 
-          <form
-            onSubmit={handleNewsletterSubmit}
-            className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
-          >
-            <input
-              type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              placeholder={t('Your email', 'Email-ul tau')}
-              className="flex-1 bg-surface border border-border rounded px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-gold transition-colors"
-              required
-            />
-            <Button
-              variant="gold"
-              type="submit"
-              className="text-sm"
-              disabled={!hasNewsletterChannel}
-            >
-              {hasNewsletterChannel
-                ? t('Request Updates', 'Cere update-uri')
-                : t('Coming Soon', 'In curand')}
-            </Button>
-          </form>
+          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+            {categories.slice(0, 5).map((category) => (
+              <Link
+                key={category.id}
+                to={`/shop?category=${category.id}`}
+                className="group overflow-hidden rounded-[2rem] border border-border bg-background"
+              >
+                <div className="aspect-[4/5] overflow-hidden">
+                  <img
+                    src={category.image}
+                    alt={getLocalizedText(category.label, lang)}
+                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    loading="lazy"
+                  />
+                </div>
+                <div className="p-5">
+                  <p className="font-heading text-2xl">
+                    {getLocalizedText(category.label, lang)}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
 
-          <p className="mt-4 text-xs text-muted-foreground">
-            {hasNewsletterChannel
-              ? t(
-                  'This opens your email app so you can confirm the request directly.',
-                  'Aceasta actiune iti deschide aplicatia de email ca sa poti confirma cererea direct.',
-                )
-              : firstActiveSocial
-                ? t(
-                    'The mailing list is being prepared. Follow the brand on social in the meantime.',
-                    'Lista de email este in pregatire. Pana atunci, urmareste brandul pe social media.',
-                  )
-                : t(
-                    'The mailing list is being prepared and will be activated soon.',
-                    'Lista de email este in pregatire si va fi activata in curand.',
-                  )}
+      <section className="px-4 py-20 md:py-24">
+        <div className="container rounded-[2rem] border border-border bg-card px-6 py-10 md:px-10">
+          <p className="text-xs uppercase tracking-[0.35em] text-gold">
+            {t("home.contactTitle")}
           </p>
+          <div className="mt-4 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+            <p className="max-w-2xl text-base leading-8 text-muted-foreground">
+              {t("home.contactDescription")}
+            </p>
+            <Link to="/contact">
+              <Button variant="gold">{t("home.contactCta")}</Button>
+            </Link>
+          </div>
         </div>
       </section>
     </div>

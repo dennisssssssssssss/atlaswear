@@ -1,14 +1,18 @@
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
-import { motion } from 'framer-motion';
+import { ArrowUpRight } from "lucide-react";
+import { motion } from "framer-motion";
 
+import { Button } from "@/components/ui/button";
 import {
-  Product,
-  getLocalizedText,
+  getCategoryLabel,
+  getProductCompareAt,
   getProductPrice,
-} from '@/data/products';
-import { useCurrency } from '@/contexts/CurrencyContext';
-import { useLanguage } from '@/contexts/LanguageContext';
+  type Product,
+} from "@/data/products";
+import { useCurrency } from "@/contexts/CurrencyContext";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { getPreferredProductContactLink } from "@/lib/contact";
 
 interface ProductCardProps {
   product: Product;
@@ -18,59 +22,91 @@ interface ProductCardProps {
 const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
   const { formatPrice } = useCurrency();
   const { lang, t } = useLanguage();
-  const productName = getLocalizedText(product.name, lang);
-  const productPrice = getProductPrice(product);
+
   const imageClass =
-    product.imageFit === 'contain'
-      ? 'w-full h-full object-contain p-4 bg-[#f8f5ef]'
-      : 'w-full h-full object-cover';
+    product.imageFit === "contain"
+      ? "h-full w-full object-contain bg-[#f8f5ef] p-4"
+      : "h-full w-full object-cover";
+
+  const compareAt = getProductCompareAt(product);
+  const preferredOrderLink = getPreferredProductContactLink(product, lang);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
+    <motion.article
+      initial={{ opacity: 0, y: 18 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: index * 0.1 }}
+      transition={{ duration: 0.35, delay: index * 0.03 }}
+      className="rounded-3xl border border-border bg-card p-4"
     >
       <Link to={`/product/${product.id}`} className="group block">
-        <div className="relative overflow-hidden rounded aspect-[3/4] bg-surface">
-          <img
-            src={product.images[0]}
-            alt={productName}
-            className={`${imageClass} transition-transform duration-700 group-hover:scale-105`}
-            loading="lazy"
-          />
-          <div className="absolute inset-0 bg-background/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-            <span className="text-xs tracking-[0.3em] uppercase text-foreground border border-foreground px-4 py-2 bg-background/50 backdrop-blur-sm">
-              {t('Quick View', 'Vezi rapid')}
-            </span>
+        <div className="relative overflow-hidden rounded-2xl bg-surface">
+          <div className="aspect-[4/5] overflow-hidden">
+            <img
+              src={product.images[0]}
+              alt={`${product.brand} ${product.name}`}
+              className={`${imageClass} transition-transform duration-700 group-hover:scale-105`}
+              loading="lazy"
+            />
           </div>
-          {product.onSale ? (
-            <span className="absolute top-3 left-3 bg-gold text-primary-foreground text-[10px] tracking-widest uppercase px-3 py-1 font-bold">
-              {t('Sale', 'Reducere')}
+
+          <div className="absolute left-3 top-3 flex flex-wrap gap-2">
+            <span className="rounded-full border border-border bg-background/90 px-3 py-1 text-[10px] uppercase tracking-[0.24em] text-gold backdrop-blur">
+              {getCategoryLabel(product.category, lang)}
             </span>
-          ) : null}
-        </div>
-        <div className="mt-4">
-          <h3 className="text-sm tracking-wider uppercase">{productName}</h3>
-          <div className="flex items-center gap-2 mt-1">
-            {product.onSale && product.salePrice ? (
-              <>
-                <span className="text-sm text-gold">
-                  {formatPrice(product.salePrice)}
-                </span>
-                <span className="text-xs text-muted-foreground line-through">
-                  {formatPrice(product.priceUSD)}
-                </span>
-              </>
-            ) : (
-              <span className="text-sm text-muted-foreground">
-                {formatPrice(productPrice)}
+            <span className="rounded-full border border-border bg-background/90 px-3 py-1 text-[10px] uppercase tracking-[0.24em] text-foreground backdrop-blur">
+              {t("common.authenticSealed")}
+            </span>
+            {product.bestPrice ? (
+              <span className="rounded-full bg-gold px-3 py-1 text-[10px] uppercase tracking-[0.24em] text-primary-foreground">
+                {t("common.bestPrice")}
               </span>
-            )}
+            ) : null}
           </div>
         </div>
       </Link>
-    </motion.div>
+
+      <div className="mt-4">
+        <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground">
+          {product.brand}
+        </p>
+        <Link
+          to={`/product/${product.id}`}
+          className="mt-2 inline-flex items-start gap-2 font-heading text-xl leading-tight transition-colors hover:text-gold"
+        >
+          <span>{product.name}</span>
+          <ArrowUpRight size={18} className="mt-1 shrink-0" />
+        </Link>
+
+        <div className="mt-3 flex items-center gap-3">
+          <span className="text-lg text-foreground">
+            {formatPrice(getProductPrice(product))}
+          </span>
+          {compareAt ? (
+            <span className="text-sm text-muted-foreground line-through">
+              {formatPrice(compareAt)}
+            </span>
+          ) : null}
+        </div>
+
+        <div className="mt-5 flex gap-3">
+          <a
+            href={preferredOrderLink}
+            target={preferredOrderLink.startsWith("http") ? "_blank" : undefined}
+            rel={preferredOrderLink.startsWith("http") ? "noreferrer" : undefined}
+            className="flex-1"
+          >
+            <Button variant="gold" className="w-full">
+              {t("product.orderCtaWhatsApp")} / Telegram
+            </Button>
+          </a>
+          <Link to={`/product/${product.id}`} className="flex-1">
+            <Button variant="gold-outline" className="w-full">
+              {t("common.viewDetails")}
+            </Button>
+          </Link>
+        </div>
+      </div>
+    </motion.article>
   );
 };
 

@@ -1,19 +1,21 @@
 const publicSiteUrl =
-  import.meta.env.VITE_SITE_URL || "https://atlaswear.lovable.app";
+  import.meta.env.VITE_SITE_URL ||
+  "https://dennisssssssssssss.github.io/atlaswear";
 
 export const siteConfig = {
   brandName: "ATLAS Wear",
   brandShortName: "ATLAS",
   baseUrl: publicSiteUrl,
-  defaultTitle: "ATLAS Wear | Women’s edit with premium designer pieces",
+  defaultTitle: "ATLAS Wear | Authentic fashion and accessories",
   defaultDescription:
-    "Curated women’s dresses, shoes, bags, and premium separates with attractive launch pricing.",
-  heroImage:
-    "https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=1200&q=80",
+    "Authentic, brand new, sealed fashion and accessories for Romania, the USA, and international customers.",
+  heroImage: "/og-image.svg",
   contact: {
     supportEmail: "",
     orderEmail: "",
     whatsappNumber: "",
+    telegramUsername: "",
+    telegramUrl: "",
     responseTime: "1-2 business days",
   },
   socialLinks: [
@@ -33,7 +35,7 @@ export const siteConfig = {
     conditionNote:
       "Items must be unworn, unused, and returned with their original packaging.",
     exclusionNote:
-      "Personalized, damaged through misuse, or final-sale items may not be eligible for return.",
+      "Personalized items, items damaged through misuse, or final-sale items may not be eligible for return.",
   },
 };
 
@@ -43,8 +45,16 @@ export const publicSupportEmail =
 export const publicOrderEmail =
   siteConfig.contact.orderEmail || publicSupportEmail;
 
+export const publicTelegramUrl =
+  siteConfig.contact.telegramUrl ||
+  (siteConfig.contact.telegramUsername
+    ? `https://t.me/${siteConfig.contact.telegramUsername.replace(/^@/, "")}`
+    : "");
+
 export const hasOrderChannel = Boolean(
-  publicOrderEmail || siteConfig.contact.whatsappNumber,
+  publicOrderEmail ||
+    siteConfig.contact.whatsappNumber ||
+    publicTelegramUrl,
 );
 
 export const hasNewsletterChannel = Boolean(publicSupportEmail);

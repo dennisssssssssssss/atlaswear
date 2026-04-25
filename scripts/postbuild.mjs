@@ -7,19 +7,22 @@ const __dirname = path.dirname(__filename);
 const distDir = path.resolve(__dirname, "../dist");
 const indexHtmlPath = path.join(distDir, "index.html");
 
-const siteUrl = (process.env.VITE_SITE_URL || "https://atlaswear.lovable.app").replace(
-  /\/$/,
-  "",
-);
+const siteUrl = (
+  process.env.VITE_SITE_URL || "https://dennisssssssssssss.github.io/atlaswear"
+).replace(/\/$/, "");
 
 const routes = [
   "/",
   "/catalog",
+  "/catalog/collection",
+  "/catalog/item",
   "/shop",
   "/shop?category=dresses",
   "/shop?category=clothing",
   "/shop?category=bags",
-  "/shop?category=shoes",
+  "/shop?category=sneakers",
+  "/shop?category=sandals",
+  "/shop?category=accessories",
   "/contact",
   "/shipping",
   "/returns",

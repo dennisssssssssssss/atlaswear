@@ -1,157 +1,123 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useMemo } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
 
-import { Button } from '@/components/ui/button';
-import ProductCard from '@/components/ProductCard';
+import ProductCard from "@/components/ProductCard";
+import { Button } from "@/components/ui/button";
 import {
+  brands,
   categories,
-  Category,
-  getLocalizedText,
-  getProductPrice,
+  categoryMap,
+  searchProducts,
+  type Category,
   products,
-} from '@/data/products';
-import { useCurrency } from '@/contexts/CurrencyContext';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { usePageMeta } from '@/hooks/use-page-meta';
+} from "@/data/products";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { usePageMeta } from "@/hooks/use-page-meta";
+import { getLocalizedText } from "@/lib/i18n";
+import { cn } from "@/lib/utils";
 
 const Shop = () => {
+  const { lang, t } = useLanguage();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { t, lang } = useLanguage();
-  const { formatPrice } = useCurrency();
-  const activeCategory = searchParams.get('category') as Category | null;
-  const maxProductPrice = useMemo(
-    () => Math.max(...products.map((product) => getProductPrice(product))),
-    [],
-  );
-  const priceSliderMax = useMemo(
-    () => Math.max(500, Math.ceil(maxProductPrice / 50) * 50),
-    [maxProductPrice],
-  );
-  const [priceRange, setPriceRange] = useState<[number, number]>(() => [
-    0,
-    priceSliderMax,
-  ]);
-  const [selectedSize, setSelectedSize] = useState<string>('');
 
-  useEffect(() => {
-    setPriceRange([0, priceSliderMax]);
-  }, [priceSliderMax]);
+  const activeCategory = searchParams.get("category") as Category | null;
+  const activeBrand = searchParams.get("brand");
+  const query = searchParams.get("q") ?? "";
 
-  const currentCategory = activeCategory
-    ? categories.find((category) => category.id === activeCategory)
-    : undefined;
-  const currentCategoryName = currentCategory
+  const currentCategory = activeCategory ? categoryMap.get(activeCategory) : null;
+  const currentTitle = currentCategory
     ? getLocalizedText(currentCategory.label, lang)
-    : t('All Products', 'Toate produsele');
+    : t("shop.title");
 
   usePageMeta({
-    title: currentCategory
-      ? getLocalizedText(currentCategory.label, lang)
-      : 'Shop',
-    description: t(
-      'Browse the ATLAS women catalog of dresses, shoes, bags, and premium separates.',
-      'Rasfoieste catalogul ATLAS pentru femei cu rochii, pantofi, posete si piese premium.',
-    ),
-    path: activeCategory ? `/shop?category=${activeCategory}` : '/shop',
+    title: currentTitle,
+    description: t("shop.description"),
+    path: searchParams.toString() ? `/shop?${searchParams.toString()}` : "/shop",
   });
 
-  const allSizes = useMemo(() => {
-    const sizes = new Set<string>();
-    products.forEach((product) =>
-      product.sizes.forEach((size) => sizes.add(size)),
+  const availableBrands = useMemo(() => {
+    const base = activeCategory
+      ? products.filter((product) => product.category === activeCategory)
+      : products;
+
+    return Array.from(new Set(base.map((product) => product.brand))).sort((a, b) =>
+      a.localeCompare(b),
     );
-    return Array.from(sizes);
-  }, []);
+  }, [activeCategory]);
 
   const filteredProducts = useMemo(() => {
-    return products.filter((product) => {
-      if (activeCategory && product.category !== activeCategory) {
-        return false;
-      }
+    const categoryFiltered = activeCategory
+      ? products.filter((product) => product.category === activeCategory)
+      : products;
 
-      const price = getProductPrice(product);
+    const brandFiltered = activeBrand
+      ? categoryFiltered.filter((product) => product.brand === activeBrand)
+      : categoryFiltered;
 
-      if (price < priceRange[0] || price > priceRange[1]) {
-        return false;
-      }
+    return searchProducts(brandFiltered, query, lang);
+  }, [activeBrand, activeCategory, lang, query]);
 
-      if (selectedSize && !product.sizes.includes(selectedSize)) {
-        return false;
-      }
+  const updateParam = (key: string, value?: string) => {
+    const nextParams = new URLSearchParams(searchParams);
 
-      return true;
-    });
-  }, [activeCategory, priceRange, selectedSize]);
+    if (value) {
+      nextParams.set(key, value);
+    } else {
+      nextParams.delete(key);
+    }
+
+    setSearchParams(nextParams);
+  };
 
   return (
-    <div className="min-h-screen pt-24 pb-20">
+    <div className="min-h-screen bg-background px-4 pt-32 pb-20 text-foreground">
       <div className="container">
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="mb-12"
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="max-w-4xl"
         >
-          <p className="text-xs tracking-[0.4em] uppercase text-gold mb-3">
-            {t('Browse', 'Rasfoieste')}
+          <p className="text-xs uppercase tracking-[0.4em] text-gold">
+            {t("shop.eyebrow")}
           </p>
-          <h1 className="font-heading text-4xl md:text-5xl">
-            {currentCategoryName}
-          </h1>
+          <h1 className="mt-4 font-heading text-4xl md:text-6xl">{currentTitle}</h1>
+          <p className="mt-5 max-w-2xl text-base leading-8 text-muted-foreground">
+            {t("shop.description")}
+          </p>
         </motion.div>
 
-        <div className="mb-10 rounded-2xl border border-border bg-surface px-6 py-5 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-          <div>
-            <p className="text-xs tracking-[0.28em] uppercase text-gold mb-2">
-              {t('Need More?', 'Vrei mai mult?')}
-            </p>
-            <p className="text-sm text-muted-foreground max-w-2xl">
-              {t(
-                'The curated storefront stays clean here, while the full women source catalog lives on the separate catalog page.',
-                'Storefront-ul curatat ramane aici, iar catalogul complet de femei din surse sta pe pagina separata de catalog.',
-              )}
-            </p>
-          </div>
-          <Link to="/catalog">
-            <Button variant="gold-outline">
-              {t('Open Full Catalog', 'Deschide catalogul complet')}
-            </Button>
-          </Link>
-        </div>
-
-        <div className="flex flex-col lg:flex-row gap-10">
-          <aside className="lg:w-56 shrink-0 space-y-8">
+        <div className="mt-10 rounded-[2rem] border border-border bg-card p-6">
+          <div className="grid gap-8 xl:grid-cols-[0.85fr_1.15fr]">
             <div>
-              <h3 className="text-xs tracking-[0.3em] uppercase text-gold mb-4">
-                {t('Category', 'Categorie')}
-              </h3>
-              <div className="flex flex-col gap-2">
+              <p className="text-xs uppercase tracking-[0.28em] text-gold">
+                {t("shop.category")}
+              </p>
+              <div className="mt-4 flex flex-wrap gap-2">
                 <button
-                  onClick={() => {
-                    searchParams.delete('category');
-                    setSearchParams(searchParams);
-                  }}
-                  className={`text-sm text-left transition-colors ${
+                  type="button"
+                  onClick={() => updateParam("category")}
+                  className={cn(
+                    "rounded-full border px-4 py-2 text-xs uppercase tracking-[0.2em] transition-colors",
                     !activeCategory
-                      ? 'text-gold'
-                      : 'text-muted-foreground hover:text-foreground'
-                  }`}
+                      ? "border-gold bg-gold text-primary-foreground"
+                      : "border-border text-muted-foreground hover:text-foreground",
+                  )}
                 >
-                  {t('All', 'Toate')}
+                  {t("common.all")}
                 </button>
                 {categories.map((category) => (
                   <button
                     key={category.id}
-                    onClick={() => {
-                      searchParams.set('category', category.id);
-                      setSearchParams(searchParams);
-                    }}
-                    className={`text-sm text-left transition-colors ${
+                    type="button"
+                    onClick={() => updateParam("category", category.id)}
+                    className={cn(
+                      "rounded-full border px-4 py-2 text-xs uppercase tracking-[0.2em] transition-colors",
                       activeCategory === category.id
-                        ? 'text-gold'
-                        : 'text-muted-foreground hover:text-foreground'
-                    }`}
+                        ? "border-gold bg-gold text-primary-foreground"
+                        : "border-border text-muted-foreground hover:text-foreground",
+                    )}
                   >
                     {getLocalizedText(category.label, lang)}
                   </button>
@@ -160,75 +126,83 @@ const Shop = () => {
             </div>
 
             <div>
-              <h3 className="text-xs tracking-[0.3em] uppercase text-gold mb-4">
-                {t('Price Range', 'Interval pret')}
-              </h3>
-              <input
-                type="range"
-                min={0}
-                max={priceSliderMax}
-                value={priceRange[1]}
-                onChange={(event) =>
-                  setPriceRange([0, parseInt(event.target.value, 10)])
-                }
-                className="w-full accent-gold"
-              />
-              <p className="text-xs text-muted-foreground mt-2">
-                {formatPrice(0)} - {formatPrice(priceRange[1])}
+              <p className="text-xs uppercase tracking-[0.28em] text-gold">
+                {t("shop.brand")}
               </p>
-            </div>
-
-            <div>
-              <h3 className="text-xs tracking-[0.3em] uppercase text-gold mb-4">
-                {t('Size', 'Marime')}
-              </h3>
-              <div className="flex flex-wrap gap-2">
+              <div className="mt-4 flex flex-wrap gap-2">
                 <button
-                  onClick={() => setSelectedSize('')}
-                  className={`px-3 py-1.5 text-xs border rounded transition-colors ${
-                    !selectedSize
-                      ? 'border-gold text-gold'
-                      : 'border-border text-muted-foreground hover:text-foreground'
-                  }`}
+                  type="button"
+                  onClick={() => updateParam("brand")}
+                  className={cn(
+                    "rounded-full border px-4 py-2 text-xs uppercase tracking-[0.2em] transition-colors",
+                    !activeBrand
+                      ? "border-gold bg-gold text-primary-foreground"
+                      : "border-border text-muted-foreground hover:text-foreground",
+                  )}
                 >
-                  {t('All', 'Toate')}
+                  {t("common.all")}
                 </button>
-                {allSizes.map((size) => (
+                {availableBrands.map((brand) => (
                   <button
-                    key={size}
+                    key={brand}
+                    type="button"
                     onClick={() =>
-                      setSelectedSize(size === selectedSize ? '' : size)
+                      updateParam("brand", activeBrand === brand ? undefined : brand)
                     }
-                    className={`px-3 py-1.5 text-xs border rounded transition-colors ${
-                      selectedSize === size
-                        ? 'border-gold text-gold'
-                        : 'border-border text-muted-foreground hover:text-foreground'
-                    }`}
+                    className={cn(
+                      "rounded-full border px-4 py-2 text-xs uppercase tracking-[0.2em] transition-colors",
+                      activeBrand === brand
+                        ? "border-gold bg-gold text-primary-foreground"
+                        : "border-border text-muted-foreground hover:text-foreground",
+                    )}
                   >
-                    {size}
+                    {brand}
                   </button>
                 ))}
               </div>
             </div>
-          </aside>
-
-          <div className="flex-1">
-            {filteredProducts.length === 0 ? (
-              <p className="text-muted-foreground text-center py-20">
-                {t('No products found', 'Nu s-au gasit produse')}
-              </p>
-            ) : (
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-                {filteredProducts.map((product, index) => (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    index={index}
-                  />
-                ))}
-              </div>
-            )}
           </div>
+        </div>
+
+        <div className="mt-6 rounded-[2rem] border border-border bg-card p-6">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div>
+              <p className="text-xs uppercase tracking-[0.28em] text-gold">
+                {t("shop.results", { count: filteredProducts.length })}
+              </p>
+              <p className="mt-2 text-sm leading-7 text-muted-foreground">
+                {t("shop.sourceCatalogNote")}
+              </p>
+            </div>
+
+            <Link to="/catalog">
+              <Button variant="gold-outline">{t("shop.openSourceCatalog")}</Button>
+            </Link>
+          </div>
+        </div>
+
+        <div className="mt-8">
+          {filteredProducts.length === 0 ? (
+            <div className="rounded-[2rem] border border-border bg-card p-10 text-center">
+              <h2 className="font-heading text-3xl">{t("shop.noProductsTitle")}</h2>
+              <p className="mt-4 text-muted-foreground">
+                {t("shop.noProductsDescription")}
+              </p>
+              <Button
+                variant="gold"
+                className="mt-6"
+                onClick={() => setSearchParams(new URLSearchParams())}
+              >
+                {t("common.resetFilters")}
+              </Button>
+            </div>
+          ) : (
+            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+              {filteredProducts.map((product, index) => (
+                <ProductCard key={product.id} product={product} index={index} />
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>
