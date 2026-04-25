@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 import { motion } from "framer-motion";
 
+import CatalogImage from "@/components/CatalogImage";
 import { Button } from "@/components/ui/button";
 import {
   getCategoryLabel,
@@ -41,11 +42,12 @@ const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
       <Link to={`/product/${product.id}`} className="group block">
         <div className="relative overflow-hidden rounded-2xl bg-surface">
           <div className="aspect-[4/5] overflow-hidden">
-            <img
+            <CatalogImage
               src={product.images[0]}
               alt={`${product.brand} ${product.name}`}
               className={`${imageClass} transition-transform duration-700 group-hover:scale-105`}
               loading="lazy"
+              fallbackClassName="p-4"
             />
           </div>
 

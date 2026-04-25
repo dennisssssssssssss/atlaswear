@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 
 import { siteConfig } from "@/config/site";
+import { resolveAbsoluteAssetUrl } from "@/lib/assets";
 
 interface PageMetaOptions {
   title?: string;
@@ -56,6 +57,7 @@ export const usePageMeta = ({
     const pageDescription = description ?? siteConfig.defaultDescription;
     const canonicalUrl = new URL(path, siteConfig.baseUrl).toString();
     const shareImage = image ?? siteConfig.heroImage;
+    const shareImageUrl = resolveAbsoluteAssetUrl(shareImage, siteConfig.baseUrl);
 
     document.title = pageTitle;
 
@@ -65,11 +67,11 @@ export const usePageMeta = ({
     upsertMeta("property", "og:title", pageTitle);
     upsertMeta("property", "og:description", pageDescription);
     upsertMeta("property", "og:url", canonicalUrl);
-    upsertMeta("property", "og:image", shareImage);
+    upsertMeta("property", "og:image", shareImageUrl);
     upsertMeta("name", "twitter:card", "summary_large_image");
     upsertMeta("name", "twitter:title", pageTitle);
     upsertMeta("name", "twitter:description", pageDescription);
-    upsertMeta("name", "twitter:image", shareImage);
+    upsertMeta("name", "twitter:image", shareImageUrl);
 
     upsertCanonical(canonicalUrl);
   }, [description, image, noindex, path, title]);

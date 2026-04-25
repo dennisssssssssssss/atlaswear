@@ -4,6 +4,7 @@ import {
   type Lang,
   type LocalizedText,
 } from "@/lib/i18n";
+import { resolveAssetUrl } from "@/lib/assets";
 
 export { getLocalizedText } from "@/lib/i18n";
 
@@ -53,7 +54,7 @@ export interface ProductCategory {
   image: string;
 }
 
-const catalog = (fileName: string) => `/catalog/${fileName}`;
+const catalog = (fileName: string) => resolveAssetUrl(`/catalog/${fileName}`);
 
 const color = (
   id: string,

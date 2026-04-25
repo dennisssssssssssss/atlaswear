@@ -1,6 +1,7 @@
 import { useState, type ImgHTMLAttributes } from "react";
 
 import { siteConfig } from "@/config/site";
+import { resolveAssetUrl } from "@/lib/assets";
 import { cn } from "@/lib/utils";
 
 interface CatalogImageProps extends ImgHTMLAttributes<HTMLImageElement> {
@@ -18,8 +19,9 @@ const CatalogImage = ({
   ...props
 }: CatalogImageProps) => {
   const [hasError, setHasError] = useState(false);
+  const resolvedSrc = resolveAssetUrl(src);
 
-  if (!src || hasError) {
+  if (!resolvedSrc || hasError) {
     return (
       <div
         role="img"
@@ -37,7 +39,7 @@ const CatalogImage = ({
   return (
     <img
       {...props}
-      src={src}
+      src={resolvedSrc}
       alt={alt}
       className={className}
       onError={(event) => {

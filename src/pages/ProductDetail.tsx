@@ -4,6 +4,7 @@ import { Link, useParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { motion } from "framer-motion";
 
+import CatalogImage from "@/components/CatalogImage";
 import { Button } from "@/components/ui/button";
 import { publicTelegramUrl, siteConfig } from "@/config/site";
 import {
@@ -107,10 +108,11 @@ const ProductDetail = () => {
           >
             <div className="overflow-hidden rounded-[2rem] border border-border bg-card">
               <div className="aspect-[4/5] overflow-hidden">
-                <img
+                <CatalogImage
                   src={product.images[selectedImage]}
                   alt={`${product.brand} ${product.name}`}
                   className={imageClass}
+                  fallbackClassName="p-8"
                 />
               </div>
             </div>
@@ -127,7 +129,7 @@ const ProductDetail = () => {
                     }`}
                   >
                     <div className="aspect-square overflow-hidden">
-                      <img
+                      <CatalogImage
                         src={image}
                         alt=""
                         className={`h-full w-full ${
@@ -136,6 +138,7 @@ const ProductDetail = () => {
                             : "object-cover"
                         }`}
                         loading="lazy"
+                        fallbackClassName="p-2"
                       />
                     </div>
                   </button>

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, ShieldCheck, Sparkles, Truck, Wallet } from "lucide-react";
 import { motion } from "framer-motion";
 
+import CatalogImage from "@/components/CatalogImage";
 import ProductCard from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
 import { categories, products } from "@/data/products";
@@ -93,7 +94,7 @@ const Index = () => {
                   className="overflow-hidden rounded-[2rem] border border-border bg-card"
                 >
                   <div className="aspect-[4/5] overflow-hidden">
-                    <img
+                    <CatalogImage
                       src={product.images[0]}
                       alt={`${product.brand} ${product.name}`}
                       className={`h-full w-full ${
@@ -102,6 +103,7 @@ const Index = () => {
                           : "object-cover"
                       }`}
                       loading="lazy"
+                      fallbackClassName="p-6"
                     />
                   </div>
                   <div className="p-4">
@@ -185,7 +187,7 @@ const Index = () => {
                 className="group overflow-hidden rounded-[2rem] border border-border bg-background"
               >
                 <div className="aspect-[4/5] overflow-hidden">
-                  <img
+                  <CatalogImage
                     src={category.image}
                     alt={getLocalizedText(category.label, lang)}
                     className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
