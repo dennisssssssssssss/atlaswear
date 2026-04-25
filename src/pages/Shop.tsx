@@ -1,34 +1,38 @@
-import { useMemo } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 import { motion } from "framer-motion";
 
 import ProductCard from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
-import {
-  brands,
-  categories,
-  categoryMap,
-  searchProducts,
-  type Category,
-  products,
-} from "@/data/products";
+import { type SourceCategory } from "@/data/source-products";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { usePageMeta } from "@/hooks/use-page-meta";
-import { getLocalizedText } from "@/lib/i18n";
+import { useCatalogProducts } from "@/hooks/use-catalog-products";
+import {
+  getCatalogCategoryLabel,
+  searchCatalogProducts,
+  sortCatalogProducts,
+  type CatalogSort,
+} from "@/lib/catalog";
 import { cn } from "@/lib/utils";
+
+const PAGE_SIZE = 24;
 
 const Shop = () => {
   const { lang, t } = useLanguage();
   const [searchParams, setSearchParams] = useSearchParams();
+  const { products, categories, isLoading, isError } = useCatalogProducts();
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
-  const activeCategory = searchParams.get("category") as Category | null;
+  const activeCategory = searchParams.get("category") as SourceCategory | null;
   const activeBrand = searchParams.get("brand");
   const query = searchParams.get("q") ?? "";
+  const activeSort = (searchParams.get("sort") as CatalogSort | null) ?? "featured";
 
-  const currentCategory = activeCategory ? categoryMap.get(activeCategory) : null;
+  const currentCategory = categories.find((category) => category.id === activeCategory);
   const currentTitle = currentCategory
-    ? getLocalizedText(currentCategory.label, lang)
+    ? getCatalogCategoryLabel(currentCategory.id, lang)
     : t("shop.title");
 
   usePageMeta({
@@ -45,7 +49,7 @@ const Shop = () => {
     return Array.from(new Set(base.map((product) => product.brand))).sort((a, b) =>
       a.localeCompare(b),
     );
-  }, [activeCategory]);
+  }, [activeCategory, products]);
 
   const filteredProducts = useMemo(() => {
     const categoryFiltered = activeCategory
@@ -56,8 +60,18 @@ const Shop = () => {
       ? categoryFiltered.filter((product) => product.brand === activeBrand)
       : categoryFiltered;
 
-    return searchProducts(brandFiltered, query, lang);
-  }, [activeBrand, activeCategory, lang, query]);
+    return sortCatalogProducts(
+      searchCatalogProducts(brandFiltered, query, lang),
+      activeSort,
+    );
+  }, [activeBrand, activeCategory, activeSort, lang, products, query]);
+
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE);
+  }, [activeBrand, activeCategory, activeSort, query]);
+
+  const visibleProducts = filteredProducts.slice(0, visibleCount);
+  const hasMoreProducts = filteredProducts.length > visibleCount;
 
   const updateParam = (key: string, value?: string) => {
     const nextParams = new URLSearchParams(searchParams);
@@ -72,7 +86,7 @@ const Shop = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background px-4 pt-32 pb-20 text-foreground">
+    <div className="min-h-screen bg-background px-4 pb-20 pt-32 text-foreground">
       <div className="container">
         <motion.div
           initial={{ opacity: 0, y: 18 }}
@@ -82,14 +96,16 @@ const Shop = () => {
           <p className="text-xs uppercase tracking-[0.4em] text-gold">
             {t("shop.eyebrow")}
           </p>
-          <h1 className="mt-4 font-heading text-4xl md:text-6xl">{currentTitle}</h1>
+          <h1 className="mt-4 max-w-[12ch] font-heading text-4xl leading-[0.95] md:text-6xl">
+            {currentTitle}
+          </h1>
           <p className="mt-5 max-w-2xl text-base leading-8 text-muted-foreground">
             {t("shop.description")}
           </p>
         </motion.div>
 
         <div className="mt-10 rounded-[2rem] border border-border bg-card p-6">
-          <div className="grid gap-8 xl:grid-cols-[0.85fr_1.15fr]">
+          <div className="grid gap-8 xl:grid-cols-[1fr_1fr_260px]">
             <div>
               <p className="text-xs uppercase tracking-[0.28em] text-gold">
                 {t("shop.category")}
@@ -119,7 +135,7 @@ const Shop = () => {
                         : "border-border text-muted-foreground hover:text-foreground",
                     )}
                   >
-                    {getLocalizedText(category.label, lang)}
+                    {getCatalogCategoryLabel(category.id, lang)}
                   </button>
                 ))}
               </div>
@@ -161,47 +177,103 @@ const Shop = () => {
                 ))}
               </div>
             </div>
+
+            <div>
+              <label
+                htmlFor="catalog-sort"
+                className="text-xs uppercase tracking-[0.28em] text-gold"
+              >
+                {t("Sort by", "Sorteaza dupa")}
+              </label>
+              <select
+                id="catalog-sort"
+                value={activeSort}
+                onChange={(event) => updateParam("sort", event.target.value)}
+                className="mt-4 h-11 w-full rounded-xl border border-border bg-background px-4 text-sm text-foreground outline-none transition-colors focus:border-gold"
+              >
+                <option value="featured">
+                  {t("Recommended", "Recomandate")}
+                </option>
+                <option value="price-asc">
+                  {t("Price: low to high", "Pret: crescator")}
+                </option>
+                <option value="price-desc">
+                  {t("Price: high to low", "Pret: descrescator")}
+                </option>
+                <option value="brand-asc">
+                  {t("Brand: A to Z", "Brand: A-Z")}
+                </option>
+                <option value="name-asc">
+                  {t("Name: A to Z", "Nume: A-Z")}
+                </option>
+              </select>
+            </div>
           </div>
         </div>
 
         <div className="mt-6 rounded-[2rem] border border-border bg-card p-6">
-          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
             <div>
               <p className="text-xs uppercase tracking-[0.28em] text-gold">
                 {t("shop.results", { count: filteredProducts.length })}
               </p>
               <p className="mt-2 text-sm leading-7 text-muted-foreground">
-                {t("shop.sourceCatalogNote")}
+                {t(
+                  "Toate produsele sunt listate direct in storefront, organizate pe categorii si branduri.",
+                  "All products are listed directly in the storefront, organized by category and brand.",
+                )}
               </p>
             </div>
-
-            <Link to="/catalog">
-              <Button variant="gold-outline">{t("shop.openSourceCatalog")}</Button>
-            </Link>
+            <Button
+              variant="gold-outline"
+              onClick={() => setSearchParams(new URLSearchParams())}
+            >
+              {t("common.resetFilters")}
+            </Button>
           </div>
         </div>
 
         <div className="mt-8">
-          {filteredProducts.length === 0 ? (
+          {isLoading ? (
+            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+              {Array.from({ length: 8 }, (_, index) => (
+                <div
+                  key={`catalog-loading-${index}`}
+                  className="h-[430px] animate-pulse rounded-3xl border border-border bg-card"
+                />
+              ))}
+            </div>
+          ) : isError ? (
+            <div className="rounded-[2rem] border border-border bg-card p-10 text-center">
+              <h2 className="font-heading text-3xl">{t("errorBoundary.title")}</h2>
+              <p className="mt-4 text-muted-foreground">{t("errorBoundary.description")}</p>
+            </div>
+          ) : filteredProducts.length === 0 ? (
             <div className="rounded-[2rem] border border-border bg-card p-10 text-center">
               <h2 className="font-heading text-3xl">{t("shop.noProductsTitle")}</h2>
               <p className="mt-4 text-muted-foreground">
                 {t("shop.noProductsDescription")}
               </p>
-              <Button
-                variant="gold"
-                className="mt-6"
-                onClick={() => setSearchParams(new URLSearchParams())}
-              >
-                {t("common.resetFilters")}
-              </Button>
             </div>
           ) : (
-            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-              {filteredProducts.map((product, index) => (
-                <ProductCard key={product.id} product={product} index={index} />
-              ))}
-            </div>
+            <>
+              <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+                {visibleProducts.map((product, index) => (
+                  <ProductCard key={product.id} product={product} index={index} />
+                ))}
+              </div>
+
+              {hasMoreProducts ? (
+                <div className="mt-8 flex justify-center">
+                  <Button
+                    variant="gold"
+                    onClick={() => setVisibleCount((current) => current + PAGE_SIZE)}
+                  >
+                    {t("Load more products", "Vezi mai multe produse")}
+                  </Button>
+                </div>
+              ) : null}
+            </>
           )}
         </div>
       </div>

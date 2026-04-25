@@ -5,37 +5,30 @@ import { ArrowLeft } from "lucide-react";
 import { motion } from "framer-motion";
 
 import CatalogImage from "@/components/CatalogImage";
+import ProductCard from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
-import { publicTelegramUrl, siteConfig } from "@/config/site";
-import {
-  getCategoryLabel,
-  getLocalizedText,
-  getProductCompareAt,
-  getProductPrice,
-  products,
-} from "@/data/products";
+import { siteConfig } from "@/config/site";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { usePageMeta } from "@/hooks/use-page-meta";
-import {
-  buildProductTelegramLink,
-  buildProductWhatsappLink,
-} from "@/lib/contact";
+import { useCatalogProducts } from "@/hooks/use-catalog-products";
+import { getCatalogCategoryLabel } from "@/lib/catalog";
+import { buildProductWhatsappLink } from "@/lib/contact";
+import { getLocalizedText } from "@/lib/i18n";
 
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const product = products.find((entry) => entry.id === id);
+  const { productMap, isLoading } = useCatalogProducts();
+  const product = id ? productMap.get(id) : undefined;
   const { formatPrice } = useCurrency();
   const { lang, t } = useLanguage();
 
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState("");
-  const [selectedColor, setSelectedColor] = useState("");
 
   useEffect(() => {
     setSelectedImage(0);
     setSelectedSize(product?.sizes[0] ?? "");
-    setSelectedColor(product?.colors[0]?.id ?? "");
   }, [product]);
 
   usePageMeta({
@@ -53,14 +46,41 @@ const ProductDetail = () => {
     [lang, product, selectedSize],
   );
 
-  const telegramLink = useMemo(
-    () => (product ? buildProductTelegramLink(product, lang, selectedSize) : ""),
-    [lang, product, selectedSize],
-  );
+  const relatedProducts = useMemo(() => {
+    if (!product) {
+      return [];
+    }
+
+    return product.relatedProductIds
+      .map((relatedId) => productMap.get(relatedId))
+      .filter((entry): entry is NonNullable<typeof entry> => Boolean(entry))
+      .slice(0, 4);
+  }, [product, productMap]);
+
+  const galleryImages = useMemo(() => {
+    if (!product) {
+      return [];
+    }
+
+    return Array.from(
+      new Set([product.images[0], ...relatedProducts.map((item) => item.images[0])]),
+    ).filter(Boolean);
+  }, [product, relatedProducts]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background px-4 pb-20 pt-32 text-foreground">
+        <div className="container grid gap-10 xl:grid-cols-[1.05fr_0.95fr]">
+          <div className="h-[560px] animate-pulse rounded-[2rem] border border-border bg-card" />
+          <div className="h-[560px] animate-pulse rounded-[2rem] border border-border bg-card" />
+        </div>
+      </div>
+    );
+  }
 
   if (!product) {
     return (
-      <div className="min-h-screen bg-background px-4 pt-32 pb-20 text-foreground">
+      <div className="min-h-screen bg-background px-4 pb-20 pt-32 text-foreground">
         <div className="container max-w-2xl rounded-[2rem] border border-border bg-card p-10 text-center">
           <p className="text-xs uppercase tracking-[0.35em] text-gold">ATLAS</p>
           <h1 className="mt-4 font-heading text-4xl">{t("product.notFoundTitle")}</h1>
@@ -83,14 +103,16 @@ const ProductDetail = () => {
       ? "h-full w-full object-contain bg-[#f8f5ef] p-8"
       : "h-full w-full object-cover";
 
-  const selectedColorLabel = product.colors.find(
-    (color) => color.id === selectedColor,
-  )?.name;
-  const compareAt = getProductCompareAt(product);
-  const hasSecondaryChannel = Boolean(publicTelegramUrl);
+  const sizeTokens =
+    product.sizes.length > 0
+      ? product.sizes
+      : product.sizeLabel
+          .split(/[,/]/)
+          .map((size) => size.trim())
+          .filter(Boolean);
 
   return (
-    <div className="min-h-screen bg-background px-4 pt-32 pb-20 text-foreground">
+    <div className="min-h-screen bg-background px-4 pb-20 pt-32 text-foreground">
       <div className="container">
         <Link
           to="/shop"
@@ -109,7 +131,7 @@ const ProductDetail = () => {
             <div className="overflow-hidden rounded-[2rem] border border-border bg-card">
               <div className="aspect-[4/5] overflow-hidden">
                 <CatalogImage
-                  src={product.images[selectedImage]}
+                  src={galleryImages[selectedImage] ?? product.images[0]}
                   alt={`${product.brand} ${product.name}`}
                   className={imageClass}
                   fallbackClassName="p-8"
@@ -117,11 +139,11 @@ const ProductDetail = () => {
               </div>
             </div>
 
-            {product.images.length > 1 ? (
-              <div className="grid grid-cols-4 gap-3 md:grid-cols-6">
-                {product.images.map((image, index) => (
+            {galleryImages.length > 1 ? (
+              <div className="grid grid-cols-4 gap-3">
+                {galleryImages.map((image, index) => (
                   <button
-                    key={image}
+                    key={`${product.id}-gallery-${index}`}
                     type="button"
                     onClick={() => setSelectedImage(index)}
                     className={`overflow-hidden rounded-2xl border ${
@@ -145,6 +167,28 @@ const ProductDetail = () => {
                 ))}
               </div>
             ) : null}
+
+            <div className="rounded-3xl border border-border bg-card p-5">
+              <p className="text-xs uppercase tracking-[0.22em] text-gold">
+                {t("Reference photos", "Poze de referinta")}
+              </p>
+              <p className="mt-3 text-sm leading-7 text-muted-foreground">
+                {product.photoCount
+                  ? lang === "ro"
+                    ? `${product.photoCount} poze disponibile in setul de referinta al produsului.`
+                    : `${product.photoCount} photos available in the product reference set.`
+                  : t(
+                      "Additional references can be confirmed directly before ordering.",
+                      "Referintele suplimentare se pot confirma direct inainte de comanda.",
+                    )}
+              </p>
+              <p className="mt-3 text-sm leading-7 text-muted-foreground">
+                {t(
+                  "The gallery also includes visual references from the same line, kept fully inside the site.",
+                  "Galeria include si referinte vizuale din aceeasi linie, pastrate integral in site.",
+                )}
+              </p>
+            </div>
           </motion.div>
 
           <motion.div
@@ -155,7 +199,7 @@ const ProductDetail = () => {
           >
             <div className="flex flex-wrap gap-2">
               <span className="rounded-full border border-border px-3 py-1 text-[10px] uppercase tracking-[0.24em] text-gold">
-                {getCategoryLabel(product.category, lang)}
+                {getCatalogCategoryLabel(product.category, lang)}
               </span>
               <span className="rounded-full border border-border px-3 py-1 text-[10px] uppercase tracking-[0.24em] text-foreground">
                 {t("common.authenticSealed")}
@@ -170,30 +214,51 @@ const ProductDetail = () => {
             <p className="mt-6 text-xs uppercase tracking-[0.28em] text-muted-foreground">
               {product.brand}
             </p>
-            <h1 className="mt-3 font-heading text-4xl leading-tight md:text-5xl">
+            <h1 className="mt-3 max-w-[14ch] font-heading text-4xl leading-tight md:text-5xl">
               {product.name}
             </h1>
 
             <div className="mt-5 flex items-center gap-3">
-              <span className="text-2xl">{formatPrice(getProductPrice(product))}</span>
-              {compareAt ? (
-                <span className="text-base text-muted-foreground line-through">
-                  {formatPrice(compareAt)}
-                </span>
-              ) : null}
+              <span className="text-2xl">{formatPrice(product.priceRon)}</span>
+              <span className="text-base text-muted-foreground line-through">
+                {formatPrice(product.compareAtRon)}
+              </span>
             </div>
 
             <p className="mt-5 text-sm uppercase tracking-[0.22em] text-gold">
               {t("product.trustLine")}
             </p>
 
-            {product.sizes.length > 0 ? (
+            <div className="mt-8 grid gap-4 sm:grid-cols-2">
+              <div className="rounded-3xl border border-border bg-background/70 p-5">
+                <p className="text-xs uppercase tracking-[0.22em] text-gold">
+                  {t("Collection", "Colectie")}
+                </p>
+                <p className="mt-3 text-sm leading-7 text-muted-foreground">
+                  {getLocalizedText(product.sourceCollection, lang)}
+                </p>
+              </div>
+
+              <div className="rounded-3xl border border-border bg-background/70 p-5">
+                <p className="text-xs uppercase tracking-[0.22em] text-gold">
+                  {t("Availability", "Disponibilitate")}
+                </p>
+                <p className="mt-3 text-sm leading-7 text-muted-foreground">
+                  {t(
+                    "Availability and final size confirmation are handled directly before order placement.",
+                    "Disponibilitatea si confirmarea finala de marime se fac direct inainte de plasarea comenzii.",
+                  )}
+                </p>
+              </div>
+            </div>
+
+            {sizeTokens.length > 0 ? (
               <div className="mt-8">
                 <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">
                   {t("product.sizes")}
                 </p>
                 <div className="mt-3 flex flex-wrap gap-2">
-                  {product.sizes.map((size) => (
+                  {sizeTokens.map((size) => (
                     <button
                       key={size}
                       type="button"
@@ -211,42 +276,6 @@ const ProductDetail = () => {
               </div>
             ) : null}
 
-            {product.colors.length > 0 ? (
-              <div className="mt-8">
-                <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">
-                  {t("product.variants")}
-                </p>
-                <div className="mt-3 flex flex-wrap items-center gap-3">
-                  {product.colors.map((color) => (
-                    <button
-                      key={color.id}
-                      type="button"
-                      onClick={() => setSelectedColor(color.id)}
-                      className={`flex items-center gap-3 rounded-full border px-3 py-2 transition-colors ${
-                        selectedColor === color.id
-                          ? "border-gold bg-background"
-                          : "border-border"
-                      }`}
-                    >
-                      <span
-                        className="h-4 w-4 rounded-full border border-black/10"
-                        style={{ backgroundColor: color.hex }}
-                        aria-hidden
-                      />
-                      <span className="text-sm text-muted-foreground">
-                        {getLocalizedText(color.name, lang)}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-                {selectedColorLabel ? (
-                  <p className="mt-3 text-sm text-muted-foreground">
-                    {getLocalizedText(selectedColorLabel, lang)}
-                  </p>
-                ) : null}
-              </div>
-            ) : null}
-
             <div className="mt-8 rounded-3xl border border-border bg-background/70 p-5">
               <p className="text-xs uppercase tracking-[0.22em] text-gold">
                 {t("product.orderTitle")}
@@ -255,30 +284,19 @@ const ProductDetail = () => {
                 {t("product.instructions")}
               </p>
 
-              <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+              <div className="mt-5">
                 <a
                   href={whatsappLink || "/contact"}
                   target={whatsappLink ? "_blank" : undefined}
                   rel={whatsappLink ? "noreferrer" : undefined}
-                  className="sm:flex-1"
-                >
-                  <Button variant="gold" className="w-full">
-                    {t("product.orderCtaWhatsApp")}
-                  </Button>
-                </a>
-
-                <a
-                  href={telegramLink || "/contact"}
-                  target={telegramLink ? "_blank" : undefined}
-                  rel={telegramLink ? "noreferrer" : undefined}
-                  className="sm:flex-1"
+                  className="block"
                 >
                   <Button
-                    variant={hasSecondaryChannel ? "gold-outline" : "outline"}
-                    className="w-full"
+                    variant="gold"
+                    className="w-full whitespace-normal text-center leading-5"
                   >
-                    {hasSecondaryChannel
-                      ? t("product.orderCtaTelegram")
+                    {siteConfig.contact.whatsappNumber
+                      ? t("product.orderCtaWhatsApp")
                       : t("product.orderCtaFallback")}
                   </Button>
                 </a>
@@ -304,6 +322,37 @@ const ProductDetail = () => {
             </div>
           </motion.div>
         </div>
+
+        {relatedProducts.length > 0 ? (
+          <section className="mt-16">
+            <div className="mb-8 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+              <div>
+                <p className="text-xs uppercase tracking-[0.28em] text-gold">
+                  {t("More from this line", "Mai mult din aceasta colectie")}
+                </p>
+                <h2 className="mt-3 font-heading text-3xl md:text-4xl">
+                  {getLocalizedText(product.sourceCollection, lang)}
+                </h2>
+              </div>
+              <p className="max-w-2xl text-sm leading-7 text-muted-foreground">
+                {t(
+                  "Browse more pieces from the same line directly on the site.",
+                  "Vezi mai multe piese din aceeasi linie direct pe site.",
+                )}
+              </p>
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+              {relatedProducts.map((relatedProduct, index) => (
+                <ProductCard
+                  key={relatedProduct.id}
+                  product={relatedProduct}
+                  index={index}
+                />
+              ))}
+            </div>
+          </section>
+        ) : null}
       </div>
     </div>
   );

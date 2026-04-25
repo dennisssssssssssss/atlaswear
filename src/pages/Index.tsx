@@ -1,15 +1,15 @@
 import { Link } from "react-router-dom";
 
-import { ArrowRight, ShieldCheck, Sparkles, Truck, Wallet } from "lucide-react";
+import { ShieldCheck, Sparkles, Truck, Wallet } from "lucide-react";
 import { motion } from "framer-motion";
 
 import CatalogImage from "@/components/CatalogImage";
 import ProductCard from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
-import { categories, products } from "@/data/products";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { usePageMeta } from "@/hooks/use-page-meta";
-import { getLocalizedText } from "@/lib/i18n";
+import { useCatalogProducts } from "@/hooks/use-catalog-products";
+import { getCatalogCategoryLabel, sortCatalogProducts } from "@/lib/catalog";
 
 const trustItems = [
   {
@@ -36,31 +36,33 @@ const trustItems = [
 
 const Index = () => {
   const { lang, t } = useLanguage();
+  const { products, categories, isLoading } = useCatalogProducts();
 
   usePageMeta({ path: "/" });
 
-  const newArrivals = [...products]
-    .sort((left, right) => right.addedAt.localeCompare(left.addedAt))
-    .slice(0, 8);
+  const sortedProducts = sortCatalogProducts(products, "featured");
+  const featuredProducts = sortedProducts.slice(0, 4);
+  const highlightedProducts = sortedProducts.slice(0, 8);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <section className="relative overflow-hidden px-4 pt-32 pb-20 md:pt-40 md:pb-28">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(194,162,96,0.2),transparent_40%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.08),transparent_35%)]" />
+      <section className="relative overflow-hidden px-4 pb-20 pt-32 md:pb-24 md:pt-40">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(194,162,96,0.18),transparent_40%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.06),transparent_35%)]" />
         <div className="container relative">
-          <div className="grid gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+          <div className="grid gap-10 xl:grid-cols-[minmax(0,1fr)_minmax(360px,520px)] xl:items-center">
             <motion.div
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
+              className="min-w-0"
             >
               <p className="text-xs uppercase tracking-[0.42em] text-gold">
                 {t("hero.kicker")}
               </p>
-              <h1 className="mt-6 max-w-4xl font-heading text-5xl leading-[0.95] md:text-7xl">
+              <h1 className="mt-6 max-w-[10ch] font-heading text-5xl leading-[0.92] sm:text-6xl xl:text-[5.5rem]">
                 {t("hero.title")}
               </h1>
-              <p className="mt-6 max-w-2xl text-base leading-8 text-muted-foreground md:text-lg">
+              <p className="mt-6 max-w-xl text-base leading-8 text-muted-foreground md:text-lg">
                 {t("hero.description")}
               </p>
 
@@ -70,50 +72,60 @@ const Index = () => {
                     {t("hero.ctaShop")}
                   </Button>
                 </Link>
-                <Link to="/catalog">
+                <Link to="/contact">
                   <Button
                     variant="gold-outline"
                     size="lg"
                     className="w-full sm:w-auto"
                   >
-                    {t("hero.ctaCatalog")}
+                    {t("Contact me", "Contacteaza-ma")}
                   </Button>
                 </Link>
               </div>
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, scale: 0.96 }}
+              initial={{ opacity: 0, scale: 0.97 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.55, delay: 0.1 }}
               className="grid gap-4 sm:grid-cols-2"
             >
-              {products.slice(0, 4).map((product) => (
-                <div
-                  key={product.id}
-                  className="overflow-hidden rounded-[2rem] border border-border bg-card"
-                >
-                  <div className="aspect-[4/5] overflow-hidden">
-                    <CatalogImage
-                      src={product.images[0]}
-                      alt={`${product.brand} ${product.name}`}
-                      className={`h-full w-full ${
-                        product.imageFit === "contain"
-                          ? "object-contain bg-[#f8f5ef] p-6"
-                          : "object-cover"
-                      }`}
-                      loading="lazy"
-                      fallbackClassName="p-6"
+              {isLoading
+                ? Array.from({ length: 4 }, (_, index) => (
+                    <div
+                      key={`hero-loading-${index}`}
+                      className="aspect-[4/5] animate-pulse rounded-[2rem] border border-border bg-card"
                     />
-                  </div>
-                  <div className="p-4">
-                    <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground">
-                      {product.brand}
-                    </p>
-                    <p className="mt-2 font-heading text-xl">{product.name}</p>
-                  </div>
-                </div>
-              ))}
+                  ))
+                : featuredProducts.map((product) => (
+                    <Link
+                      key={product.id}
+                      to={`/product/${product.id}`}
+                      className="overflow-hidden rounded-[2rem] border border-border bg-card transition-transform duration-300 hover:-translate-y-1"
+                    >
+                      <div className="aspect-[4/5] overflow-hidden">
+                        <CatalogImage
+                          src={product.images[0]}
+                          alt={`${product.brand} ${product.name}`}
+                          className={`h-full w-full ${
+                            product.imageFit === "contain"
+                              ? "object-contain bg-[#f8f5ef] p-6"
+                              : "object-cover"
+                          }`}
+                          loading="lazy"
+                          fallbackClassName="p-6"
+                        />
+                      </div>
+                      <div className="p-4">
+                        <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground">
+                          {product.brand}
+                        </p>
+                        <p className="mt-2 font-heading text-xl leading-tight">
+                          {product.name}
+                        </p>
+                      </div>
+                    </Link>
+                  ))}
             </motion.div>
           </div>
         </div>
@@ -155,17 +167,23 @@ const Index = () => {
             </div>
             <Link
               to="/shop"
-              className="hidden items-center gap-2 text-sm uppercase tracking-[0.24em] text-gold transition-colors hover:text-gold-light md:inline-flex"
+              className="hidden text-sm uppercase tracking-[0.24em] text-gold transition-colors hover:text-gold-light md:inline-flex"
             >
               {t("nav.shop")}
-              <ArrowRight size={16} />
             </Link>
           </div>
 
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-            {newArrivals.map((product, index) => (
-              <ProductCard key={product.id} product={product} index={index} />
-            ))}
+            {isLoading
+              ? Array.from({ length: 8 }, (_, index) => (
+                  <div
+                    key={`product-loading-${index}`}
+                    className="h-[430px] animate-pulse rounded-3xl border border-border bg-card"
+                  />
+                ))
+              : highlightedProducts.map((product, index) => (
+                  <ProductCard key={product.id} product={product} index={index} />
+                ))}
           </div>
         </div>
       </section>
@@ -179,8 +197,8 @@ const Index = () => {
             {t("home.categoriesTitle")}
           </h2>
 
-          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-            {categories.slice(0, 5).map((category) => (
+          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {categories.slice(0, 8).map((category) => (
               <Link
                 key={category.id}
                 to={`/shop?category=${category.id}`}
@@ -189,14 +207,17 @@ const Index = () => {
                 <div className="aspect-[4/5] overflow-hidden">
                   <CatalogImage
                     src={category.image}
-                    alt={getLocalizedText(category.label, lang)}
+                    alt={getCatalogCategoryLabel(category.id, lang)}
                     className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                     loading="lazy"
                   />
                 </div>
                 <div className="p-5">
                   <p className="font-heading text-2xl">
-                    {getLocalizedText(category.label, lang)}
+                    {getCatalogCategoryLabel(category.id, lang)}
+                  </p>
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    {category.count} {t("products", "produse")}
                   </p>
                 </div>
               </Link>

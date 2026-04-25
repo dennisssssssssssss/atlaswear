@@ -1,7 +1,7 @@
 import { FormEvent, useEffect, useState } from "react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 
-import { Globe, Menu, Search, X } from "lucide-react";
+import { Menu, Search, X } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { Currency, useCurrency } from "@/contexts/CurrencyContext";
@@ -10,8 +10,8 @@ import { cn } from "@/lib/utils";
 
 const currencies: Currency[] = ["RON", "EUR", "USD"];
 const languageOptions = [
-  { value: "ro", label: "RO", flag: "🇷🇴" },
-  { value: "en", label: "EN", flag: "🇬🇧" },
+  { value: "ro", label: "RO" },
+  { value: "en", label: "EN" },
 ] as const;
 
 const Header = () => {
@@ -31,7 +31,6 @@ const Header = () => {
   const navLinks = [
     { to: "/", label: t("nav.home") },
     { to: "/shop", label: t("nav.shop") },
-    { to: "/catalog", label: t("nav.catalog") },
     { to: "/contact", label: t("nav.contact") },
   ];
 
@@ -43,6 +42,7 @@ const Header = () => {
     }
 
     const params = new URLSearchParams(location.search);
+
     if (nextValue.trim()) {
       params.set("q", nextValue);
     } else {
@@ -62,6 +62,7 @@ const Header = () => {
     event.preventDefault();
 
     const params = new URLSearchParams();
+
     if (searchValue.trim()) {
       params.set("q", searchValue.trim());
     }
@@ -80,14 +81,14 @@ const Header = () => {
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-border bg-background/95 backdrop-blur-xl">
-      <div className="container py-3">
-        <div className="grid gap-3 md:grid-cols-[auto_minmax(0,1fr)_auto] md:items-center">
-          <div className="flex items-center justify-between gap-3 md:justify-start">
+      <div className="container py-4">
+        <div className="grid gap-3 lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:items-center">
+          <div className="flex items-center justify-between gap-3 lg:justify-start">
             <div className="flex items-center gap-3">
               <button
                 type="button"
                 onClick={() => setMobileOpen((current) => !current)}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border text-foreground transition-colors hover:border-gold hover:text-gold md:hidden"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border text-foreground transition-colors hover:border-gold hover:text-gold lg:hidden"
                 aria-label={mobileOpen ? "Close menu" : "Open menu"}
               >
                 {mobileOpen ? <X size={18} /> : <Menu size={18} />}
@@ -101,25 +102,25 @@ const Header = () => {
               </Link>
             </div>
 
-            <div className="flex items-center gap-2 md:hidden">
-              {languageOptions.map((option) => (
-                <button
-                  key={option.value}
-                  type="button"
-                  onClick={() => setLang(option.value)}
-                  className={cn(
-                    "inline-flex items-center gap-1 rounded-full border px-3 py-2 text-xs uppercase tracking-[0.22em] transition-colors",
-                    lang === option.value
-                      ? "border-gold text-gold"
-                      : "border-border text-muted-foreground hover:border-gold hover:text-gold",
-                  )}
-                  aria-label={t("nav.language")}
-                >
-                  <Globe size={14} />
-                  <span>{option.flag}</span>
-                  <span>{option.label}</span>
-                </button>
-              ))}
+            <div className="flex items-center gap-2 lg:hidden">
+              <div className="inline-flex items-center rounded-full border border-border p-1">
+                {languageOptions.map((option) => (
+                  <button
+                    key={option.value}
+                    type="button"
+                    onClick={() => setLang(option.value)}
+                    className={cn(
+                      "rounded-full px-3 py-1.5 text-xs uppercase tracking-[0.22em] transition-colors",
+                      lang === option.value
+                        ? "bg-gold text-primary-foreground"
+                        : "text-muted-foreground hover:text-foreground",
+                    )}
+                    aria-label={t("nav.language")}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -147,7 +148,7 @@ const Header = () => {
             ) : null}
           </form>
 
-          <div className="hidden items-center justify-end gap-3 md:flex">
+          <div className="hidden items-center justify-end gap-3 lg:flex">
             <div className="inline-flex items-center rounded-full border border-border p-1">
               {languageOptions.map((option) => (
                 <button
@@ -155,15 +156,14 @@ const Header = () => {
                   type="button"
                   onClick={() => setLang(option.value)}
                   className={cn(
-                    "inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-xs uppercase tracking-[0.22em] transition-colors",
+                    "rounded-full px-3 py-1.5 text-xs uppercase tracking-[0.22em] transition-colors",
                     lang === option.value
                       ? "bg-gold text-primary-foreground"
                       : "text-muted-foreground hover:text-foreground",
                   )}
                   aria-label={t("nav.language")}
                 >
-                  <span>{option.flag}</span>
-                  <span>{option.label}</span>
+                  {option.label}
                 </button>
               ))}
             </div>
@@ -171,11 +171,7 @@ const Header = () => {
             <div className="inline-flex items-center rounded-full border border-border p-1">
               {currencies.map((value) => {
                 const label =
-                  value === "RON"
-                    ? t("switcher.currency.ron")
-                    : value === "EUR"
-                      ? t("switcher.currency.eur")
-                      : t("switcher.currency.usd");
+                  value === "RON" ? "LEI" : value === "EUR" ? "EUR" : "USD";
 
                 return (
                   <button
@@ -197,7 +193,7 @@ const Header = () => {
           </div>
         </div>
 
-        <div className="mt-3 hidden items-center gap-6 md:flex">
+        <div className="mt-3 hidden items-center gap-6 lg:flex">
           {navLinks.map((link) => (
             <NavLink
               key={link.to}
@@ -221,7 +217,7 @@ const Header = () => {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              className="overflow-hidden md:hidden"
+              className="overflow-hidden lg:hidden"
             >
               <div className="mt-4 rounded-3xl border border-border bg-card p-4">
                 <nav className="flex flex-col gap-3">
@@ -256,14 +252,13 @@ const Header = () => {
                         type="button"
                         onClick={() => setLang(option.value)}
                         className={cn(
-                          "inline-flex items-center gap-2 rounded-full border px-3 py-2 text-xs uppercase tracking-[0.22em] transition-colors",
+                          "rounded-full border px-3 py-2 text-xs uppercase tracking-[0.22em] transition-colors",
                           lang === option.value
                             ? "border-gold bg-gold text-primary-foreground"
                             : "border-border text-muted-foreground hover:text-foreground",
                         )}
                       >
-                        <span>{option.flag}</span>
-                        <span>{option.label}</span>
+                        {option.label}
                       </button>
                     ))}
                   </div>
@@ -276,11 +271,7 @@ const Header = () => {
                   <div className="flex flex-wrap gap-2">
                     {currencies.map((value) => {
                       const label =
-                        value === "RON"
-                          ? t("switcher.currency.ron")
-                          : value === "EUR"
-                            ? t("switcher.currency.eur")
-                            : t("switcher.currency.usd");
+                        value === "RON" ? "LEI" : value === "EUR" ? "EUR" : "USD";
 
                       return (
                         <button

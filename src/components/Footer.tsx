@@ -1,22 +1,22 @@
 import { Link } from "react-router-dom";
 
-import { categories } from "@/data/products";
+import { publicOrderEmail, publicSupportEmail, siteConfig } from "@/config/site";
 import { Currency, useCurrency } from "@/contexts/CurrencyContext";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { siteConfig } from "@/config/site";
-import { getLocalizedText } from "@/lib/i18n";
+import { useCatalogProducts } from "@/hooks/use-catalog-products";
+import { getCatalogCategoryLabel } from "@/lib/catalog";
 import { cn } from "@/lib/utils";
 
 const currencies: Currency[] = ["RON", "EUR", "USD"];
 const languageOptions = [
-  { value: "ro", label: "RO", flag: "🇷🇴" },
-  { value: "en", label: "EN", flag: "🇬🇧" },
+  { value: "ro", label: "RO" },
+  { value: "en", label: "EN" },
 ] as const;
 
 const Footer = () => {
   const { lang, setLang, t } = useLanguage();
   const { currency, setCurrency } = useCurrency();
-
+  const { categories } = useCatalogProducts();
   const activeSocials = siteConfig.socialLinks.filter((link) => Boolean(link.url));
   const year = new Date().getFullYear();
 
@@ -42,13 +42,13 @@ const Footer = () => {
               {t("footer.catalog")}
             </h3>
             <div className="mt-4 flex flex-col gap-3">
-              {categories.map((category) => (
+              {categories.slice(0, 6).map((category) => (
                 <Link
                   key={category.id}
                   to={`/shop?category=${category.id}`}
                   className="text-sm text-muted-foreground transition-colors hover:text-foreground"
                 >
-                  {getLocalizedText(category.label, lang)}
+                  {getCatalogCategoryLabel(category.id, lang)}
                 </Link>
               ))}
             </div>
@@ -58,37 +58,44 @@ const Footer = () => {
             <h3 className="text-xs uppercase tracking-[0.28em] text-gold">
               {t("footer.customerCare")}
             </h3>
-            <div className="mt-4 flex flex-col gap-3">
+            <div className="mt-4 flex flex-col gap-3 text-sm text-muted-foreground">
               <Link
                 to="/contact"
-                className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                className="transition-colors hover:text-foreground"
               >
                 {t("nav.contact")}
               </Link>
               <Link
                 to="/shipping"
-                className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                className="transition-colors hover:text-foreground"
               >
                 {t("nav.shipping")}
               </Link>
               <Link
                 to="/returns"
-                className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                className="transition-colors hover:text-foreground"
               >
                 {t("nav.returns")}
               </Link>
               <Link
                 to="/privacy"
-                className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                className="transition-colors hover:text-foreground"
               >
                 {t("nav.privacy")}
               </Link>
               <Link
                 to="/terms"
-                className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                className="transition-colors hover:text-foreground"
               >
                 {t("nav.terms")}
               </Link>
+              {siteConfig.contact.whatsappNumber ? (
+                <p>WhatsApp: {siteConfig.contact.whatsappNumber}</p>
+              ) : null}
+              {publicOrderEmail ? <p>Email: {publicOrderEmail}</p> : null}
+              {!publicOrderEmail && publicSupportEmail ? (
+                <p>Email: {publicSupportEmail}</p>
+              ) : null}
             </div>
           </div>
 
@@ -128,23 +135,18 @@ const Footer = () => {
                     type="button"
                     onClick={() => setLang(option.value)}
                     className={cn(
-                      "inline-flex items-center gap-2 rounded-full border px-3 py-2 text-xs uppercase tracking-[0.22em] transition-colors",
+                      "rounded-full border px-3 py-2 text-xs uppercase tracking-[0.22em] transition-colors",
                       lang === option.value
                         ? "border-gold bg-gold text-primary-foreground"
                         : "border-border text-muted-foreground hover:text-foreground",
                     )}
                   >
-                    <span>{option.flag}</span>
-                    <span>{option.label}</span>
+                    {option.label}
                   </button>
                 ))}
                 {currencies.map((value) => {
                   const label =
-                    value === "RON"
-                      ? t("switcher.currency.ron")
-                      : value === "EUR"
-                        ? t("switcher.currency.eur")
-                        : t("switcher.currency.usd");
+                    value === "RON" ? "LEI" : value === "EUR" ? "EUR" : "USD";
 
                   return (
                     <button
@@ -168,7 +170,7 @@ const Footer = () => {
         </div>
 
         <div className="mt-10 border-t border-border pt-6 text-xs uppercase tracking-[0.2em] text-muted-foreground">
-          © {year} {siteConfig.brandName}. {t("footer.rights")}
+          Copyright {year} {siteConfig.brandName}. {t("footer.rights")}
         </div>
       </div>
     </footer>

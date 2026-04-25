@@ -14,8 +14,6 @@ export const siteConfig = {
     supportEmail: "",
     orderEmail: "",
     whatsappNumber: "",
-    telegramUsername: "",
-    telegramUrl: "",
     responseTime: "1-2 business days",
   },
   socialLinks: [
@@ -45,16 +43,8 @@ export const publicSupportEmail =
 export const publicOrderEmail =
   siteConfig.contact.orderEmail || publicSupportEmail;
 
-export const publicTelegramUrl =
-  siteConfig.contact.telegramUrl ||
-  (siteConfig.contact.telegramUsername
-    ? `https://t.me/${siteConfig.contact.telegramUsername.replace(/^@/, "")}`
-    : "");
-
 export const hasOrderChannel = Boolean(
-  publicOrderEmail ||
-    siteConfig.contact.whatsappNumber ||
-    publicTelegramUrl,
+  publicOrderEmail || siteConfig.contact.whatsappNumber,
 );
 
 export const hasNewsletterChannel = Boolean(publicSupportEmail);

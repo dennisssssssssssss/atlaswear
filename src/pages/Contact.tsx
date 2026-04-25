@@ -1,10 +1,5 @@
 import InfoPageLayout from "@/components/InfoPageLayout";
-import {
-  publicOrderEmail,
-  publicSupportEmail,
-  publicTelegramUrl,
-  siteConfig,
-} from "@/config/site";
+import { publicOrderEmail, publicSupportEmail, siteConfig } from "@/config/site";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { usePageMeta } from "@/hooks/use-page-meta";
 
@@ -25,26 +20,25 @@ const Contact = () => {
       intro={t("contact.description")}
     >
       <section className="rounded border border-border bg-surface p-6">
-        <h2 className="font-heading text-2xl mb-3">{t("contact.orderChannels")}</h2>
-        <p className="text-muted-foreground leading-relaxed">
-          {t("contact.orderChannelsDescription")}
+        <h2 className="mb-3 font-heading text-2xl">{t("contact.orderChannels")}</h2>
+        <p className="leading-relaxed text-muted-foreground">
+          {t(
+            "Use WhatsApp or email to confirm stock, sizes, and delivery timing before placing an order.",
+            "Foloseste WhatsApp sau email pentru a confirma stocul, marimile si timpul de livrare inainte de comanda.",
+          )}
         </p>
 
         <div className="mt-4 space-y-3 text-muted-foreground">
           <p>
             {t("contact.whatsapp")}:{" "}
-            {siteConfig.contact.whatsappNumber || t("contact.notConfigured")}
-          </p>
-          <p>
-            {t("contact.telegram")}:{" "}
-            {publicTelegramUrl ? (
+            {siteConfig.contact.whatsappNumber ? (
               <a
-                href={publicTelegramUrl}
+                href={`https://wa.me/${siteConfig.contact.whatsappNumber.replace(/[^\d]/g, "")}`}
                 target="_blank"
                 rel="noreferrer"
-                className="text-gold hover:text-gold-light transition-colors"
+                className="text-gold transition-colors hover:text-gold-light"
               >
-                {publicTelegramUrl}
+                {siteConfig.contact.whatsappNumber}
               </a>
             ) : (
               t("contact.notConfigured")
@@ -55,7 +49,7 @@ const Contact = () => {
             {publicOrderEmail ? (
               <a
                 href={`mailto:${publicOrderEmail}`}
-                className="text-gold hover:text-gold-light transition-colors"
+                className="text-gold transition-colors hover:text-gold-light"
               >
                 {publicOrderEmail}
               </a>
@@ -67,8 +61,8 @@ const Contact = () => {
       </section>
 
       <section className="rounded border border-border bg-surface p-6">
-        <h2 className="font-heading text-2xl mb-3">{t("contact.support")}</h2>
-        <p className="text-muted-foreground leading-relaxed">
+        <h2 className="mb-3 font-heading text-2xl">{t("contact.support")}</h2>
+        <p className="leading-relaxed text-muted-foreground">
           {publicSupportEmail
             ? t("contact.supportConfigured")
             : t("contact.supportMissing")}
@@ -76,7 +70,7 @@ const Contact = () => {
         {publicSupportEmail ? (
           <a
             href={`mailto:${publicSupportEmail}`}
-            className="inline-flex mt-4 text-gold hover:text-gold-light transition-colors"
+            className="mt-4 inline-flex text-gold transition-colors hover:text-gold-light"
           >
             {publicSupportEmail}
           </a>
@@ -88,7 +82,7 @@ const Contact = () => {
       </section>
 
       <section className="rounded border border-border bg-surface p-6">
-        <h2 className="font-heading text-2xl mb-3">{t("contact.socials")}</h2>
+        <h2 className="mb-3 font-heading text-2xl">{t("contact.socials")}</h2>
         {activeSocials.length > 0 ? (
           <div className="flex flex-wrap gap-3">
             {activeSocials.map((link) => (
@@ -97,7 +91,7 @@ const Contact = () => {
                 href={link.url}
                 target="_blank"
                 rel="noreferrer"
-                className="px-4 py-2 border border-border rounded text-sm text-muted-foreground hover:border-gold hover:text-gold transition-colors"
+                className="rounded border border-border px-4 py-2 text-sm text-muted-foreground transition-colors hover:border-gold hover:text-gold"
               >
                 {link.label}
               </a>

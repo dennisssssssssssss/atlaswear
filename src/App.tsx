@@ -19,10 +19,6 @@ const routerBase =
     : import.meta.env.BASE_URL.replace(/\/$/, "");
 
 const Index = lazy(() => import("./pages/Index"));
-const Catalog = lazy(() => import("./pages/Catalog"));
-const CatalogCollectionDetail = lazy(
-  () => import("./pages/CatalogCollectionDetail"),
-);
 const Contact = lazy(() => import("./pages/Contact"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Privacy = lazy(() => import("./pages/Privacy"));
@@ -30,7 +26,6 @@ const ProductDetail = lazy(() => import("./pages/ProductDetail"));
 const Returns = lazy(() => import("./pages/Returns"));
 const Shipping = lazy(() => import("./pages/Shipping"));
 const Shop = lazy(() => import("./pages/Shop"));
-const SourceProductDetail = lazy(() => import("./pages/SourceProductDetail"));
 const Terms = lazy(() => import("./pages/Terms"));
 
 const RouteFallback = () => (
@@ -55,14 +50,14 @@ const App = () => (
               <Suspense fallback={<RouteFallback />}>
                 <Routes>
                   <Route path="/" element={<Index />} />
-                  <Route path="/catalog" element={<Catalog />} />
-                  <Route
-                    path="/catalog/collection/:id"
-                    element={<CatalogCollectionDetail />}
-                  />
-                  <Route path="/catalog/item/:id" element={<SourceProductDetail />} />
                   <Route path="/shop" element={<Shop />} />
                   <Route path="/product/:id" element={<ProductDetail />} />
+                  <Route path="/catalog" element={<Navigate to="/shop" replace />} />
+                  <Route
+                    path="/catalog/collection/:id"
+                    element={<Navigate to="/shop" replace />}
+                  />
+                  <Route path="/catalog/item/:id" element={<ProductDetail />} />
                   <Route
                     path="/checkout"
                     element={<Navigate to="/contact" replace />}
