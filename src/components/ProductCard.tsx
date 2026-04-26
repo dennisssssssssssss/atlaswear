@@ -91,19 +91,30 @@ const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
 
         <div className="mt-auto pt-5">
           <div className="flex flex-col gap-3 sm:flex-row">
-            <a
-              href={preferredOrderLink}
-              target={preferredOrderLink.startsWith("http") ? "_blank" : undefined}
-              rel={preferredOrderLink.startsWith("http") ? "noreferrer" : undefined}
-              className="sm:flex-1"
-            >
-              <Button
-                variant="gold"
-                className="w-full whitespace-normal text-center leading-5"
+            {preferredOrderLink.startsWith("http") ? (
+              <a
+                href={preferredOrderLink}
+                target="_blank"
+                rel="noreferrer"
+                className="sm:flex-1"
               >
-                {orderButtonLabel}
-              </Button>
-            </a>
+                <Button
+                  variant="gold"
+                  className="w-full whitespace-normal text-center leading-5"
+                >
+                  {orderButtonLabel}
+                </Button>
+              </a>
+            ) : (
+              <Link to="/contact" className="sm:flex-1">
+                <Button
+                  variant="gold"
+                  className="w-full whitespace-normal text-center leading-5"
+                >
+                  {orderButtonLabel}
+                </Button>
+              </Link>
+            )}
             <Link to={`/product/${product.id}`} className="sm:flex-1">
               <Button
                 variant="gold-outline"

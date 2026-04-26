@@ -37,6 +37,9 @@ export interface CatalogProduct {
   collectionKey: string;
   originalTitle: string;
   relatedProductIds: string[];
+  audience: SourceProduct["audience"];
+  sourcePriceRon: number | null;
+  priceConfidence: "source" | "estimated";
 }
 
 export interface CatalogCategory {
@@ -53,6 +56,7 @@ export const catalogCategoryOrder: SourceCategory[] = [
   "sneakers",
   "sandals",
   "mules",
+  "boots",
   "swimwear",
   "accessories",
   "hats",
@@ -60,18 +64,19 @@ export const catalogCategoryOrder: SourceCategory[] = [
   "jewellery",
 ];
 
-const categoryBasePrices: Record<SourceCategory, number> = {
-  dresses: 999,
-  clothing: 549,
-  bags: 1599,
-  sneakers: 899,
-  sandals: 699,
-  mules: 749,
-  swimwear: 449,
-  accessories: 329,
-  hats: 279,
-  watches: 1299,
-  jewellery: 299,
+const categoryPriceBands: Record<SourceCategory, [number, number]> = {
+  dresses: [279, 849],
+  clothing: [169, 499],
+  bags: [499, 1599],
+  sneakers: [329, 849],
+  sandals: [249, 599],
+  mules: [299, 699],
+  boots: [399, 899],
+  swimwear: [149, 329],
+  accessories: [89, 329],
+  hats: [99, 229],
+  watches: [399, 1099],
+  jewellery: [79, 249],
 };
 
 const compareMultipliers: Record<SourceCategory, number> = {
@@ -81,6 +86,7 @@ const compareMultipliers: Record<SourceCategory, number> = {
   sneakers: 2.4,
   sandals: 2.2,
   mules: 2.3,
+  boots: 2.2,
   swimwear: 1.9,
   accessories: 2.1,
   hats: 1.9,
@@ -89,17 +95,18 @@ const compareMultipliers: Record<SourceCategory, number> = {
 };
 
 const bestPriceCaps: Record<SourceCategory, number> = {
-  dresses: 1299,
-  clothing: 699,
-  bags: 2399,
-  sneakers: 1099,
-  sandals: 899,
-  mules: 949,
-  swimwear: 549,
-  accessories: 399,
-  hats: 329,
-  watches: 1699,
-  jewellery: 349,
+  dresses: 649,
+  clothing: 399,
+  bags: 1199,
+  sneakers: 649,
+  sandals: 449,
+  mules: 499,
+  boots: 649,
+  swimwear: 249,
+  accessories: 199,
+  hats: 169,
+  watches: 799,
+  jewellery: 169,
 };
 
 const categoryNotes: Record<SourceCategory, LocalizedText> = {
@@ -127,6 +134,10 @@ const categoryNotes: Record<SourceCategory, LocalizedText> = {
     "refined flats and mules with a more classic finish",
     "mules si flats cu o directie mai clasica si rafinata",
   ),
+  boots: localize(
+    "boots and cold-weather pairs with practical everyday value",
+    "ghete si cizme cu valoare practica pentru purtare zilnica",
+  ),
   swimwear: localize(
     "a concise beach and resort selection",
     "o selectie compacta pentru plaja si resort",
@@ -150,33 +161,35 @@ const categoryNotes: Record<SourceCategory, LocalizedText> = {
 };
 
 const brandMultipliers: Record<string, number> = {
-  Hermes: 2.45,
-  Chanel: 2.35,
-  "Louis Vuitton": 2.15,
-  Dior: 2.1,
-  Prada: 1.95,
-  Gucci: 1.9,
-  Loewe: 1.85,
-  "Saint Laurent": 1.9,
-  "Miu Miu": 1.9,
-  Zimmermann: 1.8,
-  Celine: 1.8,
-  Bottega: 1.85,
-  "Bottega Veneta": 1.85,
-  Fendi: 1.8,
-  Valentino: 1.75,
-  Burberry: 1.65,
-  Balenciaga: 1.65,
-  Ferragamo: 1.6,
-  "Jimmy Choo": 1.65,
-  "Roger Vivier": 1.7,
-  "Alexander McQueen": 1.6,
-  Versace: 1.55,
-  UGG: 1.2,
-  Birkenstock: 1.15,
-  Adidas: 1.1,
-  Nike: 1.1,
-  "ATLAS Selection": 1.18,
+  Hermes: 1.32,
+  Chanel: 1.3,
+  "Louis Vuitton": 1.24,
+  Dior: 1.23,
+  Prada: 1.18,
+  Gucci: 1.16,
+  Loewe: 1.14,
+  "Saint Laurent": 1.14,
+  "Miu Miu": 1.12,
+  Zimmermann: 1.1,
+  Celine: 1.1,
+  Bottega: 1.12,
+  "Bottega Veneta": 1.12,
+  Fendi: 1.1,
+  Valentino: 1.09,
+  Burberry: 1.08,
+  Balenciaga: 1.08,
+  Ferragamo: 1.08,
+  "Jimmy Choo": 1.08,
+  "Roger Vivier": 1.09,
+  "Alexander McQueen": 1.08,
+  Versace: 1.07,
+  UGG: 1.03,
+  Birkenstock: 1.02,
+  HOKA: 1.03,
+  "New Balance": 1,
+  Adidas: 1,
+  Nike: 1,
+  "ATLAS Selection": 1,
 };
 
 const genericBrands = new Set(["Designer", "Unknown", ""]);
@@ -204,6 +217,7 @@ const categoryNouns: Record<SourceCategory, LocalizedText> = {
   sneakers: localize("Sneaker", "Sneaker"),
   sandals: localize("Sandal", "Sandala"),
   mules: localize("Mule", "Mule"),
+  boots: localize("Boot", "Gheata"),
   swimwear: localize("Swimwear", "Swimwear"),
   accessories: localize("Accessory", "Accesoriu"),
   hats: localize("Hat", "Sapca"),
@@ -230,9 +244,43 @@ const getDisplayName = (product: SourceProduct, brand: string) => {
     : `${brand} ${categoryNoun}`;
 };
 
+const hashToUnit = (value: string) => {
+  let hash = 2166136261;
+
+  for (let index = 0; index < value.length; index += 1) {
+    hash ^= value.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+
+  return (hash >>> 0) / 4294967295;
+};
+
 const roundRetailPrice = (value: number) => {
   const rounded = Math.round(value / 10) * 10 - 1;
-  return Math.max(199, rounded);
+  return Math.max(79, rounded);
+};
+
+const extractSourcePriceRon = (product: SourceProduct) => {
+  if (typeof product.sourcePriceRon === "number" && product.sourcePriceRon > 0) {
+    return product.sourcePriceRon;
+  }
+
+  const text = `${product.originalTitle} ${product.name}`;
+  const currencyMatch = text.match(
+    /(?:¥|￥|RMB|CNY|yuan|元)\s*(\d{2,5})|(\d{2,5})\s*(?:RMB|CNY|yuan|元)/i,
+  );
+
+  if (!currencyMatch) {
+    return null;
+  }
+
+  const cnyPrice = Number(currencyMatch[1] ?? currencyMatch[2]);
+
+  if (!Number.isFinite(cnyPrice) || cnyPrice <= 0) {
+    return null;
+  }
+
+  return Math.round(cnyPrice * 0.65);
 };
 
 const getBrandMultiplier = (brand: string) => {
@@ -271,6 +319,77 @@ const getSizeMultiplier = (product: SourceProduct) => {
   return 1;
 };
 
+const normalizeCatalogCategory = (product: SourceProduct): SourceCategory => {
+  const text = cleanDisplayText(`${product.originalTitle} ${product.name}`).toLowerCase();
+
+  if (/\bt[-\s]?shirt\b|\btee\b|\bshirt\b|\bjacket\b|\bcoat\b|\bhoodie\b|\bpants\b|\bshorts\b/.test(text)) {
+    return "clothing";
+  }
+
+  if (
+    /manhattan|bag|hobo|tote|shoulder|satchel|puzzle|flamenco|handle|clutch|pochette|bucket|crossbody/.test(
+      text,
+    )
+  ) {
+    return "bags";
+  }
+
+  if (/boot|boots|hoka|anacapa/.test(text)) {
+    return "boots";
+  }
+
+  if (/mule|loafer|flat|ballet|boston/.test(text)) {
+    return "mules";
+  }
+
+  if (/sandal|slide|heel|pump|slipper/.test(text)) {
+    return "sandals";
+  }
+
+  if (/sneaker|trainer|runner|sport|530|574|327|shoe/.test(text)) {
+    return "sneakers";
+  }
+
+  if (/\b(hat|cap|caps|beanie)\b/.test(text)) {
+    return "hats";
+  }
+
+  return product.category;
+};
+
+const getAccessiblePrice = (
+  product: SourceProduct,
+  brand: string,
+  category: SourceCategory,
+) => {
+  const sourcePriceRon = extractSourcePriceRon(product);
+
+  if (sourcePriceRon) {
+    return {
+      priceRon: roundRetailPrice(sourcePriceRon * 1.35 + 39),
+      sourcePriceRon,
+      priceConfidence: "source" as const,
+    };
+  }
+
+  const [minPrice, maxPrice] = categoryPriceBands[category];
+  const seed = hashToUnit(`${product.id}:${product.originalTitle}:${product.image}`);
+  const bandPrice = minPrice + (maxPrice - minPrice) * seed;
+  const photoAdjustment = 0.92 + getPhotoMultiplier(product.photoCount) * 0.08;
+  const priceRon = roundRetailPrice(
+    bandPrice *
+      getBrandMultiplier(brand) *
+      photoAdjustment *
+      getSizeMultiplier(product),
+  );
+
+  return {
+    priceRon,
+    sourcePriceRon: null,
+    priceConfidence: "estimated" as const,
+  };
+};
+
 const getImageFit = (category: SourceCategory) => {
   return category === "accessories" ||
     category === "hats" ||
@@ -285,11 +404,12 @@ const buildDescription = (
   brand: string,
   displayName: string,
 ) => {
-  const note = categoryNotes[product.category];
+  const category = normalizeCatalogCategory(product);
+  const note = categoryNotes[category];
 
   return localize(
-    `${brand} ${displayName} is part of the ATLAS women selection, offered brand new and prepared for direct order. It was chosen for ${note.en}.`,
-    `${brand} ${displayName} face parte din selectia ATLAS pentru femei, este oferit nou si pregatit pentru comanda directa. A fost ales pentru ${note.ro}.`,
+    `${brand} ${displayName} is part of the ATLAS authentic product selection, offered brand new and prepared for direct order. It was chosen for ${note.en}.`,
+    `${brand} ${displayName} face parte din selectia ATLAS de produse autentice, este oferit nou si pregatit pentru comanda directa. A fost ales pentru ${note.ro}.`,
   );
 };
 
@@ -300,8 +420,8 @@ const buildDetails = (product: SourceProduct) => {
       "100% autentic, nou si verificat inainte de livrare",
     ),
     localize(
-      "Direct WhatsApp ordering and availability confirmation",
-      "Comanda directa pe WhatsApp si confirmare de disponibilitate",
+      "Direct message ordering and availability confirmation",
+      "Comanda directa prin mesaj si confirmare de disponibilitate",
     ),
   ];
 
@@ -331,17 +451,17 @@ export const mapSourceProductToCatalogProduct = (
 ): CatalogProduct => {
   const brand = getDisplayBrand(product);
   const name = getDisplayName(product, brand);
-  const priceRon = roundRetailPrice(
-    categoryBasePrices[product.category] *
-      getBrandMultiplier(brand) *
-      getPhotoMultiplier(product.photoCount) *
-      getSizeMultiplier(product),
+  const category = normalizeCatalogCategory(product);
+  const { priceRon, sourcePriceRon, priceConfidence } = getAccessiblePrice(
+    product,
+    brand,
+    category,
   );
   const compareAtRon = roundRetailPrice(
-    priceRon * compareMultipliers[product.category],
+    priceRon * compareMultipliers[category],
   );
   const collectionKey = [
-    product.category,
+    category,
     brand,
     getLocalizedText(product.sourceCollection, "en"),
   ].join("::");
@@ -350,25 +470,28 @@ export const mapSourceProductToCatalogProduct = (
     id: product.id,
     name,
     brand,
-    category: product.category,
+    category,
     description: buildDescription(product, brand, name),
     details: buildDetails(product),
     priceRon,
     compareAtRon,
     images: [product.image],
-    imageFit: getImageFit(product.category),
+    imageFit: getImageFit(category),
     sizes: product.sizes,
     sizeLabel: product.sizeLabel,
     featured:
       product.photoCount !== null
         ? product.photoCount >= 24
         : brand !== "ATLAS Selection",
-    bestPrice: priceRon <= bestPriceCaps[product.category],
+    bestPrice: priceRon <= bestPriceCaps[category],
     photoCount: product.photoCount,
     sourceCollection: product.sourceCollection,
     collectionKey,
     originalTitle: product.originalTitle,
     relatedProductIds: [],
+    audience: product.audience ?? "women",
+    sourcePriceRon,
+    priceConfidence,
   };
 };
 

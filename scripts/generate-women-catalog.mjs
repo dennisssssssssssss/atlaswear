@@ -413,6 +413,98 @@ const SOURCE_PRODUCT_PAGES = [
   },
 ];
 
+function yupooDefaultCategory(titleEn) {
+  if (/boot|cold weather|ugg/i.test(titleEn)) {
+    return "boots";
+  }
+  if (/slide|sandal/i.test(titleEn)) {
+    return "sandals";
+  }
+  if (/mary jane|loafer|boston|flat/i.test(titleEn)) {
+    return "mules";
+  }
+
+  return "sneakers";
+}
+
+function yupooAudience(titleEn) {
+  if (/women/i.test(titleEn)) {
+    return "women";
+  }
+  if (/men/i.test(titleEn)) {
+    return "men";
+  }
+
+  return "unisex";
+}
+
+function yupooProductPages(configs, source, baseUrl) {
+  return configs.map((config) => ({
+    kind: "yupoo",
+    cacheName: `${source}-${config.id}.html`,
+    url: `${baseUrl}/categories/${config.id}?page=1`,
+    source,
+    sourceCollection: { en: config.titleEn, ro: config.titleRo },
+    defaultBrand: detectBrand(config.titleEn, ""),
+    defaultCategory: yupooDefaultCategory(config.titleEn),
+    audience: yupooAudience(config.titleEn),
+    tags: [],
+  }));
+}
+
+const EXTRA_SOURCE_PRODUCT_PAGES = [
+  {
+    kind: "qiqiyg",
+    cacheName: "qiqiyg-tshirts.html",
+    url: "https://qiqiyg.com/categoryen_11.html?path=0_11",
+    source: "qiqiyg",
+    sourceCollection: { en: "Men T-Shirts & Tops", ro: "Tricouri si topuri barbati" },
+    defaultBrand: "",
+    defaultCategory: "clothing",
+    audience: "men",
+    tags: ["men"],
+  },
+  {
+    kind: "qiqiyg",
+    cacheName: "qiqiyg-jackets.html",
+    url: "https://qiqiyg.com/categoryen_394.html?path=0_394",
+    source: "qiqiyg",
+    sourceCollection: {
+      en: "Men Jackets & Outerwear",
+      ro: "Jachete si outerwear barbati",
+    },
+    defaultBrand: "",
+    defaultCategory: "clothing",
+    audience: "men",
+    tags: ["men"],
+  },
+  {
+    kind: "yupoo",
+    cacheName: "weifeng-lv-men-page1.html",
+    url: "https://weifengfz.x.yupoo.com/categories/4769312?page=1",
+    source: "weifeng",
+    sourceCollection: {
+      en: "Louis Vuitton Men's Shoes",
+      ro: "Pantofi Louis Vuitton barbati",
+    },
+    defaultBrand: "Louis Vuitton",
+    defaultCategory: "sneakers",
+    audience: "men",
+    tags: ["men"],
+  },
+  ...yupooProductPages(
+    WEIFENG_CONFIG,
+    "weifeng",
+    "https://weifengfz.x.yupoo.com",
+  ),
+  ...yupooProductPages(
+    DESHENGXING_CONFIG,
+    "deshengxing",
+    "https://deshengxing.x.yupoo.com",
+  ),
+  ...yupooProductPages(MAOYI_CONFIG, "198maoyi", "https://198maoyi.x.yupoo.com"),
+];
+
 const CATEGORY_LABELS = {
   dresses: { en: "Dresses", ro: "Rochii" },
   clothing: { en: "Clothing", ro: "Imbracaminte" },
@@ -420,6 +512,7 @@ const CATEGORY_LABELS = {
   sneakers: { en: "Sneakers", ro: "Sneakers" },
   sandals: { en: "Sandals", ro: "Sandale" },
   mules: { en: "Mules & Loafers", ro: "Mules si loafers" },
+  boots: { en: "Boots", ro: "Ghete si cizme" },
   swimwear: { en: "Swimwear", ro: "Swimwear" },
   accessories: { en: "Accessories", ro: "Accesorii" },
   hats: { en: "Hats", ro: "Sepci" },
@@ -434,6 +527,7 @@ const CATEGORY_NOUNS = {
   sneakers: "Sneaker",
   sandals: "Sandal",
   mules: "Mule",
+  boots: "Boot",
   swimwear: "Swimwear",
   accessories: "Accessory",
   hats: "Hat",
@@ -693,6 +787,8 @@ function detectBrand(title, fallbackBrand = "") {
     [/ugg/, "UGG"],
     [/birkenstock/, "Birkenstock"],
     [/balenciaga/, "Balenciaga"],
+    [/hoka/, "HOKA"],
+    [/new balance|\bnb\b|\b327\b|\b530\b|\b574\b|\bms327\b|\bu327\b|\buwrpd/i, "New Balance"],
     [/adidas/, "Adidas"],
     [/nike/, "Nike"],
     [/puma/, "Puma"],
@@ -724,14 +820,20 @@ function detectCategory(title, fallbackCategory) {
   if (/dress|gown|midi|mini/.test(normalized)) {
     return "dresses";
   }
+  if (/\bt[-\s]?shirt\b|\btee\b|\bshirt\b|\bjacket\b|\bcoat\b|\bhoodie\b|\bpants\b|\bshorts\b/.test(normalized)) {
+    return "clothing";
+  }
   if (
-    /bag|hobo|tote|shoulder|satchel|puzzle|flamenco|handle|boston|clutch|pochette|bucket|crossbody/.test(
+    /bag|hobo|tote|shoulder|satchel|puzzle|flamenco|handle|clutch|pochette|bucket|crossbody/.test(
       normalized,
     )
   ) {
     return "bags";
   }
-  if (/mule|loafer|espadrille|flat/.test(normalized)) {
+  if (/boot|boots|hoka|anacapa/.test(normalized)) {
+    return "boots";
+  }
+  if (/mule|loafer|espadrille|flat|boston/.test(normalized)) {
     return "mules";
   }
   if (/sandal|slide|heel|pump/.test(normalized)) {
@@ -749,7 +851,7 @@ function detectCategory(title, fallbackCategory) {
   if (/scarf|belt|glasses|sunglasses|hair|perfume/.test(normalized)) {
     return "accessories";
   }
-  if (/hat|cap/.test(normalized)) {
+  if (/\b(hat|cap|caps|beanie)\b/.test(normalized)) {
     return "hats";
   }
 
@@ -839,6 +941,10 @@ function buildSourceName(title, brand, category) {
     .replace(/\s+/g, " ")
     .trim();
 
+  if (/https?:\/\//i.test(working)) {
+    working = "";
+  }
+
   if (containsChineseCharacters(working)) {
     working = translateChineseFashionTitle(working, category);
   }
@@ -858,6 +964,55 @@ function buildSourceName(title, brand, category) {
   }
 
   return working.replace(/\s+/g, " ").trim();
+}
+
+function extractSourcePriceRon(title) {
+  const match = decodeHtml(title).match(
+    /(?:¥|￥|RMB|CNY|yuan|元)\s*(\d{2,5})|(\d{2,5})\s*(?:RMB|CNY|yuan|元)/i,
+  );
+
+  if (!match) {
+    return null;
+  }
+
+  const value = Number.parseInt(match[1] ?? match[2], 10);
+
+  if (!Number.isFinite(value) || value <= 0) {
+    return null;
+  }
+
+  return Math.round(value * 0.65);
+}
+
+function inferAudience(base, sizes) {
+  if (base.audience) {
+    return base.audience;
+  }
+
+  const text = decodeHtml(
+    `${base.title} ${base.sourceCollection?.en ?? ""} ${base.sourceCollection?.ro ?? ""}`,
+  ).toLowerCase();
+
+  if (/\b(men|men's|male|barbati|bărbați)\b|38-46|39-45|40-46|41-46/.test(text)) {
+    return "men";
+  }
+
+  if (/\b(women|women's|dama|femei)\b|35-41|35-40|36-41/.test(text)) {
+    return "women";
+  }
+
+  if (
+    base.source === "qiqiyg" &&
+    ["dresses", "bags", "swimwear"].includes(base.defaultCategory)
+  ) {
+    return "women";
+  }
+
+  if (sizes.some((size) => Number(size) >= 44)) {
+    return "men";
+  }
+
+  return "unisex";
 }
 
 function createSourceItem(base) {
@@ -886,6 +1041,8 @@ function createSourceItem(base) {
     tags: Array.from(tags),
     sourceCollection: base.sourceCollection,
     originalTitle: base.title,
+    audience: inferAudience(base, sizes),
+    sourcePriceRon: extractSourcePriceRon(base.title),
   };
 }
 
@@ -1020,7 +1177,10 @@ async function downloadImageIfNeeded(url, absoluteTargetPath) {
     }
   }
 
-  throw lastError;
+  console.warn(`Skipped unavailable image: ${url}`);
+  if (lastError) {
+    console.warn(lastError.message);
+  }
 }
 
 async function withConcurrency(items, limit, worker) {
@@ -1047,7 +1207,7 @@ async function localizeCollectionImages(items) {
     const extension = normalizeImageExtension(item.image);
     const relativePath = `/source-collections/${item.source}/${item.id}${extension}`;
     const targetPath = path.join(collectionsImageDir, item.source, `${item.id}${extension}`);
-    output.push({ ...item, image: relativePath });
+    output.push({ item: { ...item, image: relativePath }, targetPath });
     downloads.push({ url: item.image, targetPath });
   }
 
@@ -1055,7 +1215,15 @@ async function localizeCollectionImages(items) {
     await downloadImageIfNeeded(task.url, task.targetPath);
   });
 
-  return output;
+  const available = [];
+
+  for (const entry of output) {
+    if (await hasFile(entry.targetPath)) {
+      available.push(entry.item);
+    }
+  }
+
+  return available;
 }
 
 async function localizeSourceProductImages(items) {
@@ -1073,7 +1241,7 @@ async function localizeSourceProductImages(items) {
       item.source,
       `${item.id}${extension}`,
     );
-    output.push({ ...item, image: relativePath });
+    output.push({ item: { ...item, image: relativePath }, targetPath });
     downloads.push({ url: item.image, targetPath });
   }
 
@@ -1081,7 +1249,15 @@ async function localizeSourceProductImages(items) {
     await downloadImageIfNeeded(task.url, task.targetPath);
   });
 
-  return output;
+  const available = [];
+
+  for (const entry of output) {
+    if (await hasFile(entry.targetPath)) {
+      available.push(entry.item);
+    }
+  }
+
+  return available;
 }
 
 function renderCollectionData(items) {
@@ -1233,7 +1409,12 @@ async function main() {
   const localizedCollectionItems = await localizeCollectionImages(collectionItems);
 
   const sourceProducts = [];
-  for (const page of SOURCE_PRODUCT_PAGES) {
+  const productPages = uniqueBy(
+    [...SOURCE_PRODUCT_PAGES, ...EXTRA_SOURCE_PRODUCT_PAGES],
+    (page) => `${page.source}:${page.url}`,
+  );
+
+  for (const page of productPages) {
     const html = await readCachedOrFetch(page.cacheName, page.url);
     const parsed =
       page.kind === "qiqiyg"

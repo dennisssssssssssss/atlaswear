@@ -15,6 +15,7 @@ export type Category =
   | "sneakers"
   | "sandals"
   | "mules"
+  | "boots"
   | "swimwear"
   | "accessories"
   | "hats"
@@ -99,6 +100,11 @@ export const categories: ProductCategory[] = [
     id: "mules",
     label: localize("Mules & Loafers", "Mules si loafers"),
     image: catalog("gucci-horsebit-mule-oxblood.jpg"),
+  },
+  {
+    id: "boots",
+    label: localize("Boots", "Ghete si cizme"),
+    image: catalog("hermes-kelly-slide-black.jpg"),
   },
   {
     id: "swimwear",

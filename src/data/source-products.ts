@@ -7,6 +7,7 @@ export type SourceProductSourceId =
   | "weifeng"
   | "deshengxing"
   | "198maoyi";
+export type SourceProductAudience = "women" | "men" | "unisex";
 
 export interface SourceProduct {
   id: string;
@@ -22,6 +23,8 @@ export interface SourceProduct {
   tags: string[];
   sourceCollection: LocalizedText;
   originalTitle: string;
+  audience?: SourceProductAudience;
+  sourcePriceRon?: number | null;
 }
 
 const basePath =
@@ -38,6 +41,7 @@ export const sourceCategoryLabels: Record<SourceCategory, LocalizedText> = {
   sneakers: localize("Sneakers", "Sneakers"),
   sandals: localize("Sandals", "Sandale"),
   mules: localize("Mules & Loafers", "Mules si loafers"),
+  boots: localize("Boots", "Ghete si cizme"),
   swimwear: localize("Swimwear", "Swimwear"),
   accessories: localize("Accessories", "Accesorii"),
   hats: localize("Hats", "Sepci"),

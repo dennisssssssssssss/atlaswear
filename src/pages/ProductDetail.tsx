@@ -170,22 +170,22 @@ const ProductDetail = () => {
 
             <div className="rounded-3xl border border-border bg-card p-5">
               <p className="text-xs uppercase tracking-[0.22em] text-gold">
-                {t("Reference photos", "Poze de referinta")}
+                {t("Product gallery", "Galerie produs")}
               </p>
               <p className="mt-3 text-sm leading-7 text-muted-foreground">
                 {product.photoCount
                   ? lang === "ro"
-                    ? `${product.photoCount} poze disponibile in setul de referinta al produsului.`
-                    : `${product.photoCount} photos available in the product reference set.`
+                    ? `${product.photoCount} poze disponibile pentru verificare inainte de comanda.`
+                    : `${product.photoCount} photos available to review before ordering.`
                   : t(
-                      "Additional references can be confirmed directly before ordering.",
-                      "Referintele suplimentare se pot confirma direct inainte de comanda.",
+                      "Additional photos can be confirmed directly before ordering.",
+                      "Pozele suplimentare se pot confirma direct inainte de comanda.",
                     )}
               </p>
               <p className="mt-3 text-sm leading-7 text-muted-foreground">
                 {t(
-                  "The gallery also includes visual references from the same line, kept fully inside the site.",
-                  "Galeria include si referinte vizuale din aceeasi linie, pastrate integral in site.",
+                  "Extra visuals from the same line are kept inside the site so browsing stays clean.",
+                  "Vizualurile extra din aceeasi linie sunt pastrate in site pentru o navigare curata.",
                 )}
               </p>
             </div>
@@ -285,21 +285,30 @@ const ProductDetail = () => {
               </p>
 
               <div className="mt-5">
-                <a
-                  href={whatsappLink || "/contact"}
-                  target={whatsappLink ? "_blank" : undefined}
-                  rel={whatsappLink ? "noreferrer" : undefined}
-                  className="block"
-                >
-                  <Button
-                    variant="gold"
-                    className="w-full whitespace-normal text-center leading-5"
+                {whatsappLink ? (
+                  <a
+                    href={whatsappLink}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="block"
                   >
-                    {siteConfig.contact.whatsappNumber
-                      ? t("product.orderCtaWhatsApp")
-                      : t("product.orderCtaFallback")}
-                  </Button>
-                </a>
+                    <Button
+                      variant="gold"
+                      className="w-full whitespace-normal text-center leading-5"
+                    >
+                      {t("product.orderCtaWhatsApp")}
+                    </Button>
+                  </a>
+                ) : (
+                  <Link to="/contact" className="block">
+                    <Button
+                      variant="gold"
+                      className="w-full whitespace-normal text-center leading-5"
+                    >
+                      {t("product.orderCtaFallback")}
+                    </Button>
+                  </Link>
+                )}
               </div>
             </div>
 

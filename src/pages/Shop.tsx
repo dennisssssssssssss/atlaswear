@@ -5,7 +5,10 @@ import { motion } from "framer-motion";
 
 import ProductCard from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
-import { type SourceCategory } from "@/data/source-products";
+import {
+  type SourceCategory,
+  type SourceProductAudience,
+} from "@/data/source-products";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { usePageMeta } from "@/hooks/use-page-meta";
 import { useCatalogProducts } from "@/hooks/use-catalog-products";
@@ -18,6 +21,11 @@ import {
 import { cn } from "@/lib/utils";
 
 const PAGE_SIZE = 24;
+const audienceOptions: { id: SourceProductAudience; labelEn: string; labelRo: string }[] = [
+  { id: "women", labelEn: "Women", labelRo: "Femei" },
+  { id: "men", labelEn: "Men", labelRo: "Barbati" },
+  { id: "unisex", labelEn: "Unisex", labelRo: "Unisex" },
+];
 
 const Shop = () => {
   const { lang, t } = useLanguage();
@@ -27,6 +35,7 @@ const Shop = () => {
 
   const activeCategory = searchParams.get("category") as SourceCategory | null;
   const activeBrand = searchParams.get("brand");
+  const activeAudience = searchParams.get("audience") as SourceProductAudience | null;
   const query = searchParams.get("q") ?? "";
   const activeSort = (searchParams.get("sort") as CatalogSort | null) ?? "featured";
 
@@ -42,19 +51,25 @@ const Shop = () => {
   });
 
   const availableBrands = useMemo(() => {
-    const base = activeCategory
-      ? products.filter((product) => product.category === activeCategory)
+    const audienceFiltered = activeAudience
+      ? products.filter((product) => product.audience === activeAudience)
       : products;
+    const base = activeCategory
+      ? audienceFiltered.filter((product) => product.category === activeCategory)
+      : audienceFiltered;
 
     return Array.from(new Set(base.map((product) => product.brand))).sort((a, b) =>
       a.localeCompare(b),
     );
-  }, [activeCategory, products]);
+  }, [activeAudience, activeCategory, products]);
 
   const filteredProducts = useMemo(() => {
-    const categoryFiltered = activeCategory
-      ? products.filter((product) => product.category === activeCategory)
+    const audienceFiltered = activeAudience
+      ? products.filter((product) => product.audience === activeAudience)
       : products;
+    const categoryFiltered = activeCategory
+      ? audienceFiltered.filter((product) => product.category === activeCategory)
+      : audienceFiltered;
 
     const brandFiltered = activeBrand
       ? categoryFiltered.filter((product) => product.brand === activeBrand)
@@ -64,11 +79,11 @@ const Shop = () => {
       searchCatalogProducts(brandFiltered, query, lang),
       activeSort,
     );
-  }, [activeBrand, activeCategory, activeSort, lang, products, query]);
+  }, [activeAudience, activeBrand, activeCategory, activeSort, lang, products, query]);
 
   useEffect(() => {
     setVisibleCount(PAGE_SIZE);
-  }, [activeBrand, activeCategory, activeSort, query]);
+  }, [activeAudience, activeBrand, activeCategory, activeSort, query]);
 
   const visibleProducts = filteredProducts.slice(0, visibleCount);
   const hasMoreProducts = filteredProducts.length > visibleCount;
@@ -105,7 +120,42 @@ const Shop = () => {
         </motion.div>
 
         <div className="mt-10 rounded-[2rem] border border-border bg-card p-6">
-          <div className="grid gap-8 xl:grid-cols-[1fr_1fr_260px]">
+          <div className="grid gap-8 xl:grid-cols-[0.85fr_1fr_1fr_260px]">
+            <div>
+              <p className="text-xs uppercase tracking-[0.28em] text-gold">
+                {t("Audience", "Public")}
+              </p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => updateParam("audience")}
+                  className={cn(
+                    "rounded-full border px-4 py-2 text-xs uppercase tracking-[0.2em] transition-colors",
+                    !activeAudience
+                      ? "border-gold bg-gold text-primary-foreground"
+                      : "border-border text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  {t("common.all")}
+                </button>
+                {audienceOptions.map((audience) => (
+                  <button
+                    key={audience.id}
+                    type="button"
+                    onClick={() => updateParam("audience", audience.id)}
+                    className={cn(
+                      "rounded-full border px-4 py-2 text-xs uppercase tracking-[0.2em] transition-colors",
+                      activeAudience === audience.id
+                        ? "border-gold bg-gold text-primary-foreground"
+                        : "border-border text-muted-foreground hover:text-foreground",
+                    )}
+                  >
+                    {t(audience.labelEn, audience.labelRo)}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <div>
               <p className="text-xs uppercase tracking-[0.28em] text-gold">
                 {t("shop.category")}
@@ -219,8 +269,8 @@ const Shop = () => {
               </p>
               <p className="mt-2 text-sm leading-7 text-muted-foreground">
                 {t(
-                  "Toate produsele sunt listate direct in storefront, organizate pe categorii si branduri.",
-                  "All products are listed directly in the storefront, organized by category and brand.",
+                  "All products are listed directly in the storefront, organized by audience, category, and brand.",
+                  "Toate produsele sunt listate direct in storefront, organizate pe public, categorii si branduri.",
                 )}
               </p>
             </div>
