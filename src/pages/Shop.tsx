@@ -27,6 +27,21 @@ const audienceOptions: { id: SourceProductAudience; labelEn: string; labelRo: st
   { id: "unisex", labelEn: "Unisex", labelRo: "Unisex" },
 ];
 
+const matchesAudience = (
+  productAudience: SourceProductAudience | undefined,
+  activeAudience: SourceProductAudience | null,
+) => {
+  if (!activeAudience) {
+    return true;
+  }
+
+  if (activeAudience === "unisex") {
+    return productAudience === "unisex";
+  }
+
+  return productAudience === activeAudience || productAudience === "unisex";
+};
+
 const Shop = () => {
   const { lang, t } = useLanguage();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -52,7 +67,7 @@ const Shop = () => {
 
   const availableBrands = useMemo(() => {
     const audienceFiltered = activeAudience
-      ? products.filter((product) => product.audience === activeAudience)
+      ? products.filter((product) => matchesAudience(product.audience, activeAudience))
       : products;
     const base = activeCategory
       ? audienceFiltered.filter((product) => product.category === activeCategory)
@@ -65,7 +80,7 @@ const Shop = () => {
 
   const filteredProducts = useMemo(() => {
     const audienceFiltered = activeAudience
-      ? products.filter((product) => product.audience === activeAudience)
+      ? products.filter((product) => matchesAudience(product.audience, activeAudience))
       : products;
     const categoryFiltered = activeCategory
       ? audienceFiltered.filter((product) => product.category === activeCategory)

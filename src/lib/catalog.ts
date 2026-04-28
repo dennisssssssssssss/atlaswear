@@ -65,49 +65,76 @@ export const catalogCategoryOrder: SourceCategory[] = [
 ];
 
 const categoryPriceBands: Record<SourceCategory, [number, number]> = {
-  dresses: [279, 849],
-  clothing: [169, 499],
-  bags: [499, 1599],
-  sneakers: [329, 849],
-  sandals: [249, 599],
-  mules: [299, 699],
-  boots: [399, 899],
-  swimwear: [149, 329],
-  accessories: [89, 329],
-  hats: [99, 229],
-  watches: [399, 1099],
-  jewellery: [79, 249],
+  dresses: [149, 499],
+  clothing: [89, 289],
+  bags: [249, 899],
+  sneakers: [199, 549],
+  sandals: [149, 399],
+  mules: [169, 449],
+  boots: [229, 599],
+  swimwear: [89, 229],
+  accessories: [39, 199],
+  hats: [49, 149],
+  watches: [199, 699],
+  jewellery: [49, 249],
 };
 
 const compareMultipliers: Record<SourceCategory, number> = {
-  dresses: 2.2,
-  clothing: 2.0,
-  bags: 2.6,
-  sneakers: 2.4,
-  sandals: 2.2,
-  mules: 2.3,
-  boots: 2.2,
-  swimwear: 1.9,
-  accessories: 2.1,
-  hats: 1.9,
-  watches: 2.5,
-  jewellery: 2.1,
+  dresses: 1.75,
+  clothing: 1.65,
+  bags: 1.9,
+  sneakers: 1.75,
+  sandals: 1.65,
+  mules: 1.7,
+  boots: 1.75,
+  swimwear: 1.55,
+  accessories: 1.6,
+  hats: 1.5,
+  watches: 1.85,
+  jewellery: 1.65,
 };
 
 const bestPriceCaps: Record<SourceCategory, number> = {
-  dresses: 649,
-  clothing: 399,
-  bags: 1199,
-  sneakers: 649,
-  sandals: 449,
-  mules: 499,
-  boots: 649,
-  swimwear: 249,
-  accessories: 199,
-  hats: 169,
-  watches: 799,
-  jewellery: 169,
+  dresses: 349,
+  clothing: 199,
+  bags: 599,
+  sneakers: 399,
+  sandals: 299,
+  mules: 329,
+  boots: 449,
+  swimwear: 179,
+  accessories: 129,
+  hats: 99,
+  watches: 449,
+  jewellery: 149,
 };
+
+const featuredCategoryPriority: Record<SourceCategory, number> = {
+  dresses: 0,
+  bags: 1,
+  sneakers: 2,
+  clothing: 3,
+  sandals: 4,
+  mules: 5,
+  boots: 6,
+  watches: 7,
+  jewellery: 8,
+  swimwear: 9,
+  accessories: 10,
+  hats: 11,
+};
+
+const storefrontFeaturedCategories = new Set<SourceCategory>([
+  "dresses",
+  "bags",
+  "sneakers",
+  "clothing",
+  "sandals",
+  "mules",
+  "boots",
+  "watches",
+  "jewellery",
+]);
 
 const categoryNotes: Record<SourceCategory, LocalizedText> = {
   dresses: localize(
@@ -161,34 +188,43 @@ const categoryNotes: Record<SourceCategory, LocalizedText> = {
 };
 
 const brandMultipliers: Record<string, number> = {
-  Hermes: 1.32,
-  Chanel: 1.3,
-  "Louis Vuitton": 1.24,
-  Dior: 1.23,
-  Prada: 1.18,
-  Gucci: 1.16,
-  Loewe: 1.14,
-  "Saint Laurent": 1.14,
-  "Miu Miu": 1.12,
-  Zimmermann: 1.1,
-  Celine: 1.1,
-  Bottega: 1.12,
-  "Bottega Veneta": 1.12,
-  Fendi: 1.1,
-  Valentino: 1.09,
-  Burberry: 1.08,
-  Balenciaga: 1.08,
-  Ferragamo: 1.08,
-  "Jimmy Choo": 1.08,
-  "Roger Vivier": 1.09,
-  "Alexander McQueen": 1.08,
-  Versace: 1.07,
-  UGG: 1.03,
-  Birkenstock: 1.02,
-  HOKA: 1.03,
+  Hermes: 1.14,
+  Chanel: 1.13,
+  "Louis Vuitton": 1.1,
+  Dior: 1.09,
+  Prada: 1.06,
+  Gucci: 1.06,
+  Loewe: 1.05,
+  "Saint Laurent": 1.05,
+  "Miu Miu": 1.04,
+  Zimmermann: 1.04,
+  Celine: 1.04,
+  Bottega: 1.04,
+  "Bottega Veneta": 1.04,
+  Fendi: 1.04,
+  Valentino: 1.03,
+  Burberry: 1.03,
+  Balenciaga: 1.03,
+  Ferragamo: 1.03,
+  "Jimmy Choo": 1.03,
+  "Roger Vivier": 1.03,
+  "Alexander McQueen": 1.03,
+  Versace: 1.03,
+  UGG: 1.01,
+  Birkenstock: 1,
+  HOKA: 1,
   "New Balance": 1,
   Adidas: 1,
   Nike: 1,
+  "Ralph Lauren": 1,
+  Lacoste: 1,
+  Lululemon: 1,
+  ALO: 1,
+  "Juicy Couture": 0.98,
+  Coach: 1,
+  "Michael Kors": 0.98,
+  "Marc Jacobs": 0.99,
+  "Tory Burch": 1,
   "ATLAS Selection": 1,
 };
 
@@ -284,7 +320,7 @@ const extractSourcePriceRon = (product: SourceProduct) => {
 };
 
 const getBrandMultiplier = (brand: string) => {
-  return brandMultipliers[brand] ?? 1.28;
+  return brandMultipliers[brand] ?? 1.02;
 };
 
 const getPhotoMultiplier = (photoCount: number | null) => {
@@ -322,6 +358,26 @@ const getSizeMultiplier = (product: SourceProduct) => {
 const normalizeCatalogCategory = (product: SourceProduct): SourceCategory => {
   const text = cleanDisplayText(`${product.originalTitle} ${product.name}`).toLowerCase();
 
+  if (/bikini|swim/.test(text)) {
+    return "swimwear";
+  }
+
+  if (/\b(bucket hat|hat|cap|caps|beanie)\b/.test(text)) {
+    return "hats";
+  }
+
+  if (/watch/.test(text)) {
+    return "watches";
+  }
+
+  if (/jewelry|jewellery|bracelet|\bring\b|earring|necklace/.test(text)) {
+    return "jewellery";
+  }
+
+  if (/dress|gown|midi|mini/.test(text)) {
+    return "dresses";
+  }
+
   if (/\bt[-\s]?shirt\b|\btee\b|\bshirt\b|\bjacket\b|\bcoat\b|\bhoodie\b|\bpants\b|\bshorts\b/.test(text)) {
     return "clothing";
   }
@@ -350,8 +406,8 @@ const normalizeCatalogCategory = (product: SourceProduct): SourceCategory => {
     return "sneakers";
   }
 
-  if (/\b(hat|cap|caps|beanie)\b/.test(text)) {
-    return "hats";
+  if (/scarf|belt|glasses|sunglasses|hair|perfume|gloves|tie|socks/.test(text)) {
+    return "accessories";
   }
 
   return product.category;
@@ -366,7 +422,7 @@ const getAccessiblePrice = (
 
   if (sourcePriceRon) {
     return {
-      priceRon: roundRetailPrice(sourcePriceRon * 1.35 + 39),
+      priceRon: roundRetailPrice(sourcePriceRon * 1.25 + 29),
       sourcePriceRon,
       priceConfidence: "source" as const,
     };
@@ -480,9 +536,10 @@ export const mapSourceProductToCatalogProduct = (
     sizes: product.sizes,
     sizeLabel: product.sizeLabel,
     featured:
-      product.photoCount !== null
+      storefrontFeaturedCategories.has(category) &&
+      (product.photoCount !== null
         ? product.photoCount >= 24
-        : brand !== "ATLAS Selection",
+        : brand !== "ATLAS Selection"),
     bestPrice: priceRon <= bestPriceCaps[category],
     photoCount: product.photoCount,
     sourceCollection: product.sourceCollection,
@@ -607,6 +664,9 @@ export const sortCatalogProducts = (
         }
         if (left.bestPrice !== right.bestPrice) {
           return left.bestPrice ? -1 : 1;
+        }
+        if (featuredCategoryPriority[left.category] !== featuredCategoryPriority[right.category]) {
+          return featuredCategoryPriority[left.category] - featuredCategoryPriority[right.category];
         }
         if ((right.photoCount ?? 0) !== (left.photoCount ?? 0)) {
           return (right.photoCount ?? 0) - (left.photoCount ?? 0);

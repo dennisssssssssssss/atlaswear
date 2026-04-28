@@ -413,6 +413,189 @@ const SOURCE_PRODUCT_PAGES = [
   },
 ];
 
+function qiqiygPage({
+  cacheName,
+  host = "https://qiqiyg.com",
+  path: pagePath,
+  collectionEn,
+  collectionRo,
+  brand = "",
+  category = "clothing",
+  audience = "unisex",
+  tags = [],
+  maxItems = 80,
+  minPhotoCount = 2,
+}) {
+  return {
+    kind: "qiqiyg",
+    cacheName,
+    url: `${host}/${pagePath}`,
+    source: "qiqiyg",
+    sourceCollection: { en: collectionEn, ro: collectionRo },
+    defaultBrand: brand,
+    defaultCategory: category,
+    audience,
+    tags,
+    maxItems,
+    minPhotoCount,
+  };
+}
+
+const QIQIYG_EXPANDED_PRODUCT_PAGES = [
+  qiqiygPage({
+    cacheName: "qiqiyg-fashion-new-arrival.html",
+    path: "categoryen_3.html?path=0_3",
+    collectionEn: "QiQiYG New Arrivals",
+    collectionRo: "Noutati QiQiYG",
+    maxItems: 120,
+  }),
+  qiqiygPage({
+    cacheName: "qiqiyg-tshirts.html",
+    path: "categoryen_11.html?path=0_11",
+    collectionEn: "T-Shirts & Tops",
+    collectionRo: "Tricouri si topuri",
+    maxItems: 160,
+  }),
+  qiqiygPage({
+    cacheName: "qiqiyg-polo-shorts.html",
+    path: "categoryen_10.html?path=0_10",
+    collectionEn: "Polo & Shorts",
+    collectionRo: "Polo si pantaloni scurti",
+    maxItems: 96,
+  }),
+  qiqiygPage({
+    cacheName: "qiqiyg-jackets.html",
+    path: "categoryen_394.html?path=0_394",
+    collectionEn: "Jackets & Outerwear",
+    collectionRo: "Jachete si outerwear",
+    maxItems: 160,
+  }),
+  qiqiygPage({
+    cacheName: "qiqiyg-down-jackets.html",
+    path: "categoryen_87630.html?path=0_87630",
+    collectionEn: "Down Jackets",
+    collectionRo: "Geci groase",
+    maxItems: 96,
+  }),
+  qiqiygPage({
+    cacheName: "qiqiyg-high-quality.html",
+    path: "categoryen_139496.html?path=0_139496",
+    collectionEn: "High Quality Clothing",
+    collectionRo: "Imbracaminte high quality",
+    maxItems: 120,
+  }),
+  qiqiygPage({
+    cacheName: "qiqiyg-lululemon-alo.html",
+    path: "categoryen_41628.html?path=0_41628",
+    collectionEn: "Lululemon & ALO",
+    collectionRo: "Lululemon si ALO",
+    brand: "Lululemon",
+    audience: "women",
+    maxItems: 120,
+  }),
+  qiqiygPage({
+    cacheName: "qiqiyg-hotsale.html",
+    path: "categoryen_9879.html?path=0_9879",
+    collectionEn: "Hot Sale",
+    collectionRo: "Hot sale",
+    maxItems: 96,
+  }),
+  qiqiygPage({
+    cacheName: "qiqiyg-bikini.html",
+    path: "categoryen_58658.html?path=0_58658",
+    collectionEn: "Bikini & Swimwear",
+    collectionRo: "Bikini si swimwear",
+    category: "swimwear",
+    audience: "women",
+    maxItems: 80,
+  }),
+
+  qiqiygPage({ cacheName: "qiqiyg-dress-gucci-03.html", path: "categoryen_325949.html?path=0_170_325949", collectionEn: "Gucci Dresses", collectionRo: "Rochii Gucci", brand: "Gucci", category: "dresses", audience: "women", tags: ["modest"], maxItems: 80 }),
+  qiqiygPage({ cacheName: "qiqiyg-dress-gucci-02.html", path: "categoryen_223241.html?path=0_170_223241", collectionEn: "Gucci Dresses", collectionRo: "Rochii Gucci", brand: "Gucci", category: "dresses", audience: "women", tags: ["modest"], maxItems: 80 }),
+  qiqiygPage({ cacheName: "qiqiyg-dress-lv-04.html", path: "categoryen_340657.html?path=0_170_340657", collectionEn: "Louis Vuitton Dresses", collectionRo: "Rochii Louis Vuitton", brand: "Louis Vuitton", category: "dresses", audience: "women", tags: ["modest"], maxItems: 80 }),
+  qiqiygPage({ cacheName: "qiqiyg-dress-lv-03.html", path: "categoryen_304438.html?path=0_170_304438", collectionEn: "Louis Vuitton Dresses", collectionRo: "Rochii Louis Vuitton", brand: "Louis Vuitton", category: "dresses", audience: "women", tags: ["modest"], maxItems: 80 }),
+  qiqiygPage({ cacheName: "qiqiyg-dress-herve-26.html", path: "categoryen_344169.html?path=0_170_344169", collectionEn: "Herve Leger Dresses", collectionRo: "Rochii Herve Leger", brand: "Herve Leger", category: "dresses", audience: "women", tags: ["modest"], maxItems: 80 }),
+  qiqiygPage({ cacheName: "qiqiyg-dress-alexander-wang.html", path: "categoryen_132366.html?path=0_170_132366", collectionEn: "Alexander Wang Dresses", collectionRo: "Rochii Alexander Wang", brand: "Alexander Wang", category: "dresses", audience: "women", maxItems: 64 }),
+  qiqiygPage({ cacheName: "qiqiyg-dress-balmain-new.html", path: "categoryen_339020.html?path=0_170_339020", collectionEn: "Balmain Dresses", collectionRo: "Rochii Balmain", brand: "Balmain", category: "dresses", audience: "women", tags: ["modest"], maxItems: 64 }),
+  qiqiygPage({ cacheName: "qiqiyg-dress-burberry.html", path: "categoryen_135468.html?path=0_170_135468", collectionEn: "Burberry Dresses", collectionRo: "Rochii Burberry", brand: "Burberry", category: "dresses", audience: "women", tags: ["modest"], maxItems: 80 }),
+  qiqiygPage({ cacheName: "qiqiyg-dress-chanel-04.html", path: "categoryen_357814.html?path=0_170_357814", collectionEn: "Chanel Dresses", collectionRo: "Rochii Chanel", brand: "Chanel", category: "dresses", audience: "women", tags: ["modest"], maxItems: 96 }),
+  qiqiygPage({ cacheName: "qiqiyg-dress-chanel-03.html", path: "categoryen_339124.html?path=0_170_339124", collectionEn: "Chanel Dresses", collectionRo: "Rochii Chanel", brand: "Chanel", category: "dresses", audience: "women", tags: ["modest"], maxItems: 80 }),
+  qiqiygPage({ cacheName: "qiqiyg-dress-celine-new.html", path: "categoryen_327974.html?path=0_170_327974", collectionEn: "Celine Dresses", collectionRo: "Rochii Celine", brand: "Celine", category: "dresses", audience: "women", tags: ["modest"], maxItems: 80 }),
+  qiqiygPage({ cacheName: "qiqiyg-dress-dior-04.html", path: "categoryen_361787.html?path=0_170_361787", collectionEn: "Dior Dresses", collectionRo: "Rochii Dior", brand: "Dior", category: "dresses", audience: "women", tags: ["modest"], maxItems: 64 }),
+  qiqiygPage({ cacheName: "qiqiyg-dress-dior-03.html", path: "categoryen_341047.html?path=0_170_341047", collectionEn: "Dior Dresses", collectionRo: "Rochii Dior", brand: "Dior", category: "dresses", audience: "women", tags: ["modest"], maxItems: 80 }),
+  qiqiygPage({ cacheName: "qiqiyg-dress-fendi-new.html", path: "categoryen_254503.html?path=0_170_254503", collectionEn: "Fendi Dresses", collectionRo: "Rochii Fendi", brand: "Fendi", category: "dresses", audience: "women", tags: ["modest"], maxItems: 80 }),
+  qiqiygPage({ cacheName: "qiqiyg-dress-hermes.html", path: "categoryen_132372.html?path=0_170_132372", collectionEn: "Hermes Dresses", collectionRo: "Rochii Hermes", brand: "Hermes", category: "dresses", audience: "women", tags: ["modest"], maxItems: 64 }),
+  qiqiygPage({ cacheName: "qiqiyg-dress-loewe-02.html", path: "categoryen_340557.html?path=0_170_340557", collectionEn: "Loewe Dresses", collectionRo: "Rochii Loewe", brand: "Loewe", category: "dresses", audience: "women", tags: ["modest"], maxItems: 80 }),
+  qiqiygPage({ cacheName: "qiqiyg-dress-loro-piana.html", path: "categoryen_305600.html?path=0_170_305600", collectionEn: "Loro Piana Dresses", collectionRo: "Rochii Loro Piana", brand: "Loro Piana", category: "dresses", audience: "women", tags: ["modest"], maxItems: 64 }),
+  qiqiygPage({ cacheName: "qiqiyg-dress-miumiu-04.html", path: "categoryen_357202.html?path=0_170_357202", collectionEn: "Miu Miu Dresses", collectionRo: "Rochii Miu Miu", brand: "Miu Miu", category: "dresses", audience: "women", tags: ["modest"], maxItems: 96 }),
+  qiqiygPage({ cacheName: "qiqiyg-dress-miumiu-03.html", path: "categoryen_329885.html?path=0_170_329885", collectionEn: "Miu Miu Dresses", collectionRo: "Rochii Miu Miu", brand: "Miu Miu", category: "dresses", audience: "women", tags: ["modest"], maxItems: 80 }),
+  qiqiygPage({ cacheName: "qiqiyg-dress-prada-03.html", path: "categoryen_362590.html?path=0_170_362590", collectionEn: "Prada Dresses", collectionRo: "Rochii Prada", brand: "Prada", category: "dresses", audience: "women", tags: ["modest"], maxItems: 80 }),
+  qiqiygPage({ cacheName: "qiqiyg-dress-prada-0428.html", path: "categoryen_185007.html?path=0_170_185007", collectionEn: "Prada Dresses", collectionRo: "Rochii Prada", brand: "Prada", category: "dresses", audience: "women", tags: ["modest"], maxItems: 80 }),
+  qiqiygPage({ cacheName: "qiqiyg-dress-valentino.html", path: "categoryen_132375.html?path=0_170_132375", collectionEn: "Valentino Dresses", collectionRo: "Rochii Valentino", brand: "Valentino", category: "dresses", audience: "women", tags: ["modest"], maxItems: 80 }),
+  qiqiygPage({ cacheName: "qiqiyg-dress-versace.html", path: "categoryen_136116.html?path=0_170_136116", collectionEn: "Versace Dresses", collectionRo: "Rochii Versace", brand: "Versace", category: "dresses", audience: "women", tags: ["modest"], maxItems: 64 }),
+  qiqiygPage({ cacheName: "qiqiyg-dress-ysl.html", path: "categoryen_132365.html?path=0_170_132365", collectionEn: "Saint Laurent Dresses", collectionRo: "Rochii Saint Laurent", brand: "Saint Laurent", category: "dresses", audience: "women", tags: ["modest"], maxItems: 64 }),
+  qiqiygPage({ cacheName: "qiqiyg-dress-zimmermann-classic.html", path: "categoryen_132364.html?path=0_170_132364", collectionEn: "Zimmermann Dresses", collectionRo: "Rochii Zimmermann", brand: "Zimmermann", category: "dresses", audience: "women", tags: ["modest"], maxItems: 120 }),
+
+  qiqiygPage({ cacheName: "qiqiyg-bags-new-arrival.html", host: "https://bags.qiqiyg.com", path: "categoryen_29314.html?path=0_29314", collectionEn: "Bag New Arrivals", collectionRo: "Noutati genti", category: "bags", audience: "women", maxItems: 120 }),
+  qiqiygPage({ cacheName: "qiqiyg-bags-lv-original.html", host: "https://bags.qiqiyg.com", path: "categoryen_38931.html?path=0_38931", collectionEn: "Louis Vuitton Bags", collectionRo: "Genti Louis Vuitton", brand: "Louis Vuitton", category: "bags", audience: "women", maxItems: 100 }),
+  qiqiygPage({ cacheName: "qiqiyg-bags-lv-11.html", host: "https://bags.qiqiyg.com", path: "categoryen_6279.html?path=0_6279", collectionEn: "Louis Vuitton Bags", collectionRo: "Genti Louis Vuitton", brand: "Louis Vuitton", category: "bags", audience: "women", maxItems: 100 }),
+  qiqiygPage({ cacheName: "qiqiyg-bags-gucci-original.html", host: "https://bags.qiqiyg.com", path: "categoryen_41554.html?path=0_41554", collectionEn: "Gucci Bags", collectionRo: "Genti Gucci", brand: "Gucci", category: "bags", audience: "women", maxItems: 100 }),
+  qiqiygPage({ cacheName: "qiqiyg-bags-gucci-11.html", host: "https://bags.qiqiyg.com", path: "categoryen_31206.html?path=0_31206", collectionEn: "Gucci Bags", collectionRo: "Genti Gucci", brand: "Gucci", category: "bags", audience: "women", maxItems: 100 }),
+  qiqiygPage({ cacheName: "qiqiyg-bags-chanel-original.html", host: "https://bags.qiqiyg.com", path: "categoryen_42002.html?path=0_42002", collectionEn: "Chanel Bags", collectionRo: "Genti Chanel", brand: "Chanel", category: "bags", audience: "women", maxItems: 100 }),
+  qiqiygPage({ cacheName: "qiqiyg-bags-chanel-11.html", host: "https://bags.qiqiyg.com", path: "categoryen_6296.html?path=0_6296", collectionEn: "Chanel Bags", collectionRo: "Genti Chanel", brand: "Chanel", category: "bags", audience: "women", maxItems: 100 }),
+  qiqiygPage({ cacheName: "qiqiyg-bags-dior-original.html", host: "https://bags.qiqiyg.com", path: "categoryen_2410.html?path=0_2410", collectionEn: "Dior Bags", collectionRo: "Genti Dior", brand: "Dior", category: "bags", audience: "women", maxItems: 100 }),
+  qiqiygPage({ cacheName: "qiqiyg-bags-dior-11.html", host: "https://bags.qiqiyg.com", path: "categoryen_51031.html?path=0_51031", collectionEn: "Dior Bags", collectionRo: "Genti Dior", brand: "Dior", category: "bags", audience: "women", maxItems: 100 }),
+  qiqiygPage({ cacheName: "qiqiyg-bags-burberry.html", host: "https://bags.qiqiyg.com", path: "categoryen_11064.html?path=0_11064", collectionEn: "Burberry Bags", collectionRo: "Genti Burberry", brand: "Burberry", category: "bags", audience: "women", maxItems: 80 }),
+  qiqiygPage({ cacheName: "qiqiyg-bags-balenciaga.html", host: "https://bags.qiqiyg.com", path: "categoryen_11082.html?path=0_11082", collectionEn: "Balenciaga Bags", collectionRo: "Genti Balenciaga", brand: "Balenciaga", category: "bags", audience: "women", maxItems: 80 }),
+  qiqiygPage({ cacheName: "qiqiyg-bags-bottega.html", host: "https://bags.qiqiyg.com", path: "categoryen_11053.html?path=0_11053", collectionEn: "Bottega Veneta Bags", collectionRo: "Genti Bottega Veneta", brand: "Bottega Veneta", category: "bags", audience: "women", maxItems: 80 }),
+  qiqiygPage({ cacheName: "qiqiyg-bags-coach.html", host: "https://bags.qiqiyg.com", path: "categoryen_11068.html?path=0_11068", collectionEn: "Coach Bags", collectionRo: "Genti Coach", brand: "Coach", category: "bags", audience: "women", maxItems: 64 }),
+  qiqiygPage({ cacheName: "qiqiyg-bags-celine.html", host: "https://bags.qiqiyg.com", path: "categoryen_11072.html?path=0_11072", collectionEn: "Celine Bags", collectionRo: "Genti Celine", brand: "Celine", category: "bags", audience: "women", maxItems: 80 }),
+  qiqiygPage({ cacheName: "qiqiyg-bags-fendi.html", host: "https://bags.qiqiyg.com", path: "categoryen_2408.html?path=0_2408", collectionEn: "Fendi Bags", collectionRo: "Genti Fendi", brand: "Fendi", category: "bags", audience: "women", maxItems: 100 }),
+  qiqiygPage({ cacheName: "qiqiyg-bags-goyard.html", host: "https://bags.qiqiyg.com", path: "categoryen_23237.html?path=0_23237", collectionEn: "Goyard Bags", collectionRo: "Genti Goyard", brand: "Goyard", category: "bags", audience: "women", maxItems: 80 }),
+  qiqiygPage({ cacheName: "qiqiyg-bags-hermes-original.html", host: "https://bags.qiqiyg.com", path: "categoryen_43139.html?path=0_43139", collectionEn: "Hermes Bags", collectionRo: "Genti Hermes", brand: "Hermes", category: "bags", audience: "women", maxItems: 80 }),
+  qiqiygPage({ cacheName: "qiqiyg-bags-jacquemus.html", host: "https://bags.qiqiyg.com", path: "categoryen_48064.html?path=0_48064", collectionEn: "Jacquemus Bags", collectionRo: "Genti Jacquemus", brand: "Jacquemus", category: "bags", audience: "women", maxItems: 64 }),
+  qiqiygPage({ cacheName: "qiqiyg-bags-marc-jacobs.html", host: "https://bags.qiqiyg.com", path: "categoryen_37771.html?path=0_37771", collectionEn: "Marc Jacobs Bags", collectionRo: "Genti Marc Jacobs", brand: "Marc Jacobs", category: "bags", audience: "women", maxItems: 64 }),
+  qiqiygPage({ cacheName: "qiqiyg-bags-michael-kors.html", host: "https://bags.qiqiyg.com", path: "categoryen_136826.html?path=0_136826", collectionEn: "Michael Kors Bags", collectionRo: "Genti Michael Kors", brand: "Michael Kors", category: "bags", audience: "women", maxItems: 64 }),
+  qiqiygPage({ cacheName: "qiqiyg-bags-miumiu-current.html", host: "https://bags.qiqiyg.com", path: "categoryen_23240.html?path=0_23240", collectionEn: "Miu Miu Bags", collectionRo: "Genti Miu Miu", brand: "Miu Miu", category: "bags", audience: "women", maxItems: 100 }),
+  qiqiygPage({ cacheName: "qiqiyg-bags-ysl-current.html", host: "https://bags.qiqiyg.com", path: "categoryen_2409.html?path=0_2409", collectionEn: "Saint Laurent Bags", collectionRo: "Genti Saint Laurent", brand: "Saint Laurent", category: "bags", audience: "women", maxItems: 100 }),
+  qiqiygPage({ cacheName: "qiqiyg-bags-valentino.html", host: "https://bags.qiqiyg.com", path: "categoryen_1.html?path=0_1", collectionEn: "Valentino Bags", collectionRo: "Genti Valentino", brand: "Valentino", category: "bags", audience: "women", maxItems: 80 }),
+  qiqiygPage({ cacheName: "qiqiyg-bags-tory-burch.html", host: "https://bags.qiqiyg.com", path: "categoryen_23233.html?path=0_23233", collectionEn: "Tory Burch Bags", collectionRo: "Genti Tory Burch", brand: "Tory Burch", category: "bags", audience: "women", maxItems: 80 }),
+
+  qiqiygPage({ cacheName: "qiqiyg-shoes-new-arrival-products.html", host: "https://shoes.qiqiyg.com", path: "categoryen_355.html?path=0_355", collectionEn: "Shoe New Arrivals", collectionRo: "Noutati incaltaminte", category: "sneakers", maxItems: 120 }),
+  qiqiygPage({ cacheName: "qiqiyg-shoes-factory-b.html", host: "https://shoes.qiqiyg.com", path: "categoryen_367.html?path=0_367", collectionEn: "Factory B Shoes", collectionRo: "Incaltaminte Factory B", category: "sneakers", maxItems: 120 }),
+  qiqiygPage({ cacheName: "qiqiyg-shoes-factory-c.html", host: "https://shoes.qiqiyg.com", path: "categoryen_65136.html?path=0_65136", collectionEn: "Factory C Shoes", collectionRo: "Incaltaminte Factory C", category: "sneakers", maxItems: 120 }),
+  qiqiygPage({ cacheName: "qiqiyg-shoes-gucci.html", host: "https://shoes.qiqiyg.com", path: "categoryen_336.html?path=0_336", collectionEn: "Gucci Shoes", collectionRo: "Incaltaminte Gucci", brand: "Gucci", category: "sneakers", maxItems: 80 }),
+  qiqiygPage({ cacheName: "qiqiyg-shoes-lv.html", host: "https://shoes.qiqiyg.com", path: "categoryen_327.html?path=0_327", collectionEn: "Louis Vuitton Shoes", collectionRo: "Incaltaminte Louis Vuitton", brand: "Louis Vuitton", category: "sneakers", maxItems: 80 }),
+  qiqiygPage({ cacheName: "qiqiyg-shoes-balenciaga.html", host: "https://shoes.qiqiyg.com", path: "categoryen_304.html?path=0_304", collectionEn: "Balenciaga Shoes", collectionRo: "Incaltaminte Balenciaga", brand: "Balenciaga", category: "sneakers", maxItems: 80 }),
+  qiqiygPage({ cacheName: "qiqiyg-shoes-chanel.html", host: "https://shoes.qiqiyg.com", path: "categoryen_229.html?path=0_229", collectionEn: "Chanel Shoes", collectionRo: "Incaltaminte Chanel", brand: "Chanel", category: "sneakers", maxItems: 80 }),
+  qiqiygPage({ cacheName: "qiqiyg-shoes-dior.html", host: "https://shoes.qiqiyg.com", path: "categoryen_151.html?path=0_151", collectionEn: "Dior Shoes", collectionRo: "Incaltaminte Dior", brand: "Dior", category: "sneakers", maxItems: 80 }),
+  qiqiygPage({ cacheName: "qiqiyg-shoes-fendi.html", host: "https://shoes.qiqiyg.com", path: "categoryen_161.html?path=0_161", collectionEn: "Fendi Shoes", collectionRo: "Incaltaminte Fendi", brand: "Fendi", category: "sneakers", maxItems: 80 }),
+  qiqiygPage({ cacheName: "qiqiyg-shoes-ferragamo.html", host: "https://shoes.qiqiyg.com", path: "categoryen_123.html?path=0_123", collectionEn: "Ferragamo Shoes", collectionRo: "Incaltaminte Ferragamo", brand: "Ferragamo", category: "sneakers", maxItems: 64 }),
+  qiqiygPage({ cacheName: "qiqiyg-shoes-hermes.html", host: "https://shoes.qiqiyg.com", path: "categoryen_104.html?path=0_104", collectionEn: "Hermes Shoes", collectionRo: "Incaltaminte Hermes", brand: "Hermes", category: "sneakers", maxItems: 80 }),
+  qiqiygPage({ cacheName: "qiqiyg-shoes-louboutin.html", host: "https://shoes.qiqiyg.com", path: "categoryen_140.html?path=0_140", collectionEn: "Christian Louboutin Shoes", collectionRo: "Incaltaminte Christian Louboutin", brand: "Christian Louboutin", category: "sandals", maxItems: 64 }),
+  qiqiygPage({ cacheName: "qiqiyg-shoes-miumiu.html", host: "https://shoes.qiqiyg.com", path: "categoryen_84078.html?path=0_84078", collectionEn: "Miu Miu Shoes", collectionRo: "Incaltaminte Miu Miu", brand: "Miu Miu", category: "sneakers", maxItems: 80 }),
+  qiqiygPage({ cacheName: "qiqiyg-shoes-prada.html", host: "https://shoes.qiqiyg.com", path: "categoryen_92.html?path=0_92", collectionEn: "Prada Shoes", collectionRo: "Incaltaminte Prada", brand: "Prada", category: "sneakers", maxItems: 80 }),
+  qiqiygPage({ cacheName: "qiqiyg-shoes-ugg.html", host: "https://shoes.qiqiyg.com", path: "categoryen_28852.html?path=0_28852", collectionEn: "UGG Shoes", collectionRo: "Incaltaminte UGG", brand: "UGG", category: "boots", maxItems: 64 }),
+  qiqiygPage({ cacheName: "qiqiyg-shoes-valentino.html", host: "https://shoes.qiqiyg.com", path: "categoryen_56.html?path=0_56", collectionEn: "Valentino Shoes", collectionRo: "Incaltaminte Valentino", brand: "Valentino", category: "sneakers", maxItems: 80 }),
+  qiqiygPage({ cacheName: "qiqiyg-shoes-versace.html", host: "https://shoes.qiqiyg.com", path: "categoryen_72.html?path=0_72", collectionEn: "Versace Shoes", collectionRo: "Incaltaminte Versace", brand: "Versace", category: "sneakers", maxItems: 80 }),
+  qiqiygPage({ cacheName: "qiqiyg-shoes-ysl.html", host: "https://shoes.qiqiyg.com", path: "categoryen_84731.html?path=0_84731", collectionEn: "Saint Laurent Shoes", collectionRo: "Incaltaminte Saint Laurent", brand: "Saint Laurent", category: "sneakers", maxItems: 64 }),
+
+  qiqiygPage({ cacheName: "qiqiyg-acc-jewelry.html", host: "https://acc.qiqiyg.com", path: "categoryen_43569.html?path=0_43569", collectionEn: "Jewellery", collectionRo: "Bijuterii", category: "jewellery", maxItems: 160 }),
+  qiqiygPage({ cacheName: "qiqiyg-acc-glasses.html", host: "https://acc.qiqiyg.com", path: "categoryen_392.html?path=0_392", collectionEn: "Glasses", collectionRo: "Ochelari", category: "accessories", maxItems: 100 }),
+  qiqiygPage({ cacheName: "qiqiyg-acc-belts.html", host: "https://acc.qiqiyg.com", path: "categoryen_393.html?path=0_393", collectionEn: "Belts", collectionRo: "Curele", category: "accessories", maxItems: 140 }),
+  qiqiygPage({ cacheName: "qiqiyg-acc-watches.html", host: "https://acc.qiqiyg.com", path: "categoryen_383.html?path=0_383", collectionEn: "Watches", collectionRo: "Ceasuri", category: "watches", maxItems: 160 }),
+  qiqiygPage({ cacheName: "qiqiyg-acc-caps.html", host: "https://acc.qiqiyg.com", path: "categoryen_385.html?path=0_385", collectionEn: "Caps", collectionRo: "Sepci", category: "hats", maxItems: 100 }),
+  qiqiygPage({ cacheName: "qiqiyg-acc-bucket-hats.html", host: "https://acc.qiqiyg.com", path: "categoryen_384.html?path=0_384", collectionEn: "Bucket Hats", collectionRo: "Bucket hats", category: "hats", maxItems: 64 }),
+  qiqiygPage({ cacheName: "qiqiyg-acc-more-hats.html", host: "https://acc.qiqiyg.com", path: "categoryen_386.html?path=0_386", collectionEn: "More Hats", collectionRo: "Mai multe sepci", category: "hats", maxItems: 64 }),
+  qiqiygPage({ cacheName: "qiqiyg-acc-scarves.html", host: "https://acc.qiqiyg.com", path: "categoryen_390.html?path=0_390", collectionEn: "Scarves", collectionRo: "Esarfe", category: "accessories", maxItems: 100 }),
+  qiqiygPage({ cacheName: "qiqiyg-acc-hair.html", host: "https://acc.qiqiyg.com", path: "categoryen_121353.html?path=0_121353", collectionEn: "Hair Accessories", collectionRo: "Accesorii par", category: "accessories", maxItems: 64 }),
+  qiqiygPage({ cacheName: "qiqiyg-acc-perfume.html", host: "https://acc.qiqiyg.com", path: "categoryen_263724.html?path=0_263724", collectionEn: "Perfume", collectionRo: "Parfumuri", category: "accessories", maxItems: 48 }),
+  qiqiygPage({ cacheName: "qiqiyg-acc-gloves.html", host: "https://acc.qiqiyg.com", path: "categoryen_240222.html?path=0_240222", collectionEn: "Gloves", collectionRo: "Manusi", category: "accessories", maxItems: 64 }),
+  qiqiygPage({ cacheName: "qiqiyg-acc-ties.html", host: "https://acc.qiqiyg.com", path: "categoryen_144106.html?path=0_144106", collectionEn: "Ties", collectionRo: "Cravate", category: "accessories", maxItems: 64 }),
+  qiqiygPage({ cacheName: "qiqiyg-acc-sunglasses.html", host: "https://acc.qiqiyg.com", path: "categoryen_198277.html?path=0_198277", collectionEn: "Sunglasses", collectionRo: "Ochelari de soare", category: "accessories", maxItems: 64 }),
+  qiqiygPage({ cacheName: "qiqiyg-acc-socks.html", host: "https://acc.qiqiyg.com", path: "categoryen_380.html?path=0_380", collectionEn: "Socks", collectionRo: "Sosete", category: "accessories", maxItems: 36 }),
+];
+
 function yupooDefaultCategory(titleEn) {
   if (/boot|cold weather|ugg/i.test(titleEn)) {
     return "boots";
@@ -622,10 +805,17 @@ function qiqiygRoTitle(title) {
 
 async function readCachedOrFetch(cacheName, url) {
   const cachePath = path.join(workspaceDir, cacheName);
+  const shouldRefresh = process.env.REFRESH_SOURCE_CACHE === "1";
+
+  if (!shouldRefresh) {
+    try {
+      return await readFile(cachePath, "utf8");
+    } catch {
+      // Fetch below when the cache does not exist yet.
+    }
+  }
 
   try {
-    return await readFile(cachePath, "utf8");
-  } catch {
     const response = await fetch(url, {
       headers: {
         "user-agent":
@@ -640,6 +830,12 @@ async function readCachedOrFetch(cacheName, url) {
     const text = await response.text();
     await writeFile(cachePath, text, "utf8");
     return text;
+  } catch (error) {
+    try {
+      return await readFile(cachePath, "utf8");
+    } catch {
+      throw error;
+    }
   }
 }
 
@@ -776,6 +972,49 @@ function detectBrand(title, fallbackBrand = "") {
     [/saint laurent|ysl/, "Saint Laurent"],
     [/louis vuitton|\blv\b/, "Louis Vuitton"],
     [/miu miu|\b530miu\b|\b530 miu\b|\b530miu\b/, "Miu Miu"],
+    [/christian louboutin|louboutin/, "Christian Louboutin"],
+    [/alexander wang/, "Alexander Wang"],
+    [/alexander mcqueen|mcqueen/, "Alexander McQueen"],
+    [/herve leger|herve/, "Herve Leger"],
+    [/loro piana/, "Loro Piana"],
+    [/max mara/, "Max Mara"],
+    [/ralph\s*lauren|\bpolo\b/, "Ralph Lauren"],
+    [/lululemon/, "Lululemon"],
+    [/\balo\b/, "ALO"],
+    [/lacoste/, "Lacoste"],
+    [/juicy/, "Juicy Couture"],
+    [/moncler/, "Moncler"],
+    [/chrome hearts/, "Chrome Hearts"],
+    [/stone island/, "Stone Island"],
+    [/supreme/, "Supreme"],
+    [/off white|off-white/, "Off-White"],
+    [/\bboss\b/, "BOSS"],
+    [/\bck\b|calvin klein/, "Calvin Klein"],
+    [/kenzo/, "Kenzo"],
+    [/balmain/, "Balmain"],
+    [/dolce|gabbana|\bdg\b/, "Dolce & Gabbana"],
+    [/coach/, "Coach"],
+    [/goyard/, "Goyard"],
+    [/jacquemus/, "Jacquemus"],
+    [/marc jacobs/, "Marc Jacobs"],
+    [/michael kors/, "Michael Kors"],
+    [/tory burch/, "Tory Burch"],
+    [/bvlgari|bulgari/, "Bvlgari"],
+    [/delvaux/, "Delvaux"],
+    [/issey miyake/, "Issey Miyake"],
+    [/\bmcm\b/, "MCM"],
+    [/mont blanc|montblanc/, "Montblanc"],
+    [/rimowa/, "Rimowa"],
+    [/brunello cucinelli/, "Brunello Cucinelli"],
+    [/ferragamo/, "Ferragamo"],
+    [/bally/, "Bally"],
+    [/\bbape\b|aape/, "BAPE"],
+    [/berluti/, "Berluti"],
+    [/tom ford/, "Tom Ford"],
+    [/\btods?\b/, "Tods"],
+    [/\bdsq\b|dsquared/, "DSquared2"],
+    [/zegna/, "Zegna"],
+    [/moon boot/, "Moon Boot"],
     [/loewe/, "Loewe"],
     [/zimmermann/, "Zimmermann"],
     [/prada/, "Prada"],
@@ -817,6 +1056,15 @@ function detectCategory(title, fallbackCategory) {
   if (/bikini|swim/.test(normalized)) {
     return "swimwear";
   }
+  if (/\b(bucket hat|hat|cap|caps|beanie)\b/.test(normalized)) {
+    return "hats";
+  }
+  if (/watch/.test(normalized)) {
+    return "watches";
+  }
+  if (/jewelry|jewellery|bracelet|\bring\b|earring|necklace/.test(normalized)) {
+    return "jewellery";
+  }
   if (/dress|gown|midi|mini/.test(normalized)) {
     return "dresses";
   }
@@ -842,17 +1090,8 @@ function detectCategory(title, fallbackCategory) {
   if (/sneaker|trainer|runner|ballet|530|574|327|shoe/.test(normalized)) {
     return "sneakers";
   }
-  if (/watch/.test(normalized)) {
-    return "watches";
-  }
-  if (/jewelry|bracelet|ring|earring|necklace/.test(normalized)) {
-    return "jewellery";
-  }
   if (/scarf|belt|glasses|sunglasses|hair|perfume/.test(normalized)) {
     return "accessories";
-  }
-  if (/\b(hat|cap|caps|beanie)\b/.test(normalized)) {
-    return "hats";
   }
 
   return fallbackCategory;
@@ -1055,22 +1294,33 @@ function parseQiqiygSourceItems(pageConfig, html) {
 
   while ((match = regex.exec(html))) {
     const title = decodeHtml(match[4] || match[1]);
+    const photoCount = Number.parseInt(match[5], 10) || null;
+
+    if (
+      pageConfig.minPhotoCount &&
+      photoCount !== null &&
+      photoCount < pageConfig.minPhotoCount
+    ) {
+      continue;
+    }
+
     items.push(
       createSourceItem({
         source: pageConfig.source,
         title,
         href: absoluteUrl(pageConfig.url, match[2]),
         image: absoluteUrl(pageConfig.url, match[3]),
-        photoCount: Number.parseInt(match[5], 10) || null,
+        photoCount,
         sourceCollection: pageConfig.sourceCollection,
         defaultBrand: pageConfig.defaultBrand,
         defaultCategory: pageConfig.defaultCategory,
+        audience: pageConfig.audience,
         tags: [...pageConfig.tags],
       }),
     );
   }
 
-  return items;
+  return items.slice(0, pageConfig.maxItems ?? items.length);
 }
 
 function parseYupooSourceItems(pageConfig, html) {
@@ -1092,6 +1342,7 @@ function parseYupooSourceItems(pageConfig, html) {
         sourceCollection: pageConfig.sourceCollection,
         defaultBrand: pageConfig.defaultBrand,
         defaultCategory: pageConfig.defaultCategory,
+        audience: pageConfig.audience,
         tags: [...pageConfig.tags],
       }),
     );
@@ -1410,7 +1661,11 @@ async function main() {
 
   const sourceProducts = [];
   const productPages = uniqueBy(
-    [...SOURCE_PRODUCT_PAGES, ...EXTRA_SOURCE_PRODUCT_PAGES],
+    [
+      ...SOURCE_PRODUCT_PAGES,
+      ...QIQIYG_EXPANDED_PRODUCT_PAGES,
+      ...EXTRA_SOURCE_PRODUCT_PAGES,
+    ],
     (page) => `${page.source}:${page.url}`,
   );
 
