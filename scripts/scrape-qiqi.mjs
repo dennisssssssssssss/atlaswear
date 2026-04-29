@@ -3,8 +3,9 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const BASE_URL = "https://qiqiyg.com";
-const REQUEST_DELAY_MS = 600;
-const MAX_BATCH_PAGES = Number(process.env.QIQI_MAX_BATCH_PAGES ?? "3");
+const REQUEST_DELAY_MS = 800;
+const MAX_PRODUCTS_PER_CATEGORY = 200;
+const MAX_BATCH_PAGES = Number(process.env.QIQI_MAX_BATCH_PAGES ?? "0");
 const MAX_PRODUCTS = Number(process.env.QIQI_MAX_PRODUCTS ?? "0");
 const CATEGORY_IDS = new Set(
   (process.env.QIQI_CATEGORY_IDS ?? "")
@@ -128,6 +129,10 @@ function isGenericProductName(value) {
   return /^(product\s+info|product|details?)$/i.test(value.trim());
 }
 
+function isWeakProductName(value) {
+  return !value || isGenericProductName(value) || /^\d+$/.test(value.trim());
+}
+
 function extractImageFileName(src) {
   if (!src) {
     return "";
@@ -203,7 +208,8 @@ function extractProductListLinks(html, baseUrl) {
   let match;
 
   while ((match = productListRegex.exec(html)) !== null) {
-    links.set(match[2], absoluteUrl(match[2], baseUrl));
+    const url = absoluteUrl(match[2], baseUrl);
+    links.set(url, url);
   }
 
   return [...links.values()];
@@ -227,9 +233,11 @@ function extractCategoryLinks(html, baseUrl, currentCategoryId) {
       continue;
     }
 
-    links.set(href, {
+    const url = absoluteUrl(href, baseUrl);
+
+    links.set(url, {
       categoryId,
-      url: absoluteUrl(href, baseUrl),
+      url,
     });
   }
 
@@ -246,52 +254,93 @@ function getBatchPageUrls(categoryHtml, category) {
   }
 
   const batchId = batchIds.values().next().value ?? category.id;
+  const fallbackPageCount = MAX_BATCH_PAGES > 0 ? MAX_BATCH_PAGES : 1;
 
-  return Array.from({ length: MAX_BATCH_PAGES }, (_, index) => {
+  return Array.from({ length: fallbackPageCount }, (_, index) => {
     const page = index + 1;
     return `${BASE_URL}/producten_${batchId}_${page}.html`;
   });
 }
 
-async function discoverListPageUrls(categoryHtml, category, categoryUrl, depth = 0, visited = new Set()) {
-  const directProductListLinks = extractProductListLinks(categoryHtml, categoryUrl);
+async function* walkListPageUrls(categoryHtml, category, categoryUrl) {
+  const categoryStack = [
+    {
+      category,
+      depth: 0,
+      html: categoryHtml,
+      url: categoryUrl,
+    },
+  ];
+  const visitedCategoryUrls = new Set([categoryUrl]);
+  const yieldedListUrls = new Set();
+  let yieldedAny = false;
 
-  if (directProductListLinks.length > 0) {
-    return directProductListLinks.slice(0, MAX_BATCH_PAGES);
-  }
+  while (categoryStack.length > 0) {
+    const current = categoryStack.pop();
+    let currentHtml = current.html;
 
-  if (depth >= 4) {
-    return getBatchPageUrls(categoryHtml, category);
-  }
+    if (!currentHtml) {
+      try {
+        currentHtml = await fetchHtml(current.url);
+      } catch (error) {
+        console.warn(`Skipped category discovery ${current.url}: ${error.message}`);
+        continue;
+      }
+    }
 
-  const categoryLinks = extractCategoryLinks(categoryHtml, categoryUrl, category.id);
+    const directProductListLinks = extractProductListLinks(
+      currentHtml,
+      current.url,
+    );
 
-  for (const link of categoryLinks) {
-    if (visited.has(link.url)) {
+    if (directProductListLinks.length > 0) {
+      for (const listUrl of directProductListLinks) {
+        if (yieldedListUrls.has(listUrl)) {
+          continue;
+        }
+
+        if (MAX_BATCH_PAGES > 0 && yieldedListUrls.size >= MAX_BATCH_PAGES) {
+          return;
+        }
+
+        yieldedAny = true;
+        yieldedListUrls.add(listUrl);
+        yield listUrl;
+      }
+
       continue;
     }
 
-    visited.add(link.url);
+    if (current.depth >= 4) {
+      continue;
+    }
 
-    try {
-      const childHtml = await fetchHtml(link.url);
-      const childListUrls = await discoverListPageUrls(
-        childHtml,
-        { ...category, id: link.categoryId },
-        link.url,
-        depth + 1,
-        visited,
-      );
+    const categoryLinks = extractCategoryLinks(
+      currentHtml,
+      current.url,
+      current.category.id,
+    );
 
-      if (childListUrls.length > 0) {
-        return childListUrls.slice(0, MAX_BATCH_PAGES);
+    for (const link of categoryLinks.reverse()) {
+      if (visitedCategoryUrls.has(link.url)) {
+        continue;
       }
-    } catch (error) {
-      console.warn(`Skipped category discovery ${link.url}: ${error.message}`);
+
+      visitedCategoryUrls.add(link.url);
+
+      categoryStack.push({
+        category: { ...category, id: link.categoryId },
+        depth: current.depth + 1,
+        url: link.url,
+      });
     }
   }
 
-  return getBatchPageUrls(categoryHtml, category);
+  if (!yieldedAny) {
+    for (const listUrl of getBatchPageUrls(categoryHtml, category)) {
+      yield listUrl;
+    }
+  }
 }
 
 function extractProductLinks(html, pageUrl) {
@@ -316,10 +365,17 @@ function extractProductLinks(html, pageUrl) {
         body,
     );
 
+    const existingProduct = products.get(sourceId);
+    const mergedImageUrl = existingProduct?.imageUrl || imageUrl;
+    const mergedListName =
+      existingProduct?.listName && !isWeakProductName(existingProduct.listName)
+        ? existingProduct.listName
+        : listName;
+
     products.set(sourceId, {
       sourceId,
-      listName,
-      imageUrl,
+      listName: mergedListName,
+      imageUrl: mergedImageUrl,
       url: absoluteUrl(href, pageUrl),
     });
   }
@@ -480,13 +536,21 @@ function extractImageUrl(html, pageUrl) {
 
 async function scrapeProductGroup(productGroup, category) {
   const primaryLink = productGroup.productLinks[0];
-  const detailHtml = await fetchHtml(primaryLink.url);
-  const sourceName = extractProductName(
-    detailHtml,
-    productGroup.sourceName || primaryLink.listName,
-    productGroup.sourceId,
-  );
-  const detailImageUrls = extractImageUrls(detailHtml, primaryLink.url);
+  const shouldFetchDetail =
+    process.env.QIQI_FETCH_DETAILS === "1" ||
+    isWeakProductName(productGroup.sourceName) ||
+    productGroup.imageUrls.length === 0;
+  const detailHtml = shouldFetchDetail ? await fetchHtml(primaryLink.url) : "";
+  const sourceName = shouldFetchDetail
+    ? extractProductName(
+        detailHtml,
+        productGroup.sourceName || primaryLink.listName,
+        productGroup.sourceId,
+      )
+    : productGroup.sourceName;
+  const detailImageUrls = shouldFetchDetail
+    ? extractImageUrls(detailHtml, primaryLink.url)
+    : [];
   const imageUrls = [...productGroup.imageUrls, ...detailImageUrls].filter(
     (imageUrl, index, entries) => imageUrl && entries.indexOf(imageUrl) === index,
   );
@@ -508,7 +572,11 @@ async function scrapeProductGroup(productGroup, category) {
   };
 }
 
-async function scrapeCategory(category, maxProducts = Number.POSITIVE_INFINITY) {
+async function scrapeCategory(
+  category,
+  maxProducts = MAX_PRODUCTS_PER_CATEGORY,
+  onEntry = async () => {},
+) {
   if (category.skip) {
     console.log(`Skipping category ${category.id} ${category.name}`);
     return [];
@@ -527,11 +595,25 @@ async function scrapeCategory(category, maxProducts = Number.POSITIVE_INFINITY) 
     );
   }
 
-  const listUrls = await discoverListPageUrls(categoryHtml, category, categoryUrl);
   const entries = [];
+  let listPageCount = 0;
   const seenProductIds = new Set();
+  const finishCategory = (reason = "") => {
+    const suffix = reason ? ` (${reason})` : "";
 
-  for (const listUrl of listUrls) {
+    console.log(
+      `Finished ${category.name}: read ${listPageCount} list pages, collected ${entries.length} products${suffix}`,
+    );
+
+    return entries;
+  };
+
+  for await (const listUrl of walkListPageUrls(categoryHtml, category, categoryUrl)) {
+    if (entries.length >= maxProducts) {
+      return finishCategory("limit reached");
+    }
+
+    listPageCount += 1;
     console.log(`Reading list page ${listUrl}`);
 
     let listHtml = "";
@@ -548,7 +630,7 @@ async function scrapeCategory(category, maxProducts = Number.POSITIVE_INFINITY) 
 
     for (const productGroup of productGroups) {
       if (entries.length >= maxProducts) {
-        return entries;
+        return finishCategory("limit reached");
       }
 
       if (seenProductIds.has(productGroup.sourceId)) {
@@ -562,10 +644,11 @@ async function scrapeCategory(category, maxProducts = Number.POSITIVE_INFINITY) 
 
         if (entry) {
           entries.push(entry);
+          await onEntry(entry, category);
         }
 
         if (entries.length >= maxProducts) {
-          return entries;
+          return finishCategory("limit reached");
         }
       } catch (error) {
         console.warn(
@@ -575,7 +658,12 @@ async function scrapeCategory(category, maxProducts = Number.POSITIVE_INFINITY) 
     }
   }
 
-  return entries;
+  return finishCategory();
+}
+
+async function writeImportFile(entries, label = "checkpoint") {
+  await writeFile(outputPath, `${JSON.stringify(entries, null, 2)}\n`, "utf8");
+  console.log(`Saved ${label}: ${entries.length} products to ${outputPath}`);
 }
 
 async function main() {
@@ -586,34 +674,39 @@ async function main() {
   );
 
   for (const category of selectedCategories) {
-    const remainingLimit =
+    const remainingGlobalLimit =
       MAX_PRODUCTS > 0
         ? Math.max(MAX_PRODUCTS - allEntries.length, 0)
         : Number.POSITIVE_INFINITY;
 
-    if (remainingLimit === 0) {
+    if (remainingGlobalLimit === 0) {
       break;
     }
 
-    const entries = await scrapeCategory(category, remainingLimit);
+    await scrapeCategory(
+      category,
+      Math.min(MAX_PRODUCTS_PER_CATEGORY, remainingGlobalLimit),
+      async (entry) => {
+        if (MAX_PRODUCTS > 0 && allEntries.length >= MAX_PRODUCTS) {
+          return;
+        }
 
-    for (const entry of entries) {
-      if (MAX_PRODUCTS > 0 && allEntries.length >= MAX_PRODUCTS) {
-        break;
-      }
+        if (seenGlobalIds.has(entry.sourceId)) {
+          console.warn(`Skipped duplicate product ${entry.sourceId}`);
+          return;
+        }
 
-      if (seenGlobalIds.has(entry.sourceId)) {
-        console.warn(`Skipped duplicate product ${entry.sourceId}`);
-        continue;
-      }
+        seenGlobalIds.add(entry.sourceId);
+        allEntries.push(entry);
 
-      seenGlobalIds.add(entry.sourceId);
-      allEntries.push(entry);
-    }
+        if (allEntries.length % 50 === 0) {
+          await writeImportFile(allEntries, "checkpoint");
+        }
+      },
+    );
   }
 
-  await writeFile(outputPath, `${JSON.stringify(allEntries, null, 2)}\n`, "utf8");
-  console.log(`Wrote ${allEntries.length} products to ${outputPath}`);
+  await writeImportFile(allEntries, "final import");
 }
 
 if (process.env.QIQI_DEBUG_SAMPLE === "1") {
