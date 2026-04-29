@@ -1,29 +1,24 @@
 import { siteConfig } from "@/config/site";
-import { getCatalogCategoryLabel, type CatalogProduct } from "@/lib/catalog";
+import type { CatalogProduct } from "@/lib/catalog";
 import type { Lang } from "@/lib/i18n";
 
 const buildInquiryMessage = (
   product: CatalogProduct,
-  lang: Lang,
+  _lang: Lang,
   selectedSize?: string,
 ) => {
+  const productUrl = `https://atlaswear.ro/product/${encodeURIComponent(product.id)}`;
   const lines = [
-    lang === "ro"
-      ? "Salut, vreau sa comand acest produs:"
-      : "Hello, I want to order this item:",
-    `${product.brand} ${product.name}`,
-    `${lang === "ro" ? "Categorie" : "Category"}: ${getCatalogCategoryLabel(product.category, lang)}`,
+    "Buna ziua! Sunt interesat de:",
+    "",
+    `Produs: ${product.brand} ${product.name}`,
+    `Marime: ${selectedSize || "-"}`,
+    `Pret: ${product.priceRon} RON`,
+    `Link: ${productUrl}`,
+    "",
+    "Astept detalii despre disponibilitate si livrare.",
+    "Multumesc!",
   ];
-
-  if (selectedSize) {
-    lines.push(`${lang === "ro" ? "Marime" : "Size"}: ${selectedSize}`);
-  }
-
-  lines.push(
-    lang === "ro"
-      ? "Te rog sa imi confirmi disponibilitatea si termenul de livrare."
-      : "Please confirm availability and shipping timing.",
-  );
 
   return lines.join("\n");
 };

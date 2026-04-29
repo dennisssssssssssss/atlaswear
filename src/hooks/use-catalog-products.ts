@@ -1,9 +1,11 @@
 import { useMemo } from "react";
 
+import { products as curatedProducts } from "@/data/products";
 import { useSourceProducts } from "@/hooks/use-source-products";
 import {
   attachRelatedProducts,
   buildCatalogCategories,
+  mapProductToCatalogProduct,
   mapSourceProductToCatalogProduct,
 } from "@/lib/catalog";
 
@@ -12,7 +14,8 @@ export const useCatalogProducts = () => {
 
   const products = useMemo(() => {
     const baseProducts = (query.data ?? []).map(mapSourceProductToCatalogProduct);
-    return attachRelatedProducts(baseProducts);
+    const atlasProducts = curatedProducts.map(mapProductToCatalogProduct);
+    return attachRelatedProducts([...baseProducts, ...atlasProducts]);
   }, [query.data]);
 
   const categories = useMemo(

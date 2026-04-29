@@ -1,0 +1,532 @@
+import type { Product, ProductColor } from "@/data/products";
+import { localize } from "@/lib/i18n";
+import { estimateCompareAtRon, estimatePriceRon } from "@/lib/pricing";
+
+const addedAt = "2026-04-29";
+const clothingSizes = ["XS", "S", "M", "L", "XL", "XXL"];
+const sneakerSizes = ["39", "40", "41", "42", "43", "44", "45"];
+const oneSize = ["One Size"];
+
+const color = (
+  id: string,
+  en: string,
+  ro: string,
+  hex: string,
+): ProductColor => ({
+  id,
+  name: localize(en, ro),
+  hex,
+});
+
+type MenProductInput = Omit<
+  Product,
+  | "audience"
+  | "priceRon"
+  | "compareAtRon"
+  | "images"
+  | "imageFit"
+  | "addedAt"
+  | "authentic"
+  | "sealed"
+> & {
+  audience?: Product["audience"];
+  priceRon?: number;
+  compareAtRon?: number;
+  images?: string[];
+  imageFit?: Product["imageFit"];
+  addedAt?: string;
+  authentic?: true;
+  sealed?: true;
+};
+
+const product = (entry: MenProductInput): Product => {
+  const priceRon =
+    entry.priceRon ?? estimatePriceRon(entry.brand, entry.category);
+
+  return {
+    ...entry,
+    audience: entry.audience ?? "men",
+    priceRon,
+    compareAtRon: entry.compareAtRon ?? estimateCompareAtRon(priceRon),
+    images: entry.images ?? [],
+    imageFit: entry.imageFit ?? "cover",
+    addedAt: entry.addedAt ?? addedAt,
+    authentic: entry.authentic ?? true,
+    sealed: entry.sealed ?? true,
+  };
+};
+
+const sneakerDetails = [
+  localize("Authentic reseller stock", "Stoc autentic de reseller"),
+  localize("Brand new and sealed packaging", "Produs nou, in ambalaj sigilat"),
+  localize("Streetwear-ready everyday styling", "Usor de purtat in tinute streetwear"),
+];
+
+const clothingDetails = [
+  localize("Premium casual fit", "Fit casual premium"),
+  localize("Brand new and sealed packaging", "Produs nou, in ambalaj sigilat"),
+  localize("Easy wardrobe essential", "Piesa usor de integrat in garderoba"),
+];
+
+const accessoryDetails = [
+  localize("Authentic branded accessory", "Accesoriu branduit autentic"),
+  localize("Brand new and sealed packaging", "Produs nou, in ambalaj sigilat"),
+  localize("Clean finishing for daily wear", "Finisaj curat pentru purtare zilnica"),
+];
+
+const watchDetails = [
+  localize("Luxury watch selection", "Selectie de ceas luxury"),
+  localize("Brand new and sealed packaging", "Produs nou, in ambalaj sigilat"),
+  localize("Statement piece with strong resale appeal", "Piesa statement cu interes mare pe piata"),
+];
+
+export const menProducts: Product[] = [
+  product({
+    id: "air-jordan-1-retro-high-og-chicago",
+    name: 'Air Jordan 1 Retro High OG "Chicago"',
+    brand: "Jordan",
+    category: "men-sneakers",
+    description: localize(
+      "The Air Jordan 1 Retro High OG Chicago is an iconic red, white, and black sneaker with timeless court heritage. It is one of the most recognizable Jordan colorways for collectors and everyday streetwear.",
+      "Air Jordan 1 Retro High OG Chicago este un sneaker iconic rosu, alb si negru, cu heritage puternic de baschet. Este una dintre cele mai recunoscute colorway-uri Jordan pentru colectie si streetwear zilnic.",
+    ),
+    details: sneakerDetails,
+    sizes: sneakerSizes,
+    colors: [color("chicago", "Chicago Red", "Rosu Chicago", "#B91C1C")],
+    featured: true,
+    isNewArrival: true,
+    bestPrice: true,
+  }),
+  product({
+    id: "air-jordan-1-retro-high-og-royal-blue",
+    name: 'Air Jordan 1 Retro High OG "Royal Blue"',
+    brand: "Jordan",
+    category: "men-sneakers",
+    description: localize(
+      "The Air Jordan 1 Retro High OG Royal Blue brings the classic high-top shape in a sharp black and royal palette. It is a clean choice for collectors who want a bold but wearable Jordan.",
+      "Air Jordan 1 Retro High OG Royal Blue aduce silueta clasica high-top intr-o combinatie negru si albastru royal. Este o alegere curata pentru clienti care vor un Jordan vizibil, dar usor de purtat.",
+    ),
+    details: sneakerDetails,
+    sizes: sneakerSizes,
+    colors: [color("royal-blue", "Royal Blue", "Albastru royal", "#1D4ED8")],
+    featured: true,
+    isNewArrival: true,
+    bestPrice: true,
+  }),
+  product({
+    id: "air-jordan-4-retro-military-black",
+    name: 'Air Jordan 4 Retro "Military Black"',
+    brand: "Jordan",
+    category: "men-sneakers",
+    description: localize(
+      "The Air Jordan 4 Retro Military Black keeps the famous AJ4 shape in a crisp white, grey, and black finish. It works easily with neutral outfits and remains one of the most requested modern Jordan releases.",
+      "Air Jordan 4 Retro Military Black pastreaza silueta celebra AJ4 intr-un finisaj alb, gri si negru. Se potriveste foarte usor cu tinute neutre si ramane una dintre cele mai cautate lansari Jordan moderne.",
+    ),
+    details: sneakerDetails,
+    sizes: sneakerSizes,
+    colors: [color("military-black", "Military Black", "Negru military", "#111111")],
+    featured: true,
+    isNewArrival: true,
+    bestPrice: true,
+  }),
+  product({
+    id: "nike-air-force-1-low-white",
+    name: "Nike Air Force 1 Low White",
+    brand: "Nike",
+    category: "men-sneakers",
+    description: localize(
+      "The Nike Air Force 1 Low White is the clean everyday sneaker that fits almost any outfit. Its simple all-white leather look makes it a reliable staple for casual and smart-casual styling.",
+      "Nike Air Force 1 Low White este sneakerul curat de zi cu zi, usor de potrivit cu aproape orice tinuta. Designul simplu all-white din piele il face o piesa de baza pentru casual si smart-casual.",
+    ),
+    details: sneakerDetails,
+    sizes: sneakerSizes,
+    colors: [color("white", "White", "Alb", "#F8F8F4")],
+    featured: false,
+    isNewArrival: true,
+    bestPrice: true,
+  }),
+  product({
+    id: "nike-dunk-low-panda",
+    name: 'Nike Dunk Low "Panda"',
+    brand: "Nike",
+    category: "men-sneakers",
+    description: localize(
+      "The Nike Dunk Low Panda is a black and white classic with a simple shape and high everyday demand. It is easy to style, recognizable, and strong for customers who want a safe sneaker choice.",
+      "Nike Dunk Low Panda este un clasic alb-negru cu forma simpla si cerere mare de zi cu zi. Este usor de stilizat, recognoscibil si potrivit pentru clienti care vor o alegere sigura.",
+    ),
+    details: sneakerDetails,
+    sizes: sneakerSizes,
+    colors: [color("panda", "Black / White", "Negru / alb", "#111111")],
+    featured: false,
+    isNewArrival: true,
+    bestPrice: true,
+  }),
+  product({
+    id: "nike-air-max-90-infrared",
+    name: 'Nike Air Max 90 "Infrared"',
+    brand: "Nike",
+    category: "men-sneakers",
+    description: localize(
+      "The Nike Air Max 90 Infrared is a legendary runner with visible Air cushioning and a punch of red-orange detail. It brings retro energy while staying comfortable for daily wear.",
+      "Nike Air Max 90 Infrared este un runner legendar cu Air vizibil si detalii rosu-portocaliu. Are energie retro, dar ramane confortabil pentru purtare zilnica.",
+    ),
+    details: sneakerDetails,
+    sizes: sneakerSizes,
+    colors: [color("infrared", "Infrared", "Infrared", "#EF4444")],
+    featured: false,
+    isNewArrival: true,
+    bestPrice: true,
+  }),
+  product({
+    id: "adidas-samba-og-white-gum",
+    name: "Adidas Samba OG White Gum",
+    brand: "Adidas",
+    category: "men-sneakers",
+    description: localize(
+      "The Adidas Samba OG White Gum is a low-profile classic with a white leather upper and gum sole. It is a versatile lifestyle sneaker with strong demand across casual and minimal wardrobes.",
+      "Adidas Samba OG White Gum este un clasic low-profile cu piele alba si talpa gum. Este un sneaker lifestyle versatil, foarte cautat pentru tinute casual si minimaliste.",
+    ),
+    details: sneakerDetails,
+    sizes: sneakerSizes,
+    colors: [color("white-gum", "White / Gum", "Alb / gum", "#F5E6C8")],
+    featured: true,
+    isNewArrival: true,
+    bestPrice: true,
+  }),
+  product({
+    id: "adidas-campus-00s-grey",
+    name: "Adidas Campus 00s Grey",
+    brand: "Adidas",
+    category: "men-sneakers",
+    description: localize(
+      "The Adidas Campus 00s Grey has a chunky skate-inspired shape with soft grey suede energy. It is popular for relaxed streetwear outfits and clean everyday styling.",
+      "Adidas Campus 00s Grey are o silueta mai chunky, inspirata de skate, cu un vibe gri soft. Este popular pentru tinute streetwear relaxate si styling curat de zi cu zi.",
+    ),
+    details: sneakerDetails,
+    sizes: sneakerSizes,
+    colors: [color("grey", "Grey", "Gri", "#7A7A7A")],
+    featured: false,
+    isNewArrival: true,
+    bestPrice: true,
+  }),
+  product({
+    id: "off-white-out-of-office-ooo-white",
+    name: 'Off-White Out Of Office "OOO" White',
+    brand: "Off-White",
+    category: "men-sneakers",
+    description: localize(
+      "The Off-White Out Of Office OOO White blends court sneaker proportions with the brand's signature street-luxury identity. It is a premium white sneaker with a strong designer look.",
+      "Off-White Out Of Office OOO White combina proportii de sneaker court cu identitatea street-luxury a brandului. Este un sneaker alb premium, cu aspect designer puternic.",
+    ),
+    details: sneakerDetails,
+    sizes: sneakerSizes,
+    colors: [color("white", "White", "Alb", "#F8F8F4")],
+    featured: true,
+    isNewArrival: true,
+    bestPrice: true,
+  }),
+  product({
+    id: "balenciaga-triple-s-black",
+    name: "Balenciaga Triple S Black",
+    brand: "Balenciaga",
+    category: "men-sneakers",
+    description: localize(
+      "The Balenciaga Triple S Black is the oversized luxury sneaker that defined the chunky designer trend. Its all-black look keeps the silhouette bold while making it easier to wear.",
+      "Balenciaga Triple S Black este sneakerul luxury oversized care a definit trendul chunky designer. Varianta all-black pastreaza silueta puternica, dar o face mai usor de purtat.",
+    ),
+    details: sneakerDetails,
+    sizes: sneakerSizes,
+    colors: [color("black", "Black", "Negru", "#050505")],
+    featured: true,
+    isNewArrival: true,
+    bestPrice: false,
+  }),
+  product({
+    id: "ralph-lauren-custom-slim-fit-polo-white",
+    name: "Ralph Lauren Custom Slim Fit Polo White",
+    brand: "Ralph Lauren",
+    category: "polo-shirts",
+    description: localize(
+      "The Ralph Lauren Custom Slim Fit Polo White is a clean menswear essential with a tailored casual profile. It is easy to wear with jeans, chinos, or summer outfits.",
+      "Ralph Lauren Custom Slim Fit Polo White este o piesa esentiala pentru barbati, cu profil casual si fit curat. Se poarta usor cu jeans, chinos sau tinute de vara.",
+    ),
+    details: clothingDetails,
+    sizes: clothingSizes,
+    colors: [color("white", "White", "Alb", "#F8F8F4")],
+    featured: false,
+    isNewArrival: true,
+    bestPrice: true,
+  }),
+  product({
+    id: "ralph-lauren-custom-slim-fit-polo-navy",
+    name: "Ralph Lauren Custom Slim Fit Polo Navy",
+    brand: "Ralph Lauren",
+    category: "polo-shirts",
+    description: localize(
+      "The Ralph Lauren Custom Slim Fit Polo Navy brings the same polished polo fit in a versatile dark blue shade. It is a smart casual staple for everyday premium styling.",
+      "Ralph Lauren Custom Slim Fit Polo Navy aduce acelasi fit polo curat intr-o nuanta bleumarin versatila. Este o piesa smart casual pentru styling premium de zi cu zi.",
+    ),
+    details: clothingDetails,
+    sizes: clothingSizes,
+    colors: [color("navy", "Navy", "Bleumarin", "#111827")],
+    featured: false,
+    isNewArrival: true,
+    bestPrice: true,
+  }),
+  product({
+    id: "lacoste-l1212-polo-white",
+    name: "Lacoste L.12.12 Polo White",
+    brand: "Lacoste",
+    category: "polo-shirts",
+    description: localize(
+      "The Lacoste L.12.12 Polo White is a classic tennis-inspired polo with a crisp and timeless look. It is simple, recognizable, and easy to style in warm-weather outfits.",
+      "Lacoste L.12.12 Polo White este un polo clasic inspirat de tenis, cu aspect curat si atemporal. Este simplu, recognoscibil si usor de purtat in tinute de sezon cald.",
+    ),
+    details: clothingDetails,
+    sizes: clothingSizes,
+    colors: [color("white", "White", "Alb", "#F8F8F4")],
+    featured: false,
+    isNewArrival: true,
+    bestPrice: true,
+  }),
+  product({
+    id: "lacoste-l1212-polo-black",
+    name: "Lacoste L.12.12 Polo Black",
+    brand: "Lacoste",
+    category: "polo-shirts",
+    description: localize(
+      "The Lacoste L.12.12 Polo Black keeps the classic crocodile polo feel in a refined dark finish. It is a reliable option for clean casual and smart-casual looks.",
+      "Lacoste L.12.12 Polo Black pastreaza feeling-ul clasic al polo-ului cu crocodil intr-un finisaj inchis, rafinat. Este o optiune sigura pentru look-uri casual curate si smart-casual.",
+    ),
+    details: clothingDetails,
+    sizes: clothingSizes,
+    colors: [color("black", "Black", "Negru", "#050505")],
+    featured: false,
+    isNewArrival: true,
+    bestPrice: true,
+  }),
+  product({
+    id: "moncler-logo-polo-white",
+    name: "Moncler Logo Polo White",
+    brand: "Moncler",
+    category: "polo-shirts",
+    description: localize(
+      "The Moncler Logo Polo White is a premium polo with a clean designer finish and subtle branding. It fits customers who want a simple piece with a luxury signal.",
+      "Moncler Logo Polo White este un polo premium cu finisaj designer curat si branding discret. Se potriveste clientilor care vor o piesa simpla, dar cu semnal luxury.",
+    ),
+    details: clothingDetails,
+    sizes: clothingSizes,
+    colors: [color("white", "White", "Alb", "#F8F8F4")],
+    featured: true,
+    isNewArrival: true,
+    bestPrice: true,
+  }),
+  product({
+    id: "stone-island-compass-patch-tee-white",
+    name: "Stone Island Compass Patch Tee White",
+    brand: "Stone Island",
+    category: "clothing",
+    description: localize(
+      "The Stone Island Compass Patch Tee White is a clean premium T-shirt with the brand's recognizable badge identity. It is simple, versatile, and strong for casual streetwear.",
+      "Stone Island Compass Patch Tee White este un tricou premium curat, cu identitatea recognoscibila a badge-ului Stone Island. Este simplu, versatil si foarte bun pentru streetwear casual.",
+    ),
+    details: clothingDetails,
+    sizes: clothingSizes,
+    colors: [color("white", "White", "Alb", "#F8F8F4")],
+    featured: false,
+    isNewArrival: true,
+    bestPrice: true,
+  }),
+  product({
+    id: "stone-island-compass-patch-tee-black",
+    name: "Stone Island Compass Patch Tee Black",
+    brand: "Stone Island",
+    category: "clothing",
+    description: localize(
+      "The Stone Island Compass Patch Tee Black is a premium everyday tee with a darker, sharper streetwear feel. It keeps the look minimal while carrying strong brand recognition.",
+      "Stone Island Compass Patch Tee Black este un tricou premium de zi cu zi, cu feeling streetwear mai inchis si mai sharp. Pastreaza look-ul minimalist, dar cu recunoastere puternica de brand.",
+    ),
+    details: clothingDetails,
+    sizes: clothingSizes,
+    colors: [color("black", "Black", "Negru", "#050505")],
+    featured: false,
+    isNewArrival: true,
+    bestPrice: true,
+  }),
+  product({
+    id: "off-white-arrow-hoodie-black",
+    name: "Off-White Arrow Hoodie Black",
+    brand: "Off-White",
+    category: "hoodies",
+    description: localize(
+      "The Off-White Arrow Hoodie Black is a street-luxury hoodie with bold back graphics and an easy black base. It is a strong piece for customers who want visible designer identity.",
+      "Off-White Arrow Hoodie Black este un hoodie street-luxury cu grafica puternica pe spate si baza neagra usor de purtat. Este potrivit pentru clienti care vor identitate designer vizibila.",
+    ),
+    details: clothingDetails,
+    sizes: clothingSizes,
+    colors: [color("black", "Black", "Negru", "#050505")],
+    featured: true,
+    isNewArrival: true,
+    bestPrice: true,
+  }),
+  product({
+    id: "balenciaga-bb-logo-hoodie-black",
+    name: "Balenciaga BB Logo Hoodie Black",
+    brand: "Balenciaga",
+    category: "hoodies",
+    description: localize(
+      "The Balenciaga BB Logo Hoodie Black is a premium oversized hoodie with a clean logo-focused design. It gives a designer streetwear look without needing a loud color.",
+      "Balenciaga BB Logo Hoodie Black este un hoodie premium oversized cu design curat bazat pe logo. Ofera un look designer streetwear fara sa aiba nevoie de o culoare puternica.",
+    ),
+    details: clothingDetails,
+    sizes: clothingSizes,
+    colors: [color("black", "Black", "Negru", "#050505")],
+    featured: true,
+    isNewArrival: true,
+    bestPrice: false,
+  }),
+  product({
+    id: "nike-air-cap-black",
+    name: "Nike Air Cap Black",
+    brand: "Nike",
+    category: "caps",
+    description: localize(
+      "The Nike Air Cap Black is a simple branded cap for everyday athletic and casual outfits. It is lightweight, clean, and easy to pair with sneakers.",
+      "Nike Air Cap Black este o sapca simpla de brand pentru tinute atletice si casual de zi cu zi. Este usoara, curata si usor de combinat cu sneakers.",
+    ),
+    details: accessoryDetails,
+    sizes: oneSize,
+    colors: [color("black", "Black", "Negru", "#050505")],
+    featured: false,
+    isNewArrival: true,
+    bestPrice: true,
+  }),
+  product({
+    id: "jordan-jumpman-cap-black",
+    name: "Jordan Jumpman Cap Black",
+    brand: "Jordan",
+    category: "caps",
+    description: localize(
+      "The Jordan Jumpman Cap Black is a clean cap with iconic basketball branding. It works well with Jordan sneakers and relaxed streetwear outfits.",
+      "Jordan Jumpman Cap Black este o sapca curata cu branding iconic de baschet. Merge foarte bine cu sneakers Jordan si tinute streetwear relaxate.",
+    ),
+    details: accessoryDetails,
+    sizes: oneSize,
+    colors: [color("black", "Black", "Negru", "#050505")],
+    featured: false,
+    isNewArrival: true,
+    bestPrice: true,
+  }),
+  product({
+    id: "gucci-gg-canvas-baseball-cap-beige",
+    name: "Gucci GG Canvas Baseball Cap Beige",
+    brand: "Gucci",
+    category: "caps",
+    description: localize(
+      "The Gucci GG Canvas Baseball Cap Beige is a luxury cap with the house's signature canvas pattern. It adds a clear designer accent to simple outfits.",
+      "Gucci GG Canvas Baseball Cap Beige este o sapca luxury cu pattern-ul canvas semnatura al casei. Adauga un accent designer clar tinutelor simple.",
+    ),
+    details: accessoryDetails,
+    sizes: oneSize,
+    colors: [color("beige", "Beige", "Bej", "#C7A879")],
+    featured: true,
+    isNewArrival: true,
+    bestPrice: false,
+  }),
+  product({
+    id: "gucci-gg0061s-square-sunglasses-black",
+    name: "Gucci GG0061S Square Sunglasses Black",
+    brand: "Gucci",
+    category: "sunglasses",
+    description: localize(
+      "The Gucci GG0061S Square Sunglasses Black are bold designer sunglasses with a clean square shape. They bring a luxury finish to summer and travel outfits.",
+      "Gucci GG0061S Square Sunglasses Black sunt ochelari designer cu forma patrata curata si prezenta puternica. Adauga un finisaj luxury tinutelor de vara si travel.",
+    ),
+    details: accessoryDetails,
+    sizes: oneSize,
+    colors: [color("black", "Black", "Negru", "#050505")],
+    featured: true,
+    isNewArrival: true,
+    bestPrice: false,
+  }),
+  product({
+    id: "dior-blacksuit-ri-sunglasses",
+    name: "Dior BlackSuit RI Sunglasses",
+    brand: "Dior",
+    category: "sunglasses",
+    description: localize(
+      "The Dior BlackSuit RI Sunglasses offer a refined designer frame with a sleek black finish. They are understated, polished, and easy to wear with premium casual looks.",
+      "Dior BlackSuit RI Sunglasses ofera o rama designer rafinata cu finisaj negru elegant. Sunt discreti, finisati si usor de purtat cu tinute premium casual.",
+    ),
+    details: accessoryDetails,
+    sizes: oneSize,
+    colors: [color("black", "Black", "Negru", "#050505")],
+    featured: true,
+    isNewArrival: true,
+    bestPrice: false,
+  }),
+  product({
+    id: "versace-ve2262-medusa-biggie-sunglasses-gold",
+    name: "Versace VE2262 Medusa Biggie Sunglasses Gold",
+    brand: "Versace",
+    category: "sunglasses",
+    description: localize(
+      "The Versace VE2262 Medusa Biggie Sunglasses Gold are statement eyewear with a bold metal finish and recognizable Versace attitude. They are made for customers who want visible luxury.",
+      "Versace VE2262 Medusa Biggie Sunglasses Gold sunt ochelari statement cu finisaj metalic puternic si atitudine Versace recognoscibila. Sunt pentru clienti care vor luxury vizibil.",
+    ),
+    details: accessoryDetails,
+    sizes: oneSize,
+    colors: [color("gold", "Gold", "Auriu", "#D4AF37")],
+    featured: false,
+    isNewArrival: true,
+    bestPrice: false,
+  }),
+  product({
+    id: "rolex-submariner-date-black-dial",
+    name: "Rolex Submariner Date Black Dial",
+    brand: "Rolex",
+    category: "men-watches",
+    description: localize(
+      "The Rolex Submariner Date Black Dial is one of the most iconic luxury dive watches in the world. Its black dial and steel profile make it a timeless statement piece.",
+      "Rolex Submariner Date Black Dial este unul dintre cele mai iconice ceasuri luxury de diving din lume. Cadranul negru si profilul din otel il fac o piesa statement atemporala.",
+    ),
+    details: watchDetails,
+    sizes: oneSize,
+    colors: [color("black-steel", "Black / Steel", "Negru / otel", "#111111")],
+    featured: true,
+    isNewArrival: true,
+    bestPrice: false,
+  }),
+  product({
+    id: "rolex-datejust-41-silver-dial",
+    name: "Rolex Datejust 41 Silver Dial",
+    brand: "Rolex",
+    category: "men-watches",
+    description: localize(
+      "The Rolex Datejust 41 Silver Dial is a refined everyday luxury watch with a clean silver presence. It balances formal style and daily wearability better than almost any classic watch.",
+      "Rolex Datejust 41 Silver Dial este un ceas luxury rafinat pentru zi cu zi, cu prezenta argintie curata. Echilibreaza stilul formal si purtarea zilnica mai bine decat aproape orice ceas clasic.",
+    ),
+    details: watchDetails,
+    sizes: oneSize,
+    colors: [color("silver", "Silver", "Argintiu", "#C0C0C0")],
+    featured: true,
+    isNewArrival: true,
+    bestPrice: false,
+  }),
+  product({
+    id: "audemars-piguet-royal-oak-black",
+    name: "Audemars Piguet Royal Oak Black",
+    brand: "Audemars Piguet",
+    category: "men-watches",
+    description: localize(
+      "The Audemars Piguet Royal Oak Black is a luxury sports watch with an unmistakable integrated bracelet silhouette. It is a high-impact piece for customers who want a rare and premium look.",
+      "Audemars Piguet Royal Oak Black este un ceas sport luxury cu silueta integrata de bratara, imediat recognoscibila. Este o piesa cu impact mare pentru clienti care vor un look rar si premium.",
+    ),
+    details: watchDetails,
+    sizes: oneSize,
+    colors: [color("black", "Black", "Negru", "#050505")],
+    featured: true,
+    isNewArrival: true,
+    bestPrice: false,
+  }),
+];

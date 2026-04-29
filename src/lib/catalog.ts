@@ -3,6 +3,7 @@ import {
   type SourceCategory,
   type SourceProduct,
 } from "@/data/source-products";
+import type { Product } from "@/data/products";
 import {
   getLocalizedText,
   localize,
@@ -62,6 +63,14 @@ export const catalogCategoryOrder: SourceCategory[] = [
   "hats",
   "watches",
   "jewellery",
+  "polo-shirts",
+  "hoodies",
+  "caps",
+  "sunglasses",
+  "men-sneakers",
+  "men-watches",
+  "jackets",
+  "pants",
 ];
 
 const categoryPriceBands: Record<SourceCategory, [number, number]> = {
@@ -77,6 +86,14 @@ const categoryPriceBands: Record<SourceCategory, [number, number]> = {
   hats: [49, 149],
   watches: [199, 699],
   jewellery: [49, 249],
+  "polo-shirts": [149, 349],
+  hoodies: [249, 599],
+  caps: [89, 249],
+  sunglasses: [149, 699],
+  "men-sneakers": [299, 1199],
+  "men-watches": [699, 3999],
+  jackets: [299, 899],
+  pants: [149, 499],
 };
 
 const compareMultipliers: Record<SourceCategory, number> = {
@@ -92,6 +109,14 @@ const compareMultipliers: Record<SourceCategory, number> = {
   hats: 1.5,
   watches: 1.85,
   jewellery: 1.65,
+  "polo-shirts": 1.65,
+  hoodies: 1.7,
+  caps: 1.55,
+  sunglasses: 1.7,
+  "men-sneakers": 1.75,
+  "men-watches": 1.9,
+  jackets: 1.75,
+  pants: 1.65,
 };
 
 const bestPriceCaps: Record<SourceCategory, number> = {
@@ -107,6 +132,14 @@ const bestPriceCaps: Record<SourceCategory, number> = {
   hats: 99,
   watches: 449,
   jewellery: 149,
+  "polo-shirts": 249,
+  hoodies: 399,
+  caps: 179,
+  sunglasses: 399,
+  "men-sneakers": 699,
+  "men-watches": 2499,
+  jackets: 599,
+  pants: 299,
 };
 
 const featuredCategoryPriority: Record<SourceCategory, number> = {
@@ -122,6 +155,14 @@ const featuredCategoryPriority: Record<SourceCategory, number> = {
   swimwear: 9,
   accessories: 10,
   hats: 11,
+  "men-sneakers": 12,
+  "polo-shirts": 13,
+  hoodies: 14,
+  jackets: 15,
+  pants: 16,
+  caps: 17,
+  sunglasses: 18,
+  "men-watches": 19,
 };
 
 const storefrontFeaturedCategories = new Set<SourceCategory>([
@@ -134,6 +175,14 @@ const storefrontFeaturedCategories = new Set<SourceCategory>([
   "boots",
   "watches",
   "jewellery",
+  "men-sneakers",
+  "polo-shirts",
+  "hoodies",
+  "jackets",
+  "pants",
+  "caps",
+  "sunglasses",
+  "men-watches",
 ]);
 
 const categoryNotes: Record<SourceCategory, LocalizedText> = {
@@ -184,6 +233,38 @@ const categoryNotes: Record<SourceCategory, LocalizedText> = {
   jewellery: localize(
     "elevated jewellery choices for daily styling",
     "bijuterii elegante pentru styling zilnic",
+  ),
+  "polo-shirts": localize(
+    "classic polo styles with strong everyday demand",
+    "tricouri polo clasice, cu cerere buna pentru purtare zilnica",
+  ),
+  hoodies: localize(
+    "premium hoodies with strong streetwear appeal",
+    "hanorace premium cu appeal puternic streetwear",
+  ),
+  caps: localize(
+    "caps that finish casual outfits cleanly",
+    "sepci care completeaza curat tinutele casual",
+  ),
+  sunglasses: localize(
+    "sunglasses with a polished designer finish",
+    "ochelari de soare cu finisaj designer curat",
+  ),
+  "men-sneakers": localize(
+    "men's sneakers with high daily demand",
+    "sneakers pentru barbati cu cerere mare de zi cu zi",
+  ),
+  "men-watches": localize(
+    "men's watches with a stronger luxury presence",
+    "ceasuri pentru barbati cu prezenta luxury mai puternica",
+  ),
+  jackets: localize(
+    "outerwear pieces with practical premium value",
+    "piese outerwear cu valoare premium practica",
+  ),
+  pants: localize(
+    "pants selected for clean everyday styling",
+    "pantaloni selectati pentru styling curat de zi cu zi",
   ),
 };
 
@@ -259,6 +340,14 @@ const categoryNouns: Record<SourceCategory, LocalizedText> = {
   hats: localize("Hat", "Sapca"),
   watches: localize("Watch", "Ceas"),
   jewellery: localize("Jewellery", "Bijuterie"),
+  "polo-shirts": localize("Polo Shirt", "Tricou polo"),
+  hoodies: localize("Hoodie", "Hanorac"),
+  caps: localize("Cap", "Sapca"),
+  sunglasses: localize("Sunglasses", "Ochelari de soare"),
+  "men-sneakers": localize("Sneaker", "Sneaker"),
+  "men-watches": localize("Watch", "Ceas"),
+  jackets: localize("Jacket", "Jacheta"),
+  pants: localize("Pants", "Pantaloni"),
 };
 
 const getDisplayName = (product: SourceProduct, brand: string) => {
@@ -549,6 +638,35 @@ export const mapSourceProductToCatalogProduct = (
     audience: product.audience ?? "women",
     sourcePriceRon,
     priceConfidence,
+  };
+};
+
+export const mapProductToCatalogProduct = (product: Product): CatalogProduct => {
+  const collectionLabel = localize("ATLAS Curated Catalog", "Catalog curatat ATLAS");
+
+  return {
+    id: product.id,
+    name: product.name,
+    brand: product.brand,
+    category: product.category,
+    description: product.description,
+    details: product.details,
+    priceRon: product.priceRon,
+    compareAtRon: product.compareAtRon ?? roundRetailPrice(product.priceRon * 1.75),
+    images: product.images,
+    imageFit: product.imageFit,
+    sizes: product.sizes,
+    sizeLabel: product.sizes.join(", "),
+    featured: product.featured,
+    bestPrice: product.bestPrice,
+    photoCount: product.images.length || null,
+    sourceCollection: collectionLabel,
+    collectionKey: [product.category, product.brand, "ATLAS Curated Catalog"].join("::"),
+    originalTitle: product.name,
+    relatedProductIds: [],
+    audience: product.audience,
+    sourcePriceRon: null,
+    priceConfidence: "estimated",
   };
 };
 

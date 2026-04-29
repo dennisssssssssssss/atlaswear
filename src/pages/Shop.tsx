@@ -6,6 +6,14 @@ import { motion } from "framer-motion";
 import ProductCard from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
 import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import {
   type SourceCategory,
   type SourceProductAudience,
 } from "@/data/source-products";
@@ -47,6 +55,7 @@ const Shop = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { products, categories, isLoading, isError } = useCatalogProducts();
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   const activeCategory = searchParams.get("category") as SourceCategory | null;
   const activeBrand = searchParams.get("brand");
@@ -102,6 +111,12 @@ const Shop = () => {
 
   const visibleProducts = filteredProducts.slice(0, visibleCount);
   const hasMoreProducts = filteredProducts.length > visibleCount;
+  const activeFilterCount = [
+    activeAudience,
+    activeBrand,
+    activeCategory,
+    activeSort !== "featured" ? activeSort : null,
+  ].filter(Boolean).length;
 
   const updateParam = (key: string, value?: string) => {
     const nextParams = new URLSearchParams(searchParams);
@@ -114,6 +129,151 @@ const Shop = () => {
 
     setSearchParams(nextParams);
   };
+
+  const filterButtonClass =
+    "min-h-11 rounded-full border px-4 py-2 text-xs uppercase tracking-[0.2em] transition-colors";
+
+  const renderFilterControls = (sortId: string) => (
+    <div className="grid gap-8 xl:grid-cols-[0.85fr_1fr_1fr_260px]">
+      <div>
+        <p className="text-xs uppercase tracking-[0.28em] text-gold">
+          {t("Audience", "Public")}
+        </p>
+        <div className="mt-4 flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => updateParam("audience")}
+            className={cn(
+              filterButtonClass,
+              !activeAudience
+                ? "border-gold bg-gold text-primary-foreground"
+                : "border-border text-muted-foreground hover:text-foreground",
+            )}
+          >
+            {t("common.all")}
+          </button>
+          {audienceOptions.map((audience) => (
+            <button
+              key={audience.id}
+              type="button"
+              onClick={() => updateParam("audience", audience.id)}
+              className={cn(
+                filterButtonClass,
+                activeAudience === audience.id
+                  ? "border-gold bg-gold text-primary-foreground"
+                  : "border-border text-muted-foreground hover:text-foreground",
+              )}
+            >
+              {t(audience.labelEn, audience.labelRo)}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <p className="text-xs uppercase tracking-[0.28em] text-gold">
+          {t("shop.brand")}
+        </p>
+        <div className="mt-4 flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => updateParam("brand")}
+            className={cn(
+              filterButtonClass,
+              !activeBrand
+                ? "border-gold bg-gold text-primary-foreground"
+                : "border-border text-muted-foreground hover:text-foreground",
+            )}
+          >
+            {t("common.all")}
+          </button>
+          {availableBrands.map((brand) => (
+            <button
+              key={brand}
+              type="button"
+              onClick={() =>
+                updateParam("brand", activeBrand === brand ? undefined : brand)
+              }
+              className={cn(
+                filterButtonClass,
+                activeBrand === brand
+                  ? "border-gold bg-gold text-primary-foreground"
+                  : "border-border text-muted-foreground hover:text-foreground",
+              )}
+            >
+              {brand}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <p className="text-xs uppercase tracking-[0.28em] text-gold">
+          {t("shop.category")}
+        </p>
+        <div className="mt-4 flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => updateParam("category")}
+            className={cn(
+              filterButtonClass,
+              !activeCategory
+                ? "border-gold bg-gold text-primary-foreground"
+                : "border-border text-muted-foreground hover:text-foreground",
+            )}
+          >
+            {t("common.all")}
+          </button>
+          {categories.map((category) => (
+            <button
+              key={category.id}
+              type="button"
+              onClick={() => updateParam("category", category.id)}
+              className={cn(
+                filterButtonClass,
+                activeCategory === category.id
+                  ? "border-gold bg-gold text-primary-foreground"
+                  : "border-border text-muted-foreground hover:text-foreground",
+              )}
+            >
+              {getCatalogCategoryLabel(category.id, lang)}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <label
+          htmlFor={sortId}
+          className="text-xs uppercase tracking-[0.28em] text-gold"
+        >
+          {t("Sort by", "Sorteaza dupa")}
+        </label>
+        <select
+          id={sortId}
+          value={activeSort}
+          onChange={(event) => updateParam("sort", event.target.value)}
+          className="mt-4 h-11 w-full rounded-xl border border-border bg-background px-4 text-sm text-foreground outline-none transition-colors focus:border-gold"
+        >
+          <option value="featured">
+            {t("Recommended", "Recomandate")}
+          </option>
+          <option value="price-asc">
+            {t("Price: low to high", "Pret: crescator")}
+          </option>
+          <option value="price-desc">
+            {t("Price: high to low", "Pret: descrescator")}
+          </option>
+          <option value="brand-asc">
+            {t("Brand: A to Z", "Brand: A-Z")}
+          </option>
+          <option value="name-asc">
+            {t("Name: A to Z", "Nume: A-Z")}
+          </option>
+        </select>
+      </div>
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-background px-4 pb-20 pt-32 text-foreground">
@@ -134,149 +294,11 @@ const Shop = () => {
           </p>
         </motion.div>
 
-        <div className="mt-10 rounded-[2rem] border border-border bg-card p-6">
-          <div className="grid gap-8 xl:grid-cols-[0.85fr_1fr_1fr_260px]">
-            <div>
-              <p className="text-xs uppercase tracking-[0.28em] text-gold">
-                {t("Audience", "Public")}
-              </p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                <button
-                  type="button"
-                  onClick={() => updateParam("audience")}
-                  className={cn(
-                    "rounded-full border px-4 py-2 text-xs uppercase tracking-[0.2em] transition-colors",
-                    !activeAudience
-                      ? "border-gold bg-gold text-primary-foreground"
-                      : "border-border text-muted-foreground hover:text-foreground",
-                  )}
-                >
-                  {t("common.all")}
-                </button>
-                {audienceOptions.map((audience) => (
-                  <button
-                    key={audience.id}
-                    type="button"
-                    onClick={() => updateParam("audience", audience.id)}
-                    className={cn(
-                      "rounded-full border px-4 py-2 text-xs uppercase tracking-[0.2em] transition-colors",
-                      activeAudience === audience.id
-                        ? "border-gold bg-gold text-primary-foreground"
-                        : "border-border text-muted-foreground hover:text-foreground",
-                    )}
-                  >
-                    {t(audience.labelEn, audience.labelRo)}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <p className="text-xs uppercase tracking-[0.28em] text-gold">
-                {t("shop.category")}
-              </p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                <button
-                  type="button"
-                  onClick={() => updateParam("category")}
-                  className={cn(
-                    "rounded-full border px-4 py-2 text-xs uppercase tracking-[0.2em] transition-colors",
-                    !activeCategory
-                      ? "border-gold bg-gold text-primary-foreground"
-                      : "border-border text-muted-foreground hover:text-foreground",
-                  )}
-                >
-                  {t("common.all")}
-                </button>
-                {categories.map((category) => (
-                  <button
-                    key={category.id}
-                    type="button"
-                    onClick={() => updateParam("category", category.id)}
-                    className={cn(
-                      "rounded-full border px-4 py-2 text-xs uppercase tracking-[0.2em] transition-colors",
-                      activeCategory === category.id
-                        ? "border-gold bg-gold text-primary-foreground"
-                        : "border-border text-muted-foreground hover:text-foreground",
-                    )}
-                  >
-                    {getCatalogCategoryLabel(category.id, lang)}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <p className="text-xs uppercase tracking-[0.28em] text-gold">
-                {t("shop.brand")}
-              </p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                <button
-                  type="button"
-                  onClick={() => updateParam("brand")}
-                  className={cn(
-                    "rounded-full border px-4 py-2 text-xs uppercase tracking-[0.2em] transition-colors",
-                    !activeBrand
-                      ? "border-gold bg-gold text-primary-foreground"
-                      : "border-border text-muted-foreground hover:text-foreground",
-                  )}
-                >
-                  {t("common.all")}
-                </button>
-                {availableBrands.map((brand) => (
-                  <button
-                    key={brand}
-                    type="button"
-                    onClick={() =>
-                      updateParam("brand", activeBrand === brand ? undefined : brand)
-                    }
-                    className={cn(
-                      "rounded-full border px-4 py-2 text-xs uppercase tracking-[0.2em] transition-colors",
-                      activeBrand === brand
-                        ? "border-gold bg-gold text-primary-foreground"
-                        : "border-border text-muted-foreground hover:text-foreground",
-                    )}
-                  >
-                    {brand}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <label
-                htmlFor="catalog-sort"
-                className="text-xs uppercase tracking-[0.28em] text-gold"
-              >
-                {t("Sort by", "Sorteaza dupa")}
-              </label>
-              <select
-                id="catalog-sort"
-                value={activeSort}
-                onChange={(event) => updateParam("sort", event.target.value)}
-                className="mt-4 h-11 w-full rounded-xl border border-border bg-background px-4 text-sm text-foreground outline-none transition-colors focus:border-gold"
-              >
-                <option value="featured">
-                  {t("Recommended", "Recomandate")}
-                </option>
-                <option value="price-asc">
-                  {t("Price: low to high", "Pret: crescator")}
-                </option>
-                <option value="price-desc">
-                  {t("Price: high to low", "Pret: descrescator")}
-                </option>
-                <option value="brand-asc">
-                  {t("Brand: A to Z", "Brand: A-Z")}
-                </option>
-                <option value="name-asc">
-                  {t("Name: A to Z", "Nume: A-Z")}
-                </option>
-              </select>
-            </div>
-          </div>
+        <div className="mt-10 hidden rounded-lg border border-border bg-card p-6 lg:block">
+          {renderFilterControls("catalog-sort")}
         </div>
 
-        <div className="mt-6 rounded-[2rem] border border-border bg-card p-6">
+        <div className="mt-6 rounded-lg border border-border bg-card p-6">
           <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
             <div>
               <p className="text-xs uppercase tracking-[0.28em] text-gold">
@@ -304,17 +326,17 @@ const Shop = () => {
               {Array.from({ length: 8 }, (_, index) => (
                 <div
                   key={`catalog-loading-${index}`}
-                  className="h-[430px] animate-pulse rounded-3xl border border-border bg-card"
+                  className="h-[430px] animate-pulse rounded-lg border border-border bg-card"
                 />
               ))}
             </div>
           ) : isError ? (
-            <div className="rounded-[2rem] border border-border bg-card p-10 text-center">
+            <div className="rounded-lg border border-border bg-card p-10 text-center">
               <h2 className="font-heading text-3xl">{t("errorBoundary.title")}</h2>
               <p className="mt-4 text-muted-foreground">{t("errorBoundary.description")}</p>
             </div>
           ) : filteredProducts.length === 0 ? (
-            <div className="rounded-[2rem] border border-border bg-card p-10 text-center">
+            <div className="rounded-lg border border-border bg-card p-10 text-center">
               <h2 className="font-heading text-3xl">{t("shop.noProductsTitle")}</h2>
               <p className="mt-4 text-muted-foreground">
                 {t("shop.noProductsDescription")}
@@ -342,6 +364,36 @@ const Shop = () => {
           )}
         </div>
       </div>
+
+      <Sheet open={filtersOpen} onOpenChange={setFiltersOpen}>
+        <SheetTrigger asChild>
+          <Button
+            variant="gold"
+            className="fixed inset-x-4 bottom-4 z-40 min-h-11 rounded-full text-xs uppercase tracking-widest shadow-2xl lg:hidden"
+          >
+            {activeFilterCount > 0
+              ? `${t("Filters", "Filtre")} (${activeFilterCount})`
+              : t("Filters", "Filtre")}
+          </Button>
+        </SheetTrigger>
+        <SheetContent
+          side="bottom"
+          className="max-h-[85vh] overflow-y-auto rounded-t-lg border-border bg-card pb-8 lg:hidden"
+        >
+          <SheetHeader className="pr-10 text-left">
+            <SheetTitle className="font-heading text-3xl">
+              {t("Filters", "Filtre")}
+            </SheetTitle>
+            <SheetDescription>
+              {t(
+                "Refine products by audience, brand, category, and sort order.",
+                "Filtreaza produsele dupa public, brand, categorie si sortare.",
+              )}
+            </SheetDescription>
+          </SheetHeader>
+          <div className="mt-6">{renderFilterControls("catalog-sort-mobile")}</div>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 };

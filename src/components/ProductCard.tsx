@@ -38,10 +38,10 @@ const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
       initial={{ opacity: 0, y: 18 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: index * 0.02 }}
-      className="flex h-full flex-col rounded-3xl border border-border bg-card p-4"
+      className="flex h-full flex-col rounded-lg border border-border bg-card p-4"
     >
       <Link to={`/product/${product.id}`} className="group block">
-        <div className="relative overflow-hidden rounded-2xl bg-surface">
+        <div className="relative overflow-hidden rounded-md bg-surface">
           <div className="aspect-[4/5] overflow-hidden">
             <CatalogImage
               src={product.images[0]}
@@ -69,14 +69,14 @@ const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
       </Link>
 
       <div className="mt-4 flex flex-1 flex-col">
-        <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground">
+        <p className="truncate text-xs uppercase tracking-[0.24em] text-muted-foreground">
           {product.brand}
         </p>
         <Link
           to={`/product/${product.id}`}
-          className="mt-2 inline-flex items-start gap-2 font-heading text-xl leading-tight transition-colors hover:text-gold"
+          className="mt-2 inline-flex min-w-0 max-w-full items-start gap-2 font-heading text-xl leading-tight transition-colors hover:text-gold"
         >
-          <span>{product.name}</span>
+          <span className="min-w-0 truncate">{product.name}</span>
           <ArrowUpRight size={18} className="mt-1 shrink-0" />
         </Link>
 
@@ -100,7 +100,7 @@ const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
               >
                 <Button
                   variant="gold"
-                  className="w-full whitespace-normal text-center leading-5"
+                  className="min-h-11 w-full whitespace-normal text-center leading-5"
                 >
                   {orderButtonLabel}
                 </Button>
@@ -109,7 +109,7 @@ const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
               <Link to="/contact" className="sm:flex-1">
                 <Button
                   variant="gold"
-                  className="w-full whitespace-normal text-center leading-5"
+                  className="min-h-11 w-full whitespace-normal text-center leading-5"
                 >
                   {orderButtonLabel}
                 </Button>
@@ -118,7 +118,7 @@ const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
             <Link to={`/product/${product.id}`} className="sm:flex-1">
               <Button
                 variant="gold-outline"
-                className="w-full whitespace-normal text-center leading-5"
+                className="min-h-11 w-full whitespace-normal text-center leading-5"
               >
                 {t("common.viewDetails")}
               </Button>

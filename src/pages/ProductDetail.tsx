@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { type MouseEvent, useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
 import { ArrowLeft } from "lucide-react";
@@ -15,6 +15,7 @@ import { useCatalogProducts } from "@/hooks/use-catalog-products";
 import { getCatalogCategoryLabel } from "@/lib/catalog";
 import { buildProductWhatsappLink } from "@/lib/contact";
 import { getLocalizedText } from "@/lib/i18n";
+import { cn } from "@/lib/utils";
 
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -25,10 +26,12 @@ const ProductDetail = () => {
 
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState("");
+  const [showSizeWarning, setShowSizeWarning] = useState(false);
 
   useEffect(() => {
     setSelectedImage(0);
-    setSelectedSize(product?.sizes[0] ?? "");
+    setSelectedSize("");
+    setShowSizeWarning(false);
   }, [product]);
 
   usePageMeta({
@@ -71,8 +74,8 @@ const ProductDetail = () => {
     return (
       <div className="min-h-screen bg-background px-4 pb-20 pt-32 text-foreground">
         <div className="container grid gap-10 xl:grid-cols-[1.05fr_0.95fr]">
-          <div className="h-[560px] animate-pulse rounded-[2rem] border border-border bg-card" />
-          <div className="h-[560px] animate-pulse rounded-[2rem] border border-border bg-card" />
+          <div className="h-[560px] animate-pulse rounded-lg border border-border bg-card" />
+          <div className="h-[560px] animate-pulse rounded-lg border border-border bg-card" />
         </div>
       </div>
     );
@@ -81,7 +84,7 @@ const ProductDetail = () => {
   if (!product) {
     return (
       <div className="min-h-screen bg-background px-4 pb-20 pt-32 text-foreground">
-        <div className="container max-w-2xl rounded-[2rem] border border-border bg-card p-10 text-center">
+        <div className="container max-w-2xl rounded-lg border border-border bg-card p-10 text-center">
           <p className="text-xs uppercase tracking-[0.35em] text-gold">ATLAS</p>
           <h1 className="mt-4 font-heading text-4xl">{t("product.notFoundTitle")}</h1>
           <p className="mt-4 text-muted-foreground">
@@ -110,6 +113,14 @@ const ProductDetail = () => {
           .split(/[,/]/)
           .map((size) => size.trim())
           .filter(Boolean);
+  const requiresSizeSelection = sizeTokens.length > 0;
+
+  const handleOrderClick = (event: MouseEvent<HTMLAnchorElement>) => {
+    if (requiresSizeSelection && !selectedSize) {
+      event.preventDefault();
+      setShowSizeWarning(true);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background px-4 pb-20 pt-32 text-foreground">
@@ -128,7 +139,7 @@ const ProductDetail = () => {
             animate={{ opacity: 1, y: 0 }}
             className="space-y-4"
           >
-            <div className="overflow-hidden rounded-[2rem] border border-border bg-card">
+            <div className="overflow-hidden rounded-lg border border-border bg-card">
               <div className="aspect-[4/5] overflow-hidden">
                 <CatalogImage
                   src={galleryImages[selectedImage] ?? product.images[0]}
@@ -146,7 +157,7 @@ const ProductDetail = () => {
                     key={`${product.id}-gallery-${index}`}
                     type="button"
                     onClick={() => setSelectedImage(index)}
-                    className={`overflow-hidden rounded-2xl border ${
+                    className={`overflow-hidden rounded-md border ${
                       selectedImage === index ? "border-gold" : "border-border"
                     }`}
                   >
@@ -168,7 +179,7 @@ const ProductDetail = () => {
               </div>
             ) : null}
 
-            <div className="rounded-3xl border border-border bg-card p-5">
+            <div className="rounded-lg border border-border bg-card p-5">
               <p className="text-xs uppercase tracking-[0.22em] text-gold">
                 {t("Product gallery", "Galerie produs")}
               </p>
@@ -195,7 +206,7 @@ const ProductDetail = () => {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.06 }}
-            className="rounded-[2rem] border border-border bg-card p-6 md:p-8"
+            className="rounded-lg border border-border bg-card p-6 md:p-8"
           >
             <div className="flex flex-wrap gap-2">
               <span className="rounded-full border border-border px-3 py-1 text-[10px] uppercase tracking-[0.24em] text-gold">
@@ -230,7 +241,7 @@ const ProductDetail = () => {
             </p>
 
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
-              <div className="rounded-3xl border border-border bg-background/70 p-5">
+              <div className="rounded-lg border border-border bg-background/70 p-5">
                 <p className="text-xs uppercase tracking-[0.22em] text-gold">
                   {t("Collection", "Colectie")}
                 </p>
@@ -239,7 +250,7 @@ const ProductDetail = () => {
                 </p>
               </div>
 
-              <div className="rounded-3xl border border-border bg-background/70 p-5">
+              <div className="rounded-lg border border-border bg-background/70 p-5">
                 <p className="text-xs uppercase tracking-[0.22em] text-gold">
                   {t("Availability", "Disponibilitate")}
                 </p>
@@ -258,25 +269,45 @@ const ProductDetail = () => {
                   {t("product.sizes")}
                 </p>
                 <div className="mt-3 flex flex-wrap gap-2">
-                  {sizeTokens.map((size) => (
-                    <button
-                      key={size}
-                      type="button"
-                      onClick={() => setSelectedSize(size)}
-                      className={`rounded-full border px-4 py-2 text-sm transition-colors ${
-                        selectedSize === size
-                          ? "border-gold bg-gold text-primary-foreground"
-                          : "border-border text-muted-foreground hover:text-foreground"
-                      }`}
-                    >
-                      {size}
-                    </button>
-                  ))}
+                  <div
+                    className={cn(
+                      "flex w-full flex-wrap gap-2 rounded-lg border p-3 transition-colors",
+                      showSizeWarning && !selectedSize
+                        ? "border-gold"
+                        : "border-border/60",
+                    )}
+                  >
+                    {sizeTokens.map((size) => (
+                      <button
+                        key={size}
+                        type="button"
+                        onClick={() => {
+                          setSelectedSize(size);
+                          setShowSizeWarning(false);
+                        }}
+                        className={`min-h-11 rounded-full border px-4 py-2 text-sm transition-colors ${
+                          selectedSize === size
+                            ? "border-gold bg-gold text-primary-foreground"
+                            : "border-border text-muted-foreground hover:text-foreground"
+                        }`}
+                      >
+                        {size}
+                      </button>
+                    ))}
+                  </div>
                 </div>
+                {showSizeWarning && !selectedSize ? (
+                  <p className="mt-3 text-sm text-gold">
+                    {t(
+                      "Please select a size before ordering",
+                      "Te rog selecteaza o marime inainte de comanda",
+                    )}
+                  </p>
+                ) : null}
               </div>
             ) : null}
 
-            <div className="mt-8 rounded-3xl border border-border bg-background/70 p-5">
+            <div className="mt-8 rounded-lg border border-border bg-background/70 p-5">
               <p className="text-xs uppercase tracking-[0.22em] text-gold">
                 {t("product.orderTitle")}
               </p>
@@ -290,6 +321,7 @@ const ProductDetail = () => {
                     href={whatsappLink}
                     target="_blank"
                     rel="noreferrer"
+                    onClick={handleOrderClick}
                     className="block"
                   >
                     <Button
@@ -300,7 +332,11 @@ const ProductDetail = () => {
                     </Button>
                   </a>
                 ) : (
-                  <Link to="/contact" className="block">
+                  <Link
+                    to="/contact"
+                    onClick={handleOrderClick}
+                    className="block"
+                  >
                     <Button
                       variant="gold"
                       className="w-full whitespace-normal text-center leading-5"

@@ -46,10 +46,10 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <section className="relative overflow-hidden px-4 pb-20 pt-32 md:pb-24 md:pt-40">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(194,162,96,0.18),transparent_40%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.06),transparent_35%)]" />
-        <div className="container relative">
-          <div className="grid gap-10 xl:grid-cols-[minmax(0,1fr)_minmax(360px,520px)] xl:items-center">
+      <section className="relative flex min-h-[90vh] overflow-hidden bg-[#070707] px-4 pb-16 pt-32 md:pt-40">
+        <div className="absolute inset-0 bg-[linear-gradient(110deg,rgba(194,162,96,0.12),transparent_35%),radial-gradient(circle_at_80%_20%,rgba(255,255,255,0.08),transparent_28%)]" />
+        <div className="container relative flex items-center">
+          <div className="grid w-full gap-12 lg:grid-cols-[3fr_2fr] lg:items-center">
             <motion.div
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
@@ -59,7 +59,7 @@ const Index = () => {
               <p className="text-xs uppercase tracking-[0.42em] text-gold">
                 {t("hero.kicker")}
               </p>
-              <h1 className="mt-6 max-w-[10ch] font-heading text-5xl leading-[0.92] sm:text-6xl xl:text-[5.5rem]">
+              <h1 className="mt-6 max-w-[11ch] font-heading text-5xl leading-[0.9] text-foreground sm:text-6xl lg:text-7xl">
                 {t("hero.title")}
               </h1>
               <p className="mt-6 max-w-xl text-base leading-8 text-muted-foreground md:text-lg">
@@ -67,18 +67,18 @@ const Index = () => {
               </p>
 
               <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-                <Link to="/shop">
+                <Link to="/shop?audience=women">
                   <Button variant="gold" size="lg" className="w-full sm:w-auto">
-                    {t("hero.ctaShop")}
+                    {t("Shop Women", "Shop femei")}
                   </Button>
                 </Link>
-                <Link to="/contact">
+                <Link to="/shop?audience=men">
                   <Button
                     variant="gold-outline"
                     size="lg"
                     className="w-full sm:w-auto"
                   >
-                    {t("Contact me", "Contacteaza-ma")}
+                    {t("Shop Men", "Shop barbati")}
                   </Button>
                 </Link>
               </div>
@@ -88,22 +88,26 @@ const Index = () => {
               initial={{ opacity: 0, scale: 0.97 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.55, delay: 0.1 }}
-              className="grid gap-4 sm:grid-cols-2"
+              className="grid gap-4 md:grid-cols-2 lg:grid-cols-1"
             >
               {isLoading
-                ? Array.from({ length: 4 }, (_, index) => (
+                ? Array.from({ length: 2 }, (_, index) => (
                     <div
                       key={`hero-loading-${index}`}
-                      className="aspect-[4/5] animate-pulse rounded-[2rem] border border-border bg-card"
+                      className={`aspect-[3/4] animate-pulse rounded-lg border border-border bg-card ${
+                        index === 1 ? "hidden md:block" : ""
+                      }`}
                     />
                   ))
-                : featuredProducts.map((product) => (
+                : featuredProducts.slice(0, 2).map((product, index) => (
                     <Link
                       key={product.id}
                       to={`/product/${product.id}`}
-                      className="overflow-hidden rounded-[2rem] border border-border bg-card transition-transform duration-300 hover:-translate-y-1"
+                      className={`group relative overflow-hidden rounded-lg border border-border bg-card transition-transform duration-300 hover:-translate-y-1 ${
+                        index === 1 ? "hidden md:block" : ""
+                      }`}
                     >
-                      <div className="aspect-[4/5] overflow-hidden">
+                      <div className="aspect-[3/4] overflow-hidden">
                         <CatalogImage
                           src={product.images[0]}
                           alt={`${product.brand} ${product.name}`}
@@ -116,12 +120,9 @@ const Index = () => {
                           fallbackClassName="p-6"
                         />
                       </div>
-                      <div className="p-4">
-                        <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground">
+                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-5">
+                        <p className="text-xs uppercase tracking-[0.28em] text-gold">
                           {product.brand}
-                        </p>
-                        <p className="mt-2 font-heading text-xl leading-tight">
-                          {product.name}
                         </p>
                       </div>
                     </Link>
@@ -139,7 +140,7 @@ const Index = () => {
             return (
               <div
                 key={item.titleKey}
-                className="rounded-3xl border border-border bg-background/70 p-5"
+                className="rounded-lg border border-border bg-background/70 p-5"
               >
                 <Icon size={18} className="text-gold" />
                 <h2 className="mt-4 text-sm uppercase tracking-[0.24em] text-foreground">
@@ -178,7 +179,7 @@ const Index = () => {
               ? Array.from({ length: 8 }, (_, index) => (
                   <div
                     key={`product-loading-${index}`}
-                    className="h-[430px] animate-pulse rounded-3xl border border-border bg-card"
+                    className="h-[430px] animate-pulse rounded-lg border border-border bg-card"
                   />
                 ))
               : highlightedProducts.map((product, index) => (
@@ -202,7 +203,7 @@ const Index = () => {
               <Link
                 key={category.id}
                 to={`/shop?category=${category.id}`}
-                className="group overflow-hidden rounded-[2rem] border border-border bg-background"
+                className="group overflow-hidden rounded-lg border border-border bg-background"
               >
                 <div className="aspect-[4/5] overflow-hidden">
                   <CatalogImage
@@ -227,7 +228,7 @@ const Index = () => {
       </section>
 
       <section className="px-4 py-20 md:py-24">
-        <div className="container rounded-[2rem] border border-border bg-card px-6 py-10 md:px-10">
+        <div className="container rounded-lg border border-border bg-card px-6 py-10 md:px-10">
           <p className="text-xs uppercase tracking-[0.35em] text-gold">
             {t("home.contactTitle")}
           </p>

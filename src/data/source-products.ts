@@ -47,4 +47,12 @@ export const sourceCategoryLabels: Record<SourceCategory, LocalizedText> = {
   hats: localize("Hats", "Sepci"),
   watches: localize("Watches", "Ceasuri"),
   jewellery: localize("Jewellery", "Bijuterii"),
+  "polo-shirts": localize("Polo Shirts", "Tricouri polo"),
+  hoodies: localize("Hoodies", "Hanorace"),
+  caps: localize("Caps", "Sepci"),
+  sunglasses: localize("Sunglasses", "Ochelari de soare"),
+  "men-sneakers": localize("Men Sneakers", "Sneakers barbati"),
+  "men-watches": localize("Men Watches", "Ceasuri barbati"),
+  jackets: localize("Jackets", "Jachete"),
+  pants: localize("Pants", "Pantaloni"),
 };
