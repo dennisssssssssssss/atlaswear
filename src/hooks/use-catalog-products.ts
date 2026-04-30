@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { products as curatedProducts } from "@/data/products";
+import { useProducts } from "@/data/products";
 import { useSourceProducts } from "@/hooks/use-source-products";
 import {
   attachRelatedProducts,
@@ -10,13 +10,14 @@ import {
 } from "@/lib/catalog";
 
 export const useCatalogProducts = () => {
-  const query = useSourceProducts();
+  const sourceQuery = useSourceProducts();
+  const productsQuery = useProducts();
 
   const products = useMemo(() => {
-    const baseProducts = (query.data ?? []).map(mapSourceProductToCatalogProduct);
-    const atlasProducts = curatedProducts.map(mapProductToCatalogProduct);
+    const baseProducts = (sourceQuery.data ?? []).map(mapSourceProductToCatalogProduct);
+    const atlasProducts = (productsQuery.data ?? []).map(mapProductToCatalogProduct);
     return attachRelatedProducts([...baseProducts, ...atlasProducts]);
-  }, [query.data]);
+  }, [productsQuery.data, sourceQuery.data]);
 
   const categories = useMemo(
     () => buildCatalogCategories(products),
@@ -37,7 +38,13 @@ export const useCatalogProducts = () => {
   );
 
   return {
-    ...query,
+    data: productsQuery.data,
+    error: productsQuery.error ?? sourceQuery.error,
+    isError: productsQuery.isError || sourceQuery.isError,
+    isFetching: productsQuery.isFetching || sourceQuery.isFetching,
+    isLoading: productsQuery.isLoading || sourceQuery.isLoading,
+    isPending: productsQuery.isPending || sourceQuery.isPending,
+    refetch: productsQuery.refetch,
     products,
     categories,
     productMap,

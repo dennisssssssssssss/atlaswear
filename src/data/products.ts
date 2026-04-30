@@ -4,15 +4,8 @@ import {
   type Lang,
   type LocalizedText,
 } from "@/lib/i18n";
+import { useQuery } from "@tanstack/react-query";
 import { resolveAssetUrl } from "@/lib/assets";
-import { menProducts } from "@/data/men-products";
-import { womenProducts } from "@/data/women-products";
-import {
-  calcCompareAtRon,
-  calcPriceRon,
-  estimateCompareAtRon,
-  estimatePriceRon,
-} from "@/lib/pricing";
 
 export { getLocalizedText } from "@/lib/i18n";
 
@@ -74,6 +67,14 @@ export interface ProductCategory {
 }
 
 const catalog = (fileName: string) => resolveAssetUrl(`/catalog/${fileName}`);
+
+const basePath =
+  import.meta.env.BASE_URL === "/"
+    ? ""
+    : import.meta.env.BASE_URL.replace(/\/$/, "");
+
+export const productsDataUrl = `${basePath}/data/products.json`;
+export const productsQueryKey = ["products"];
 
 
 export const categories: ProductCategory[] = [
@@ -139,16 +140,24 @@ export const categories: ProductCategory[] = [
   },
 ];
 
-export const products: Product[] = [
-  ...womenProducts,
-  ...menProducts,
-];
-
 export const categoryMap = new Map(categories.map((category) => [category.id, category]));
 
-export const brands = Array.from(
-  new Set(products.map((productEntry) => productEntry.brand)),
-).sort((left, right) => left.localeCompare(right));
+export const fetchProducts = async () => {
+  const response = await fetch(productsDataUrl);
+
+  if (!response.ok) {
+    throw new Error(`Failed to load product catalog: ${response.status}`);
+  }
+
+  return response.json() as Promise<Product[]>;
+};
+
+export const useProducts = () =>
+  useQuery<Product[]>({
+    queryKey: productsQueryKey,
+    queryFn: fetchProducts,
+    staleTime: 1000 * 60 * 15,
+  });
 
 export const getProductPrice = (product: Product) => product.priceRon;
 

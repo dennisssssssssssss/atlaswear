@@ -26,12 +26,21 @@ const BRAND_TIERS = {
   Versace: "mid-luxury",
   Balenciaga: "mid-luxury",
   Burberry: "mid-luxury",
+  Coach: "mid-luxury",
+  Celine: "mid-luxury",
+  Fendi: "mid-luxury",
+  Ferragamo: "mid-luxury",
+  "Jimmy Choo": "mid-luxury",
+  "Tory Burch": "mid-luxury",
+  UGG: "accessible",
   Gucci: "luxury",
   Prada: "luxury",
   "Louis Vuitton": "luxury",
   "Saint Laurent": "luxury",
   Hermes: "luxury",
+  "Bottega Veneta": "luxury",
   Loewe: "luxury",
+  Valentino: "luxury",
   Zimmermann: "luxury",
   "Miu Miu": "luxury",
   Dior: "luxury",
@@ -49,6 +58,8 @@ const ESTIMATED_PRICES = {
     pants: 230,
     "men-sneakers": 420,
     sneakers: 380,
+    boots: 360,
+    sandals: 300,
     caps: 160,
     sunglasses: 200,
     accessories: 180,
@@ -62,6 +73,8 @@ const ESTIMATED_PRICES = {
     pants: 500,
     "men-sneakers": 780,
     sneakers: 720,
+    boots: 650,
+    sandals: 580,
     caps: 320,
     sunglasses: 400,
     bags: 900,
@@ -77,6 +90,7 @@ const ESTIMATED_PRICES = {
     "men-sneakers": 1100,
     sneakers: 1100,
     sandals: 900,
+    boots: 1100,
     mules: 1000,
     bags: 2200,
     watches: 2500,
@@ -155,6 +169,66 @@ function detectBrand(sourceName, brandHint) {
     return "Burberry";
   }
 
+  if (/\b(chanel)\b/i.test(name)) {
+    return "Chanel";
+  }
+
+  if (/\bdior\b/i.test(name)) {
+    return "Dior";
+  }
+
+  if (/\bherm[eè]s\b|\bhermes\b/i.test(name)) {
+    return "Hermes";
+  }
+
+  if (/\bloew[e]?\b/i.test(name)) {
+    return "Loewe";
+  }
+
+  if (/\bmiu\s*miu\b|\bmiumiu\b/i.test(name)) {
+    return "Miu Miu";
+  }
+
+  if (/\bceline\b/i.test(name)) {
+    return "Celine";
+  }
+
+  if (/\bbottega\b/i.test(name)) {
+    return "Bottega Veneta";
+  }
+
+  if (/\bfendi\b/i.test(name)) {
+    return "Fendi";
+  }
+
+  if (/\bvalentino\b/i.test(name)) {
+    return "Valentino";
+  }
+
+  if (/\bcoach\b/i.test(name)) {
+    return "Coach";
+  }
+
+  if (/\bjimmy\s*choo\b/i.test(name)) {
+    return "Jimmy Choo";
+  }
+
+  if (/\btory\s*burch\b/i.test(name)) {
+    return "Tory Burch";
+  }
+
+  if (/\bugg\b/i.test(name)) {
+    return "UGG";
+  }
+
+  if (/\bferragamo\b/i.test(name)) {
+    return "Ferragamo";
+  }
+
+  if (/\byves\s*saint\s*laurent\b|\bsaint\s*laurent\b|\bysl\b/i.test(name)) {
+    return "Saint Laurent";
+  }
+
   if (/\blouis vuitton\b/i.test(name) || /(^|[^a-z])lv([^a-z]|$)/i.test(name)) {
     return "Louis Vuitton";
   }
@@ -184,6 +258,24 @@ function fixCategory(category, audience, sourceName) {
 
   if (category === "dresses" && shoeWords.test(sourceName)) {
     return audience === "men" ? "men-sneakers" : "sneakers";
+  }
+
+  if (audience === "women" && shoeWords.test(sourceName)) {
+    if (/\bboot|boots|bootie|ugg\b/i.test(sourceName)) {
+      return "boots";
+    }
+
+    if (/\bheel|heels|pump|pumps|sandal|sandals|slide|slides|slipper|slippers\b/i.test(sourceName)) {
+      return "sandals";
+    }
+
+    if (/\bmule|mules|loafer|loafers|flat|flats|ballet\b/i.test(sourceName)) {
+      return "mules";
+    }
+
+    if (/\bsneaker|sneakers|trainer|trainers|runner|runners|shoe|shoes\b/i.test(sourceName)) {
+      return "sneakers";
+    }
   }
 
   return category;

@@ -25,16 +25,213 @@ const categories = [
   { id: "394", name: "Jacket" },
   { id: "170", name: "Fashion Dress" },
   { id: "58658", name: "Bikini" },
-  { id: "68696", name: "Ralph Lauren" },
+  {
+    id: "68696",
+    name: "Ralph Lauren",
+    scanChildCategoriesWithProducts: true,
+  },
   { id: "67580", name: "Lacoste" },
   { id: "1618", name: "Adidas Nike Jordan" },
   { id: "345535", name: "Kids", skip: true },
   { id: "139496", name: "High Quality" },
+  {
+    id: "38931",
+    name: "Bags Louis Vuitton Original",
+    baseUrl: "https://bags.qiqiyg.com",
+    categoryHint: "bags",
+    brandHint: "Louis Vuitton",
+    audienceHint: "women",
+    childLinkKeywords: ["lv", "louis"],
+    scanChildCategoriesWithProducts: true,
+  },
+  {
+    id: "41554",
+    name: "Bags Gucci Original",
+    baseUrl: "https://bags.qiqiyg.com",
+    categoryHint: "bags",
+    brandHint: "Gucci",
+    audienceHint: "women",
+    childLinkKeywords: ["gucci"],
+    scanChildCategoriesWithProducts: true,
+  },
+  {
+    id: "42002",
+    name: "Bags Chanel Original",
+    baseUrl: "https://bags.qiqiyg.com",
+    categoryHint: "bags",
+    brandHint: "Chanel",
+    audienceHint: "women",
+    childLinkKeywords: ["chanel"],
+    scanChildCategoriesWithProducts: true,
+  },
+  {
+    id: "2410",
+    name: "Bags Dior Original",
+    baseUrl: "https://bags.qiqiyg.com",
+    categoryHint: "bags",
+    brandHint: "Dior",
+    audienceHint: "women",
+    childLinkKeywords: ["dior"],
+    scanChildCategoriesWithProducts: true,
+  },
+  {
+    id: "43139",
+    name: "Bags Hermes Original",
+    baseUrl: "https://bags.qiqiyg.com",
+    categoryHint: "bags",
+    brandHint: "Hermes",
+    audienceHint: "women",
+    childLinkKeywords: ["hermes"],
+    scanChildCategoriesWithProducts: true,
+  },
+  {
+    id: "23239",
+    name: "Bags Loewe",
+    baseUrl: "https://bags.qiqiyg.com",
+    categoryHint: "bags",
+    brandHint: "Loewe",
+    audienceHint: "women",
+    childLinkKeywords: ["loewe"],
+    scanChildCategoriesWithProducts: true,
+  },
+  {
+    id: "2412",
+    name: "Bags Prada",
+    baseUrl: "https://bags.qiqiyg.com",
+    categoryHint: "bags",
+    brandHint: "Prada",
+    audienceHint: "women",
+    childLinkKeywords: ["prada"],
+    scanChildCategoriesWithProducts: true,
+  },
+  {
+    id: "2409",
+    name: "Bags Saint Laurent",
+    baseUrl: "https://bags.qiqiyg.com",
+    categoryHint: "bags",
+    brandHint: "Saint Laurent",
+    audienceHint: "women",
+    childLinkKeywords: ["ysl", "saint"],
+    scanChildCategoriesWithProducts: true,
+  },
+  {
+    id: "336",
+    name: "Women Shoes Gucci",
+    baseUrl: "https://shoes.qiqiyg.com",
+    categoryHint: "sneakers",
+    brandHint: "Gucci",
+    audienceHint: "women",
+    childLinkKeywords: ["gucci"],
+    scanChildCategoriesWithProducts: true,
+  },
+  {
+    id: "327",
+    name: "Women Shoes Louis Vuitton",
+    baseUrl: "https://shoes.qiqiyg.com",
+    categoryHint: "sneakers",
+    brandHint: "Louis Vuitton",
+    audienceHint: "women",
+    childLinkKeywords: ["lv", "louis"],
+    scanChildCategoriesWithProducts: true,
+  },
+  {
+    id: "229",
+    name: "Women Shoes Chanel",
+    baseUrl: "https://shoes.qiqiyg.com",
+    categoryHint: "sneakers",
+    brandHint: "Chanel",
+    audienceHint: "women",
+    childLinkKeywords: ["chanel"],
+    scanChildCategoriesWithProducts: true,
+  },
+  {
+    id: "151",
+    name: "Women Shoes Dior",
+    baseUrl: "https://shoes.qiqiyg.com",
+    categoryHint: "sneakers",
+    brandHint: "Dior",
+    audienceHint: "women",
+    childLinkKeywords: ["dior"],
+    scanChildCategoriesWithProducts: true,
+  },
+  {
+    id: "104",
+    name: "Women Shoes Hermes",
+    baseUrl: "https://shoes.qiqiyg.com",
+    categoryHint: "sneakers",
+    brandHint: "Hermes",
+    audienceHint: "women",
+    childLinkKeywords: ["hermes"],
+    scanChildCategoriesWithProducts: true,
+  },
+  {
+    id: "33053",
+    name: "Women Shoes Jimmy Choo",
+    baseUrl: "https://shoes.qiqiyg.com",
+    categoryHint: "sandals",
+    brandHint: "Jimmy Choo",
+    audienceHint: "women",
+    childLinkKeywords: ["jimmy"],
+    scanChildCategoriesWithProducts: true,
+  },
+  {
+    id: "84078",
+    name: "Women Shoes Miu Miu",
+    baseUrl: "https://shoes.qiqiyg.com",
+    categoryHint: "sneakers",
+    brandHint: "Miu Miu",
+    audienceHint: "women",
+    childLinkKeywords: ["miu", "miumiu"],
+    scanChildCategoriesWithProducts: true,
+  },
+  {
+    id: "92",
+    name: "Women Shoes Prada",
+    baseUrl: "https://shoes.qiqiyg.com",
+    categoryHint: "sneakers",
+    brandHint: "Prada",
+    audienceHint: "women",
+    childLinkKeywords: ["prada"],
+    scanChildCategoriesWithProducts: true,
+  },
+  {
+    id: "84731",
+    name: "Women Shoes Saint Laurent",
+    baseUrl: "https://shoes.qiqiyg.com",
+    categoryHint: "sandals",
+    brandHint: "Saint Laurent",
+    audienceHint: "women",
+    childLinkKeywords: ["ysl", "saint"],
+    scanChildCategoriesWithProducts: true,
+  },
+  {
+    id: "156346",
+    name: "Women Shoes Tory Burch",
+    baseUrl: "https://shoes.qiqiyg.com",
+    categoryHint: "sandals",
+    brandHint: "Tory Burch",
+    audienceHint: "women",
+    childLinkKeywords: ["tory"],
+    scanChildCategoriesWithProducts: true,
+  },
+  {
+    id: "28852",
+    name: "Women Shoes UGG",
+    baseUrl: "https://shoes.qiqiyg.com",
+    categoryHint: "boots",
+    brandHint: "UGG",
+    audienceHint: "women",
+    childLinkKeywords: ["ugg"],
+    scanChildCategoriesWithProducts: true,
+  },
 ];
 const topCategoryIds = new Set([
   ...categories.map((category) => category.id),
   "3",
   "981",
+  "6279",
+  "31206",
+  "6296",
 ]);
 
 async function debugRawHtmlSample() {
@@ -174,7 +371,20 @@ function getMetaContent(html, key) {
   return "";
 }
 
-function mapCategory(categoryName) {
+function getCategoryBaseUrl(category) {
+  return category.baseUrl ?? BASE_URL;
+}
+
+function mapCategory(category) {
+  if (category.categoryHint || category.audienceHint || category.brandHint) {
+    return {
+      categoryHint: category.categoryHint ?? "clothing",
+      audienceHint: category.audienceHint ?? "unisex",
+      ...(category.brandHint ? { brandHint: category.brandHint } : {}),
+    };
+  }
+
+  const categoryName = category.name;
   const mapping = {
     "T-Shirt": { categoryHint: "clothing", audienceHint: "unisex" },
     "Polo Short": { categoryHint: "polo-shirts", audienceHint: "men" },
@@ -215,15 +425,19 @@ function extractProductListLinks(html, baseUrl) {
   return [...links.values()];
 }
 
-function extractCategoryLinks(html, baseUrl, currentCategoryId) {
+function extractCategoryLinks(html, baseUrl, currentCategoryId, category = {}) {
   const links = new Map();
   const categoryRegex =
-    /href\s*=\s*(["'])([^"']*categoryen_(\d+)\.html(?:\?[^"']*)?)\1/gi;
+    /<a\b[^>]*href\s*=\s*(["'])([^"']*categoryen?_(\d+)\.html(?:\?[^"']*)?)\1[^>]*>([\s\S]*?)<\/a>/gi;
   let match;
+  const childLinkKeywords = (category.childLinkKeywords ?? []).map((keyword) =>
+    keyword.toLowerCase(),
+  );
 
   while ((match = categoryRegex.exec(html)) !== null) {
     const href = match[2];
     const categoryId = match[3];
+    const linkText = stripTags(match[4]).toLowerCase();
 
     if (categoryId === currentCategoryId || topCategoryIds.has(categoryId)) {
       continue;
@@ -233,10 +447,18 @@ function extractCategoryLinks(html, baseUrl, currentCategoryId) {
       continue;
     }
 
+    if (
+      childLinkKeywords.length > 0 &&
+      !childLinkKeywords.some((keyword) => linkText.includes(keyword))
+    ) {
+      continue;
+    }
+
     const url = absoluteUrl(href, baseUrl);
 
     links.set(url, {
       categoryId,
+      text: linkText,
       url,
     });
   }
@@ -258,7 +480,7 @@ function getBatchPageUrls(categoryHtml, category) {
 
   return Array.from({ length: fallbackPageCount }, (_, index) => {
     const page = index + 1;
-    return `${BASE_URL}/producten_${batchId}_${page}.html`;
+    return `${getCategoryBaseUrl(category)}/producten_${batchId}_${page}.html`;
   });
 }
 
@@ -308,7 +530,12 @@ async function* walkListPageUrls(categoryHtml, category, categoryUrl) {
         yield listUrl;
       }
 
-      continue;
+      if (
+        !current.category.scanChildCategoriesWithProducts ||
+        current.depth > 0
+      ) {
+        continue;
+      }
     }
 
     if (current.depth >= 4) {
@@ -319,6 +546,7 @@ async function* walkListPageUrls(categoryHtml, category, categoryUrl) {
       currentHtml,
       current.url,
       current.category.id,
+      current.category,
     );
 
     for (const link of categoryLinks.reverse()) {
@@ -568,7 +796,7 @@ async function scrapeProductGroup(productGroup, category) {
     sourceName,
     imageUrl,
     imageUrls,
-    ...mapCategory(category.name),
+    ...mapCategory(category),
   };
 }
 
@@ -582,7 +810,7 @@ async function scrapeCategory(
     return [];
   }
 
-  const categoryUrl = `${BASE_URL}/categoryen_${category.id}.html`;
+  const categoryUrl = `${getCategoryBaseUrl(category)}/categoryen_${category.id}.html`;
   console.log(`Scraping ${category.name} from ${categoryUrl}`);
 
   let categoryHtml = "";
