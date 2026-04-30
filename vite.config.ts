@@ -40,10 +40,6 @@ export default defineConfig(({ mode }) => {
               return undefined;
             }
 
-            if (id.includes("react-router-dom") || id.includes("@remix-run")) {
-              return "router";
-            }
-
             if (id.includes("@tanstack")) {
               return "query";
             }
@@ -56,11 +52,16 @@ export default defineConfig(({ mode }) => {
               return "icons";
             }
 
-            if (id.includes("react")) {
+            if (
+              id.includes("react") ||
+              id.includes("react-router-dom") ||
+              id.includes("@remix-run") ||
+              id.includes("scheduler")
+            ) {
               return "react";
             }
 
-            return "vendor";
+            return undefined;
           },
         },
       },
