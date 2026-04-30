@@ -27,6 +27,9 @@ const fallbackRates: Record<Currency, number> = {
   USD: 1 / 4.6,
 };
 
+const ratesApiUrl =
+  "https://api.frankfurter.dev/v1/latest?from=RON&to=EUR,USD";
+
 const defaultCurrency = (): Currency => {
   if (typeof window === "undefined") {
     return "RON";
@@ -75,9 +78,7 @@ export const CurrencyProvider: React.FC<{ children: React.ReactNode }> = ({
 
     const loadRates = async () => {
       try {
-        const response = await fetch(
-          "https://api.frankfurter.app/latest?from=RON&to=EUR,USD",
-        );
+        const response = await fetch(ratesApiUrl);
 
         if (!response.ok) {
           throw new Error(`Failed to fetch rates: ${response.status}`);
