@@ -252,33 +252,154 @@ function looksLikeKidsSizing(sourceName) {
   return /\bsz\s*\d{2,3}\s*-\s*\d{2,3}\b/i.test(sourceName);
 }
 
-function fixCategory(category, audience, sourceName) {
-  const shoeWords =
-    /\b(shoe|loafer|sneaker|boot|pump|heel|mule|sandal|slipper|oxford|derby)\b/i;
+function detectCategory(name, audienceHint) {
+  const n = normalizeName(name).toLowerCase();
+  const hasBagDimensions = /\b\d{1,3}\s*x\s*\d{1,3}\s*x\s*\d{1,3}\s*cm\b/i.test(n);
+  const hasShoeSizeRange =
+    /\b(?:sz|size)?\s*(?:3[4-9]|4[0-8])\s*[-/]\s*(?:3[4-9]|4[0-8])\b/i.test(n);
 
-  if (category === "dresses" && shoeWords.test(sourceName)) {
-    return audience === "men" ? "men-sneakers" : "sneakers";
+  if (hasBagDimensions) {
+    return "bags";
   }
 
-  if (audience === "women" && shoeWords.test(sourceName)) {
-    if (/\bboot|boots|bootie|ugg\b/i.test(sourceName)) {
+  if (audienceHint === "men" || audienceHint === "unisex") {
+    if (hasShoeSizeRange) {
+      return "men-sneakers";
+    }
+
+    if (
+      n.includes("loafer") ||
+      n.includes("oxford") ||
+      n.includes("derby") ||
+      n.includes("dress shoe") ||
+      n.includes("moccasin") ||
+      n.includes("monk")
+    ) {
+      return "men-sneakers";
+    }
+
+    if (
+      n.includes("sneaker") ||
+      n.includes("trainer") ||
+      n.includes("air force") ||
+      n.includes("jordan") ||
+      n.includes("dunk") ||
+      n.includes("yeezy") ||
+      n.includes("samba") ||
+      n.includes("campus")
+    ) {
+      return "men-sneakers";
+    }
+
+    if (n.includes("boot") || n.includes("chelsea")) {
       return "boots";
     }
 
-    if (/\bheel|heels|pump|pumps|sandal|sandals|slide|slides|slipper|slippers\b/i.test(sourceName)) {
+    if (n.includes("sandal") || n.includes("slide") || n.includes("flip")) {
       return "sandals";
     }
 
-    if (/\bmule|mules|loafer|loafers|flat|flats|ballet\b/i.test(sourceName)) {
-      return "mules";
+    if (n.includes("polo") || n.includes("lacoste") || n.includes("ralph")) {
+      return "polo-shirts";
     }
 
-    if (/\bsneaker|sneakers|trainer|trainers|runner|runners|shoe|shoes\b/i.test(sourceName)) {
-      return "sneakers";
+    if (n.includes("hoodie") || n.includes("sweatshirt")) {
+      return "hoodies";
+    }
+
+    if (n.includes("jacket") || n.includes("coat") || n.includes("blazer")) {
+      return "jackets";
+    }
+
+    if (n.includes("cap") || n.includes("hat") || n.includes("beanie")) {
+      return "caps";
+    }
+
+    if (n.includes("sunglass") || n.includes("eyewear")) {
+      return "sunglasses";
+    }
+
+    if (n.includes("watch") || n.includes("timepiece")) {
+      return "men-watches";
+    }
+
+    if (n.includes("bag") || n.includes("backpack") || n.includes("tote")) {
+      return "bags";
     }
   }
 
-  return category;
+  if (audienceHint === "women") {
+    if (hasShoeSizeRange) {
+      return n.includes("ugg") ? "boots" : "sneakers";
+    }
+
+    if (n.includes("sneaker") || n.includes("trainer")) {
+      return "sneakers";
+    }
+
+    if (
+      n.includes("sandal") ||
+      n.includes("slide") ||
+      n.includes("flip") ||
+      n.includes("heel") ||
+      n.includes("pump") ||
+      n.includes("stiletto")
+    ) {
+      return "sandals";
+    }
+
+    if (n.includes("loafer") || n.includes("mule") || n.includes("flat")) {
+      return "mules";
+    }
+
+    if (n.includes("boot") || n.includes("chelsea")) {
+      return "boots";
+    }
+
+    if (
+      n.includes("bag") ||
+      n.includes("tote") ||
+      n.includes("purse") ||
+      n.includes("handbag") ||
+      n.includes("clutch") ||
+      n.includes("satchel") ||
+      n.includes("hobo") ||
+      n.includes("crossbody")
+    ) {
+      return "bags";
+    }
+
+    if (n.includes("dress") || n.includes("gown") || n.includes("skirt")) {
+      return "dresses";
+    }
+
+    if (n.includes("bikini") || n.includes("swimsuit") || n.includes("swimwear")) {
+      return "swimwear";
+    }
+  }
+
+  if (
+    n.includes("bag") ||
+    n.includes("tote") ||
+    n.includes("purse") ||
+    n.includes("handbag")
+  ) {
+    return "bags";
+  }
+
+  if (n.includes("dress") || n.includes("gown")) {
+    return "dresses";
+  }
+
+  if (n.includes("jacket") || n.includes("coat")) {
+    return "jackets";
+  }
+
+  if (n.includes("hoodie") || n.includes("sweatshirt")) {
+    return "hoodies";
+  }
+
+  return "clothing";
 }
 
 function getImageUrls(entry) {
@@ -310,11 +431,7 @@ function prepareEntries(entries) {
     const sourceId = normalizeName(entry.sourceId);
     const sourceName = normalizeName(entry.sourceName);
     const audience = normalizeName(entry.audienceHint || "unisex");
-    const category = fixCategory(
-      normalizeName(entry.categoryHint || "clothing"),
-      audience,
-      sourceName,
-    );
+    const category = detectCategory(sourceName, audience);
     const brand = detectBrand(sourceName, entry.brandHint);
     const imageUrls = getImageUrls(entry);
 
