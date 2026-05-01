@@ -9,11 +9,15 @@ export function detectCategory(name, audienceHint) {
   const audience = normalizeName(audienceHint || "unisex").toLowerCase();
   const hasFormalFootwearTerm =
     /\b(?:loafers?|oxfords?|derbys?|moccasins?|monks?|brogues?)\b/i.test(n);
-  const hasDressFootwearTerm =
-    /\bshoes?\b/i.test(n) || hasFormalFootwearTerm;
+  const hasShoeTerm = n.includes("shoe");
+  const hasDressFootwearTerm = hasShoeTerm || hasFormalFootwearTerm;
   const hasBagDimensions = /\b\d{1,3}\s*x\s*\d{1,3}\s*x\s*\d{1,3}\s*cm\b/i.test(n);
   const hasShoeSizeRange =
     /\b(?:sz|size)?\s*(?:3[4-9]|4[0-8])\s*[-/]\s*(?:3[4-9]|4[0-8])\b/i.test(n);
+
+  if (hasBagDimensions) {
+    return "bags";
+  }
 
   if (hasDressFootwearTerm) {
     if (audience === "women") {
@@ -50,8 +54,41 @@ export function detectCategory(name, audienceHint) {
     return "men-sneakers";
   }
 
-  if (hasBagDimensions) {
+  if (
+    n.includes("bag") ||
+    n.includes("backpack") ||
+    n.includes("tote") ||
+    n.includes("purse") ||
+    n.includes("handbag") ||
+    n.includes("clutch") ||
+    n.includes("satchel") ||
+    n.includes("hobo") ||
+    n.includes("crossbody") ||
+    n.includes("pochette") ||
+    n.includes("flamenco") ||
+    n.includes("puzzle")
+  ) {
     return "bags";
+  }
+
+  if (n.includes("bikini") || n.includes("swimsuit") || n.includes("swimwear")) {
+    return "swimwear";
+  }
+
+  if (/\b(bucket hat|hat|cap|caps|beanie)\b/i.test(n)) {
+    return audience === "men" || audience === "unisex" ? "caps" : "hats";
+  }
+
+  if (n.includes("sunglass") || n.includes("eyewear") || n.includes("glasses")) {
+    return "sunglasses";
+  }
+
+  if (n.includes("watch") || n.includes("timepiece")) {
+    return audience === "men" || audience === "unisex" ? "men-watches" : "watches";
+  }
+
+  if (/\b(jewelry|jewellery|bracelet|ring|earring|necklace)\b/i.test(n)) {
+    return "jewellery";
   }
 
   if (audience === "men" || audience === "unisex") {
@@ -107,16 +144,8 @@ export function detectCategory(name, audienceHint) {
       return "caps";
     }
 
-    if (n.includes("sunglass") || n.includes("eyewear")) {
-      return "sunglasses";
-    }
-
-    if (n.includes("watch") || n.includes("timepiece")) {
-      return "men-watches";
-    }
-
-    if (n.includes("bag") || n.includes("backpack") || n.includes("tote")) {
-      return "bags";
+    if (n.includes("pants") || n.includes("trouser") || n.includes("shorts")) {
+      return "pants";
     }
   }
 
@@ -148,35 +177,9 @@ export function detectCategory(name, audienceHint) {
       return "boots";
     }
 
-    if (
-      n.includes("bag") ||
-      n.includes("tote") ||
-      n.includes("purse") ||
-      n.includes("handbag") ||
-      n.includes("clutch") ||
-      n.includes("satchel") ||
-      n.includes("hobo") ||
-      n.includes("crossbody")
-    ) {
-      return "bags";
-    }
-
     if (n.includes("dress") || n.includes("gown") || n.includes("skirt")) {
       return "dresses";
     }
-
-    if (n.includes("bikini") || n.includes("swimsuit") || n.includes("swimwear")) {
-      return "swimwear";
-    }
-  }
-
-  if (
-    n.includes("bag") ||
-    n.includes("tote") ||
-    n.includes("purse") ||
-    n.includes("handbag")
-  ) {
-    return "bags";
   }
 
   if (n.includes("dress") || n.includes("gown")) {

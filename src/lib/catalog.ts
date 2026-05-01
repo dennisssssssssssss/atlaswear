@@ -318,7 +318,7 @@ const cleanDisplayText = (value: string) =>
     .replace(/\b\d{2,}\s*-\s*\d{2,}\b/g, " ")
     .replace(/\b\d{6,}\b/g, " ")
     .replace(/\b1\s*:\s*1\b/gi, " ")
-    .replace(/\b[a-z]{2,5}\s*\d{2,5}\b/gi, " ")
+    .replace(/\b[a-z]{2,5}\d{2,5}\b/gi, " ")
     .replace(/\s+/g, " ")
     .trim();
 
@@ -444,8 +444,114 @@ const getSizeMultiplier = (product: SourceProduct) => {
   return 1;
 };
 
+const footwearCategories = new Set<SourceCategory>([
+  "sneakers",
+  "men-sneakers",
+  "sandals",
+  "mules",
+  "boots",
+]);
+
+const refineAudienceFromText = (
+  audience: SourceProduct["audience"],
+  text: string,
+): SourceProduct["audience"] => {
+  if (/\b(women|women's|woman|female|dama|femei)\b|35-41|35-40|36-41/.test(text)) {
+    return "women";
+  }
+
+  if (/\b(men|men's|man|male|barbati|bărbați)\b|38-46|39-45|40-46|41-46/.test(text)) {
+    return "men";
+  }
+
+  return audience ?? "unisex";
+};
+
+const hasFootwearText = (text: string) =>
+  /shoe|sneaker|trainer|runner|loafer|oxford|derby|moccasin|monk|brogue|boot|chelsea|sandal|slide|flip|heel|pump|stiletto|mule|flat/.test(
+    text,
+  );
+
+const hasBagText = (text: string) =>
+  /bag|backpack|tote|purse|handbag|hobo|shoulder|satchel|puzzle|flamenco|handle|clutch|pochette|bucket|crossbody|manhattan|nolita/.test(
+    text,
+  );
+
+const getContextCategory = (context: string): SourceCategory | null => {
+  if (/\bbags?\b|\bgenti\b/.test(context)) {
+    return "bags";
+  }
+
+  if (/jewellery|jewelry|bijuterii/.test(context)) {
+    return "jewellery";
+  }
+
+  if (/watch|watches|ceasuri/.test(context)) {
+    return "watches";
+  }
+
+  if (
+    /\b(?:glasses|sunglasses|belts?|scarves?|perfume|gloves?|ties?|socks?)\b|ochelari|curele|esarfe|parfum|manusi|cravate|sosete|hair accessories|accesorii par/.test(
+      context,
+    )
+  ) {
+    return "accessories";
+  }
+
+  if (/\b(?:caps?|hats?|bucket hats?|more hats?)\b|sepci/.test(context)) {
+    return "hats";
+  }
+
+  return null;
+};
+
+const getFootwearCategory = (
+  text: string,
+  audience: SourceProduct["audience"],
+  fallbackCategory: SourceCategory,
+): SourceCategory => {
+  if (/boot|chelsea|ugg|anacapa/.test(text)) {
+    return "boots";
+  }
+
+  if (/sandal|slide|flip|heel|pump|stiletto|slipper/.test(text)) {
+    return "sandals";
+  }
+
+  if (/mule|loafer|oxford|derby|moccasin|monk|brogue|flat|ballet|boston/.test(text)) {
+    return audience === "men" || audience === "unisex" ? "men-sneakers" : "mules";
+  }
+
+  if (footwearCategories.has(fallbackCategory) && fallbackCategory !== "dresses") {
+    return fallbackCategory;
+  }
+
+  return audience === "men" || audience === "unisex" ? "men-sneakers" : "sneakers";
+};
+
 const normalizeCatalogCategory = (product: SourceProduct): SourceCategory => {
   const text = cleanDisplayText(`${product.originalTitle} ${product.name}`).toLowerCase();
+  const context = cleanDisplayText(
+    `${product.href} ${getLocalizedText(product.sourceCollection, "en")} ${getLocalizedText(
+      product.sourceCollection,
+      "ro",
+    )}`,
+  ).toLowerCase();
+  const combinedText = `${text} ${context}`;
+  const audience = refineAudienceFromText(product.audience, combinedText);
+  const contextCategory = getContextCategory(context);
+
+  if (contextCategory === "bags" || hasBagText(text)) {
+    return "bags";
+  }
+
+  if (contextCategory && !hasFootwearText(text)) {
+    return contextCategory;
+  }
+
+  if (hasFootwearText(text) || hasFootwearText(context) || footwearCategories.has(product.category)) {
+    return getFootwearCategory(combinedText, audience, product.category);
+  }
 
   if (/bikini|swim/.test(text)) {
     return "swimwear";
@@ -463,36 +569,12 @@ const normalizeCatalogCategory = (product: SourceProduct): SourceCategory => {
     return "jewellery";
   }
 
-  if (/dress|gown|midi|mini/.test(text)) {
+  if (/\bdress\b|gown|skirt|\bmidi\b|\bmini dress\b/.test(text)) {
     return "dresses";
   }
 
   if (/\bt[-\s]?shirt\b|\btee\b|\bshirt\b|\bjacket\b|\bcoat\b|\bhoodie\b|\bpants\b|\bshorts\b/.test(text)) {
     return "clothing";
-  }
-
-  if (
-    /manhattan|bag|hobo|tote|shoulder|satchel|puzzle|flamenco|handle|clutch|pochette|bucket|crossbody/.test(
-      text,
-    )
-  ) {
-    return "bags";
-  }
-
-  if (/boot|boots|hoka|anacapa/.test(text)) {
-    return "boots";
-  }
-
-  if (/mule|loafer|flat|ballet|boston/.test(text)) {
-    return "mules";
-  }
-
-  if (/sandal|slide|heel|pump|slipper/.test(text)) {
-    return "sandals";
-  }
-
-  if (/sneaker|trainer|runner|sport|530|574|327|shoe/.test(text)) {
-    return "sneakers";
   }
 
   if (/scarf|belt|glasses|sunglasses|hair|perfume|gloves|tie|socks/.test(text)) {

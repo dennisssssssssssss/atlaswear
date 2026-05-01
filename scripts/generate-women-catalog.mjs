@@ -622,6 +622,102 @@ function yupooAudience(titleEn) {
   return "unisex";
 }
 
+const FOOTWEAR_CATEGORIES = new Set(["sneakers", "men-sneakers", "sandals", "mules", "boots"]);
+
+function hasExplicitCategorySignal(title) {
+  return /bikini|swim|bucket hat|\bhat\b|\bcap\b|caps|beanie|watch|timepiece|jewelry|jewellery|bracelet|\bring\b|earring|necklace|bag|backpack|tote|purse|handbag|clutch|satchel|hobo|crossbody|pochette|flamenco|puzzle|shoe|sneaker|trainer|runner|loafer|oxford|derby|moccasin|monk|brogue|boot|chelsea|sandal|slide|flip|heel|pump|stiletto|mule|flat|dress|gown|skirt|\bt[-\s]?shirt\b|\btee\b|\bshirt\b|jacket|coat|blazer|hoodie|sweatshirt|pants|trouser|shorts|scarf|belt|glasses|sunglasses|hair|perfume|gloves|tie|socks/i.test(
+    title,
+  );
+}
+
+function detectContextCategory(base) {
+  const context = decodeHtml(
+    `${base.href ?? ""} ${base.sourceCollection?.en ?? ""} ${base.sourceCollection?.ro ?? ""}`,
+  ).toLowerCase();
+
+  if (/bags\.qiqiyg\.com|\bbags?\b|\bgenti\b/.test(context)) {
+    return "bags";
+  }
+
+  if (/jewellery|jewelry|bijuterii/.test(context)) {
+    return "jewellery";
+  }
+
+  if (/watch|watches|ceasuri/.test(context)) {
+    return "watches";
+  }
+
+  if (/\b(?:glasses|sunglasses|belts?|scarves?|perfume|gloves?|ties?|socks?)\b|ochelari|curele|esarfe|parfum|manusi|cravate|sosete|hair accessories|accesorii par/.test(context)) {
+    return "accessories";
+  }
+
+  if (/\b(?:caps?|hats?|bucket hats?|more hats?)\b|sepci/.test(context)) {
+    return "hats";
+  }
+
+  return null;
+}
+
+function hasFootwearContext(base) {
+  const context = decodeHtml(
+    `${base.href ?? ""} ${base.sourceCollection?.en ?? ""} ${base.sourceCollection?.ro ?? ""}`,
+  ).toLowerCase();
+
+  return (
+    FOOTWEAR_CATEGORIES.has(base.defaultCategory) ||
+    /shoes\.qiqiyg\.com|shoe|sneaker|trainer|runner|loafer|oxford|derby|moccasin|monk|brogue|boot|chelsea|sandal|slide|flip|heel|pump|stiletto|mule|flat/i.test(
+      context,
+    )
+  );
+}
+
+function refineAudienceFromText(audience, text) {
+  if (/\b(women|women's|woman|female|dama|femei)\b|35-41|35-40|36-41/i.test(text)) {
+    return "women";
+  }
+
+  if (/\b(men|men's|man|male|barbati|bărbați)\b|38-46|39-45|40-46|41-46/i.test(text)) {
+    return "men";
+  }
+
+  return audience;
+}
+
+function detectSourceCategory(base, audience) {
+  const title = decodeHtml(base.title);
+  const fallbackCategory = base.defaultCategory || "clothing";
+  const context = decodeHtml(
+    `${base.href ?? ""} ${base.sourceCollection?.en ?? ""} ${base.sourceCollection?.ro ?? ""}`,
+  );
+  const refinedAudience = refineAudienceFromText(audience, `${title} ${context}`);
+  const inferredCategory = detectCategory(title, refinedAudience);
+  const contextCategory = detectContextCategory(base);
+
+  if (contextCategory === "bags") {
+    return "bags";
+  }
+
+  if (
+    contextCategory &&
+    inferredCategory !== "bags" &&
+    inferredCategory !== "dresses" &&
+    !FOOTWEAR_CATEGORIES.has(inferredCategory)
+  ) {
+    return contextCategory;
+  }
+
+  if (hasFootwearContext(base) && inferredCategory === "dresses") {
+    const contextCategory = detectCategory(`${title} ${context}`, refinedAudience);
+    return FOOTWEAR_CATEGORIES.has(contextCategory) ? contextCategory : fallbackCategory;
+  }
+
+  if (hasExplicitCategorySignal(title)) {
+    return inferredCategory;
+  }
+
+  return fallbackCategory;
+}
+
 function yupooProductPages(configs, source, baseUrl) {
   return configs.map((config) => ({
     kind: "yupoo",
@@ -972,7 +1068,7 @@ function detectBrand(title, fallbackBrand = "") {
   const checks = [
     [/saint laurent|ysl/, "Saint Laurent"],
     [/louis vuitton|\blv\b/, "Louis Vuitton"],
-    [/miu miu|\b530miu\b|\b530 miu\b|\b530miu\b/, "Miu Miu"],
+    [/miu\s*miu|\bmiumiu\b|\b530miu\b|\b530 miu\b|\b530miu\b/, "Miu Miu"],
     [/christian louboutin|louboutin/, "Christian Louboutin"],
     [/alexander wang/, "Alexander Wang"],
     [/alexander mcqueen|mcqueen/, "Alexander McQueen"],
@@ -1186,11 +1282,11 @@ function inferAudience(base, sizes) {
     `${base.title} ${base.sourceCollection?.en ?? ""} ${base.sourceCollection?.ro ?? ""}`,
   ).toLowerCase();
 
-  if (/\b(men|men's|male|barbati|bărbați)\b|38-46|39-45|40-46|41-46/.test(text)) {
+  if (/\b(men|men's|man|male|barbati|bărbați)\b|38-46|39-45|40-46|41-46/.test(text)) {
     return "men";
   }
 
-  if (/\b(women|women's|dama|femei)\b|35-41|35-40|36-41/.test(text)) {
+  if (/\b(women|women's|woman|female|dama|femei)\b|35-41|35-40|36-41/.test(text)) {
     return "women";
   }
 
@@ -1213,7 +1309,7 @@ function createSourceItem(base) {
   const sizes = expandSizeLabel(sizeLabel);
   const brand = detectBrand(base.title, base.defaultBrand);
   const audience = inferAudience(base, sizes);
-  const category = detectCategory(base.title, audience);
+  const category = detectSourceCategory(base, audience);
   const name = buildSourceName(base.title, brand, category);
   const tags = new Set(base.tags);
 
