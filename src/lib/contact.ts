@@ -14,6 +14,7 @@ const buildInquiryMessage = (
     `Produs: ${product.brand} ${product.name}`,
     `Marime: ${selectedSize || "-"}`,
     `Pret: ${product.priceRon} RON`,
+    "Plata: ramburs la livrare",
     `Link: ${productUrl}`,
     "",
     "Astept detalii despre disponibilitate si livrare.",

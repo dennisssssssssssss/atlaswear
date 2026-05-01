@@ -6,15 +6,15 @@ export const siteConfig = {
   brandName: "ATLAS Wear",
   brandShortName: "ATLAS",
   baseUrl: publicSiteUrl,
-  defaultTitle: "ATLAS Wear | Authentic fashion and accessories",
+  defaultTitle: "ATLAS Wear | Fashion si accesorii autentice",
   defaultDescription:
-    "Authentic, brand new, sealed fashion and accessories for Romania, the USA, and international customers.",
+    "Fashion si accesorii autentice, cu livrare in Romania si international. Comenzile se confirma direct.",
   heroImage: "/og-image.svg",
   contact: {
     supportEmail: "",
     orderEmail: "",
     whatsappNumber: "",
-    responseTime: "1-2 business days",
+    responseTime: "de obicei in aceeasi zi",
   },
   socialLinks: [
     { label: "Instagram", url: "" },
@@ -22,18 +22,18 @@ export const siteConfig = {
     { label: "YouTube", url: "" },
   ],
   shipping: {
-    processingWindow: "1-3 business days",
-    romaniaWindow: "2-4 business days",
-    internationalWindow: "5-10 business days",
+    processingWindow: "confirmare inainte de expediere",
+    romaniaWindow: "2-4 zile lucratoare",
+    internationalWindow: "se confirma inainte de expediere",
     dutiesNote:
-      "Orders shipped outside Romania may be subject to local duties and taxes.",
+      "Pentru livrarile internationale, costul si eventualele taxe se confirma inainte de expediere.",
   },
   returns: {
     windowDays: 14,
     conditionNote:
-      "Items must be unworn, unused, and returned with their original packaging.",
+      "Produsul trebuie sa fie nefolosit si returnat in ambalajul original.",
     exclusionNote:
-      "Personalized items, items damaged through misuse, or final-sale items may not be eligible for return.",
+      "Produsele folosite, deteriorate sau fara ambalajul original pot fi refuzate la retur.",
   },
 };
 

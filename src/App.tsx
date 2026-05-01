@@ -65,9 +65,23 @@ const App = () => (
                     element={<Navigate to="/contact" replace />}
                   />
                   <Route path="/contact" element={<Contact />} />
-                  <Route path="/shipping" element={<Shipping />} />
-                  <Route path="/returns" element={<Returns />} />
-                  <Route path="/privacy" element={<Privacy />} />
+                  <Route path="/politica-livrare" element={<Shipping />} />
+                  <Route path="/politica-retur" element={<Returns />} />
+                  <Route path="/politica-confidentialitate" element={<Privacy />} />
+                  <Route
+                    path="/shipping"
+                    element={<Navigate to="/politica-livrare" replace />}
+                  />
+                  <Route
+                    path="/returns"
+                    element={<Navigate to="/politica-retur" replace />}
+                  />
+                  <Route
+                    path="/privacy"
+                    element={
+                      <Navigate to="/politica-confidentialitate" replace />
+                    }
+                  />
                   <Route path="/terms" element={<Terms />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>

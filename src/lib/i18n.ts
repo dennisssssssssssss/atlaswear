@@ -35,7 +35,7 @@ export const getLocalizedText = (
 
 export const detectInitialLanguage = (): Lang => {
   if (typeof window === "undefined") {
-    return "en";
+    return "ro";
   }
 
   const stored = window.localStorage.getItem(LOCALE_STORAGE_KEY);
@@ -43,8 +43,7 @@ export const detectInitialLanguage = (): Lang => {
     return stored;
   }
 
-  const locale = window.navigator.language.toLowerCase();
-  return locale.startsWith("ro") ? "ro" : "en";
+  return "ro";
 };
 
 export const translate = (

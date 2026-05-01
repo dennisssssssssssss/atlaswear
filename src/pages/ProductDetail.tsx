@@ -1,7 +1,7 @@
 import { type MouseEvent, useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, MessageCircle } from "lucide-react";
 import { motion } from "framer-motion";
 
 import CatalogImage from "@/components/CatalogImage";
@@ -65,10 +65,8 @@ const ProductDetail = () => {
       return [];
     }
 
-    return Array.from(
-      new Set([product.images[0], ...relatedProducts.map((item) => item.images[0])]),
-    ).filter(Boolean);
-  }, [product, relatedProducts]);
+    return Array.from(new Set(product.images)).filter(Boolean);
+  }, [product]);
 
   if (isLoading) {
     return (
@@ -137,7 +135,7 @@ const ProductDetail = () => {
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            className="space-y-4"
+            className="min-w-0 space-y-4"
           >
             <div className="overflow-hidden rounded-lg border border-border bg-card">
               <div className="aspect-[4/5] overflow-hidden">
@@ -151,15 +149,17 @@ const ProductDetail = () => {
             </div>
 
             {galleryImages.length > 1 ? (
-              <div className="grid grid-cols-4 gap-3">
+              <div className="-mx-4 flex max-w-full gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0">
                 {galleryImages.map((image, index) => (
                   <button
                     key={`${product.id}-gallery-${index}`}
                     type="button"
                     onClick={() => setSelectedImage(index)}
-                    className={`overflow-hidden rounded-md border ${
+                    className={`min-w-20 overflow-hidden rounded-md border transition-colors sm:min-w-0 sm:flex-1 ${
                       selectedImage === index ? "border-gold" : "border-border"
                     }`}
+                    aria-label={t("View product image", "Vezi imagine produs")}
+                    aria-current={selectedImage === index ? "true" : undefined}
                   >
                     <div className="aspect-square overflow-hidden">
                       <CatalogImage
@@ -195,8 +195,8 @@ const ProductDetail = () => {
               </p>
               <p className="mt-3 text-sm leading-7 text-muted-foreground">
                 {t(
-                  "Extra visuals from the same line are kept inside the site so browsing stays clean.",
-                  "Vizualurile extra din aceeasi linie sunt pastrate in site pentru o navigare curata.",
+                  "Use the thumbnails to switch between product photos when multiple images are available.",
+                  "Foloseste miniaturile pentru a schimba pozele produsului cand sunt disponibile mai multe imagini.",
                 )}
               </p>
             </div>
@@ -314,6 +314,12 @@ const ProductDetail = () => {
               <p className="mt-3 text-sm leading-7 text-muted-foreground">
                 {t("product.instructions")}
               </p>
+              <p className="mt-3 text-sm font-medium text-gold">
+                {t(
+                  "Payment is cash on delivery only.",
+                  "Plata se face doar prin ramburs la livrare.",
+                )}
+              </p>
 
               <div className="mt-5">
                 {whatsappLink ? (
@@ -328,6 +334,7 @@ const ProductDetail = () => {
                       variant="gold"
                       className="w-full whitespace-normal text-center leading-5"
                     >
+                      <MessageCircle size={16} />
                       {t("product.orderCtaWhatsApp")}
                     </Button>
                   </a>
@@ -341,6 +348,7 @@ const ProductDetail = () => {
                       variant="gold"
                       className="w-full whitespace-normal text-center leading-5"
                     >
+                      <MessageCircle size={16} />
                       {t("product.orderCtaFallback")}
                     </Button>
                   </Link>

@@ -1,79 +1,61 @@
 import InfoPageLayout from "@/components/InfoPageLayout";
-import { publicSupportEmail } from "@/config/site";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { publicSupportEmail, siteConfig } from "@/config/site";
 import { usePageMeta } from "@/hooks/use-page-meta";
 
-const Privacy = () => {
-  const { t } = useLanguage();
+const privacyContact =
+  publicSupportEmail || siteConfig.contact.whatsappNumber || "WhatsApp";
 
+const Privacy = () => {
   usePageMeta({
-    title: t("Privacy", "Confidentialitate"),
-    description: t(
-      "Learn what data the current ATLAS storefront uses, stores in the browser, and sends through order requests.",
-      "Afla ce date foloseste storefront-ul ATLAS, ce stocheaza in browser si ce trimite prin solicitarile de comanda.",
-    ),
-    path: "/privacy",
+    title: "Politica de confidentialitate",
+    description:
+      "Informatii despre datele folosite pentru comenzi, contact si drepturile GDPR.",
+    path: "/politica-confidentialitate",
   });
 
   return (
     <InfoPageLayout
-      eyebrow={t("Privacy", "Confidentialitate")}
-      title={t("Privacy policy", "Politica de confidentialitate")}
-      intro={t(
-        "This page explains the data flows currently used by the storefront in its present form.",
-        "Aceasta pagina explica fluxurile de date folosite in prezent de magazin in forma lui actuala.",
-      )}
+      eyebrow="Confidentialitate"
+      title="Politica de confidentialitate"
+      intro="Aceasta politica explica ce date folosim cand ne contactezi, cand ceri informatii despre un produs sau cand confirmi o comanda."
     >
       <section className="rounded border border-border bg-surface p-6">
-        <h2 className="font-heading text-2xl mb-4">
-          {t("Data entered by customers", "Date introduse de clienti")}
-        </h2>
-        <p className="text-muted-foreground leading-relaxed">
-          {t(
-            "Customer details entered into the order form are only used to prepare an order request for the configured contact channel.",
-            "Detaliile introduse in formularul de comanda sunt folosite doar pentru a pregati o solicitare de comanda catre canalul de contact configurat.",
-          )}
+        <h2 className="mb-4 font-heading text-2xl">Ce date colectam</h2>
+        <p className="leading-8 text-muted-foreground">
+          Putem primi numele tau, numarul de telefon, adresa de livrare,
+          produsele comandate, marimea aleasa si mesajele trimise pe WhatsApp,
+          Telegram sau alte canale de contact folosite pentru comanda. Site-ul
+          poate salva in browser limba, moneda si preferintele de navigare,
+          ca sa nu le alegi de fiecare data.
         </p>
       </section>
 
       <section className="rounded border border-border bg-surface p-6">
-        <h2 className="font-heading text-2xl mb-4">
-          {t("Browser storage", "Stocare in browser")}
-        </h2>
-        <p className="text-muted-foreground leading-relaxed">
-          {t(
-            "The storefront stores cart contents, language preference, and currency preference in the browser to improve the shopping experience.",
-            "Magazinul stocheaza in browser continutul cosului, limba selectata si moneda selectata pentru a imbunatati experienta de cumparare.",
-          )}
+        <h2 className="mb-4 font-heading text-2xl">De ce le folosim</h2>
+        <p className="leading-8 text-muted-foreground">
+          Datele sunt folosite pentru confirmarea comenzii, livrare, comunicare
+          despre stoc, retururi si suport. Nu vindem datele tale si nu le folosim
+          pentru mesaje fara legatura cu solicitarea ta.
         </p>
       </section>
 
       <section className="rounded border border-border bg-surface p-6">
-        <h2 className="font-heading text-2xl mb-4">
-          {t("Cookies and analytics", "Cookie-uri si analytics")}
-        </h2>
-        <p className="text-muted-foreground leading-relaxed">
-          {t(
-            "Any analytics or marketing tools connected to this storefront should be documented here before launch. At the moment, browser preferences are the main site-side storage used by the app.",
-            "Orice tool de analytics sau marketing conectat la acest storefront trebuie documentat aici inainte de lansare. In prezent, preferintele salvate in browser sunt principala forma de stocare folosita de aplicatie.",
-          )}
+        <h2 className="mb-4 font-heading text-2xl">Cat timp le pastram</h2>
+        <p className="leading-8 text-muted-foreground">
+          Pastram datele cat este necesar pentru procesarea comenzii, retur,
+          garantie, evidenta contabila si obligatiile legale aplicabile. Mesajele
+          de suport pot fi pastrate atat timp cat este nevoie ca sa putem urmari
+          istoricul unei comenzi.
         </p>
       </section>
 
       <section className="rounded border border-border bg-surface p-6">
-        <h2 className="font-heading text-2xl mb-4">
-          {t("Contact about privacy", "Contact despre confidentialitate")}
-        </h2>
-        <p className="text-muted-foreground leading-relaxed">
-          {publicSupportEmail
-            ? t(
-                "For privacy questions, use the same support inbox listed on the contact page.",
-                "Pentru intrebari despre confidentialitate, foloseste acelasi inbox de suport listat in pagina de contact.",
-              )
-            : t(
-                "A privacy contact inbox will be published before launch.",
-                "Un inbox dedicat pentru confidentialitate va fi publicat inainte de lansare.",
-              )}
+        <h2 className="mb-4 font-heading text-2xl">Drepturile tale</h2>
+        <p className="leading-8 text-muted-foreground">
+          Ai dreptul sa ceri acces la datele tale, corectarea lor, stergerea lor,
+          restrictionarea prelucrarii, portarea datelor sau opozitia fata de
+          prelucrare, in limitele prevazute de GDPR. Pentru orice cerere legata
+          de date, contacteaza-ne prin {privacyContact}.
         </p>
       </section>
     </InfoPageLayout>

@@ -17,7 +17,6 @@ const Footer = () => {
   const { lang, setLang, t } = useLanguage();
   const { currency, setCurrency } = useCurrency();
   const { categories } = useCatalogProducts();
-  const activeSocials = siteConfig.socialLinks.filter((link) => Boolean(link.url));
   const year = new Date().getFullYear();
 
   return (
@@ -66,19 +65,19 @@ const Footer = () => {
                 {t("nav.contact")}
               </Link>
               <Link
-                to="/shipping"
+                to="/politica-livrare"
                 className="transition-colors hover:text-foreground"
               >
                 {t("nav.shipping")}
               </Link>
               <Link
-                to="/returns"
+                to="/politica-retur"
                 className="transition-colors hover:text-foreground"
               >
                 {t("nav.returns")}
               </Link>
               <Link
-                to="/privacy"
+                to="/politica-confidentialitate"
                 className="transition-colors hover:text-foreground"
               >
                 {t("nav.privacy")}
@@ -101,26 +100,27 @@ const Footer = () => {
 
           <div>
             <h3 className="text-xs uppercase tracking-[0.28em] text-gold">
-              {t("footer.follow")}
+              {t("Orders", "Comenzi")}
             </h3>
-            <div className="mt-4 flex flex-col gap-3">
-              {activeSocials.length > 0 ? (
-                activeSocials.map((link) => (
-                  <a
-                    key={link.label}
-                    href={link.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-                  >
-                    {link.label}
-                  </a>
-                ))
-              ) : (
-                <p className="text-sm text-muted-foreground">
-                  {t("footer.socialPlaceholder")}
-                </p>
-              )}
+            <div className="mt-4 flex flex-col gap-3 text-sm leading-7 text-muted-foreground">
+              <p>
+                {t(
+                  "Orders are confirmed by message before shipping.",
+                  "Comenzile se confirma prin mesaj inainte de expediere.",
+                )}
+              </p>
+              <p className="text-gold">
+                {t(
+                  "Payment is cash on delivery only.",
+                  "Plata se face doar prin ramburs la livrare.",
+                )}
+              </p>
+              <Link
+                to="/contact"
+                className="text-gold transition-colors hover:text-gold-light"
+              >
+                {t("home.contactCta")}
+              </Link>
             </div>
 
             <div className="mt-8">

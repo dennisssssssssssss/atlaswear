@@ -1,80 +1,29 @@
 import InfoPageLayout from "@/components/InfoPageLayout";
-import { publicSupportEmail, siteConfig } from "@/config/site";
-import { useLanguage } from "@/contexts/LanguageContext";
 import { usePageMeta } from "@/hooks/use-page-meta";
 
 const Shipping = () => {
-  const { t } = useLanguage();
-
   usePageMeta({
-    title: t("Shipping", "Livrare"),
-    description: t(
-      "Read the current ATLAS shipping timelines, processing windows, and delivery notes.",
-      "Citeste timpii actuali de livrare ATLAS, ferestrele de procesare si notele de expediere.",
-    ),
-    path: "/shipping",
+    title: "Politica de livrare",
+    description:
+      "Livrare prin Fan Courier sau Cargus, plata ramburs si confirmare pe WhatsApp inainte de expediere.",
+    path: "/politica-livrare",
   });
 
   return (
     <InfoPageLayout
-      eyebrow={t("Delivery", "Livrare")}
-      title={t("Shipping information", "Informatii de livrare")}
-      intro={t(
-        "These timelines are the current storefront estimates for shipping and handling.",
-        "Aceste intervale sunt estimarile actuale ale magazinului pentru procesare si livrare.",
-      )}
+      eyebrow="Livrare"
+      title="Politica de livrare"
+      intro="Livram prin Fan Courier sau Cargus, de obicei in 2-4 zile lucratoare din momentul in care comanda este confirmata. Inainte sa trimitem coletul, confirmam fiecare comanda pe WhatsApp: produs, marime, pret si adresa."
     >
       <section className="rounded border border-border bg-surface p-6">
-        <h2 className="font-heading text-2xl mb-4">
-          {t("Processing", "Procesare")}
-        </h2>
-        <p className="text-muted-foreground leading-relaxed">
-          {t(
-            "Orders are usually prepared within",
-            "Comenzile sunt de obicei pregatite in",
-          )}{" "}
-          {siteConfig.shipping.processingWindow}.
+        <p className="leading-8 text-muted-foreground">
+          Momentan plata se face doar ramburs, la livrare. Nu avem plata online
+          activa si nu cerem avans pentru comenzile standard.
         </p>
-      </section>
-
-      <section className="rounded border border-border bg-surface p-6">
-        <h2 className="font-heading text-2xl mb-4">
-          {t("Estimated delivery windows", "Intervale estimate de livrare")}
-        </h2>
-        <ul className="list-disc pl-5 space-y-2 text-muted-foreground">
-          <li>
-            {t("Romania", "Romania")}: {siteConfig.shipping.romaniaWindow}
-          </li>
-          <li>
-            {t("International", "International")}:{" "}
-            {siteConfig.shipping.internationalWindow}
-          </li>
-        </ul>
-      </section>
-
-      <section className="rounded border border-border bg-surface p-6">
-        <h2 className="font-heading text-2xl mb-4">
-          {t("Customs and taxes", "Taxe si taxe vamale")}
-        </h2>
-        <p className="text-muted-foreground leading-relaxed">
-          {siteConfig.shipping.dutiesNote}
-        </p>
-      </section>
-
-      <section className="rounded border border-border bg-surface p-6">
-        <h2 className="font-heading text-2xl mb-4">
-          {t("Tracking and delivery issues", "Tracking si probleme de livrare")}
-        </h2>
-        <p className="text-muted-foreground leading-relaxed">
-          {publicSupportEmail
-            ? t(
-                "If your shipment is delayed or arrives with an issue, contact support and include your order details.",
-                "Daca livrarea intarzie sau ajunge cu o problema, contacteaza suportul si include detaliile comenzii.",
-              )
-            : t(
-                "Tracking support will be published here as soon as the support inbox is configured.",
-                "Suportul pentru tracking va fi publicat aici imediat ce inboxul de suport este configurat.",
-              )}
+        <p className="mt-5 leading-8 text-muted-foreground">
+          Costul transportului este comunicat la confirmarea comenzii, inainte
+          sa plece coletul. Daca un produs are nevoie de verificare suplimentara
+          de stoc sau marime, iti spunem clar inainte sa confirmam expedierea.
         </p>
       </section>
     </InfoPageLayout>

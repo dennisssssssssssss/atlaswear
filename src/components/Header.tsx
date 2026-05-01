@@ -41,7 +41,10 @@ const Header = () => {
       id: "women" as const,
       label: t("Women", "Femei"),
       links: [
-        { to: "/shop?audience=women", label: t("All Women", "Toate femei") },
+        {
+          to: "/shop?audience=women",
+          label: t("All Women", "Toate produsele de femei"),
+        },
         {
           to: "/shop?audience=women&category=clothing",
           label: t("Clothing", "Imbracaminte"),
@@ -69,7 +72,10 @@ const Header = () => {
       id: "men" as const,
       label: t("Men", "Barbati"),
       links: [
-        { to: "/shop?audience=men", label: t("All Men", "Toti barbatii") },
+        {
+          to: "/shop?audience=men",
+          label: t("All Men", "Toate produsele de barbati"),
+        },
         {
           to: "/shop?audience=men&category=clothing",
           label: t("Clothing", "Imbracaminte"),
@@ -151,7 +157,7 @@ const Header = () => {
               <button
                 type="button"
                 onClick={() => setMobileOpen((current) => !current)}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border text-foreground transition-colors hover:border-gold hover:text-gold lg:hidden"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-border text-foreground transition-colors hover:border-gold hover:text-gold lg:hidden"
                 aria-label={mobileOpen ? "Close menu" : "Open menu"}
               >
                 {mobileOpen ? <X size={18} /> : <Menu size={18} />}
@@ -159,7 +165,7 @@ const Header = () => {
 
               <Link
                 to="/"
-                className="font-heading text-xl font-semibold tracking-[0.32em] text-gold md:text-2xl"
+                className="font-heading text-lg font-semibold tracking-[0.24em] text-gold sm:text-xl sm:tracking-[0.32em] md:text-2xl"
               >
                 ATLAS
               </Link>
@@ -173,7 +179,7 @@ const Header = () => {
                     type="button"
                     onClick={() => setLang(option.value)}
                     className={cn(
-                      "rounded-full px-3 py-1.5 text-xs uppercase tracking-[0.22em] transition-colors",
+                      "min-h-11 min-w-11 rounded-full px-3 py-1.5 text-xs uppercase tracking-[0.18em] transition-colors",
                       lang === option.value
                         ? "bg-gold text-primary-foreground"
                         : "text-muted-foreground hover:text-foreground",
@@ -379,7 +385,7 @@ const Header = () => {
                                     setMobileOpen(false);
                                     setMobileExpanded(null);
                                   }}
-                                  className="text-sm uppercase tracking-widest text-muted-foreground transition-colors hover:text-gold"
+                                  className="flex min-h-11 items-center text-sm uppercase tracking-widest text-muted-foreground transition-colors hover:text-gold"
                                 >
                                   {link.label}
                                 </Link>

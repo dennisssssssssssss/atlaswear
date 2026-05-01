@@ -132,6 +132,8 @@ const Shop = () => {
 
   const filterButtonClass =
     "min-h-11 rounded-full border px-4 py-2 text-xs uppercase tracking-[0.2em] transition-colors";
+  const mobileSelectClass =
+    "mt-3 h-12 w-full rounded-md border border-border bg-background px-4 text-sm text-foreground outline-none transition-colors focus:border-gold";
 
   const renderFilterControls = (sortId: string) => (
     <div className="grid gap-8 xl:grid-cols-[0.85fr_1fr_1fr_260px]">
@@ -275,6 +277,111 @@ const Shop = () => {
     </div>
   );
 
+  const renderMobileFilterControls = () => (
+    <div className="grid gap-5">
+      <div>
+        <label
+          htmlFor="mobile-audience"
+          className="text-xs uppercase tracking-[0.24em] text-gold"
+        >
+          {t("Audience", "Public")}
+        </label>
+        <select
+          id="mobile-audience"
+          value={activeAudience ?? ""}
+          onChange={(event) =>
+            updateParam("audience", event.target.value || undefined)
+          }
+          className={mobileSelectClass}
+        >
+          <option value="">{t("common.all")}</option>
+          {audienceOptions.map((audience) => (
+            <option key={audience.id} value={audience.id}>
+              {t(audience.labelEn, audience.labelRo)}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div>
+        <label
+          htmlFor="mobile-brand"
+          className="text-xs uppercase tracking-[0.24em] text-gold"
+        >
+          {t("shop.brand")}
+        </label>
+        <select
+          id="mobile-brand"
+          value={activeBrand ?? ""}
+          onChange={(event) => updateParam("brand", event.target.value || undefined)}
+          className={mobileSelectClass}
+        >
+          <option value="">{t("common.all")}</option>
+          {availableBrands.map((brand) => (
+            <option key={brand} value={brand}>
+              {brand}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div>
+        <label
+          htmlFor="mobile-category"
+          className="text-xs uppercase tracking-[0.24em] text-gold"
+        >
+          {t("shop.category")}
+        </label>
+        <select
+          id="mobile-category"
+          value={activeCategory ?? ""}
+          onChange={(event) =>
+            updateParam("category", event.target.value || undefined)
+          }
+          className={mobileSelectClass}
+        >
+          <option value="">{t("common.all")}</option>
+          {categories.map((category) => (
+            <option key={category.id} value={category.id}>
+              {getCatalogCategoryLabel(category.id, lang)}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div>
+        <label
+          htmlFor="mobile-sort"
+          className="text-xs uppercase tracking-[0.24em] text-gold"
+        >
+          {t("Sort by", "Sorteaza dupa")}
+        </label>
+        <select
+          id="mobile-sort"
+          value={activeSort}
+          onChange={(event) => updateParam("sort", event.target.value)}
+          className={mobileSelectClass}
+        >
+          <option value="featured">
+            {t("Recommended", "Recomandate")}
+          </option>
+          <option value="price-asc">
+            {t("Price: low to high", "Pret: crescator")}
+          </option>
+          <option value="price-desc">
+            {t("Price: high to low", "Pret: descrescator")}
+          </option>
+          <option value="brand-asc">
+            {t("Brand: A to Z", "Brand: A-Z")}
+          </option>
+          <option value="name-asc">
+            {t("Name: A to Z", "Nume: A-Z")}
+          </option>
+        </select>
+      </div>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-background px-4 pb-20 pt-32 text-foreground">
       <div className="container">
@@ -306,8 +413,8 @@ const Shop = () => {
               </p>
               <p className="mt-2 text-sm leading-7 text-muted-foreground">
                 {t(
-                  "All products are listed directly in the storefront, organized by audience, category, and brand.",
-                  "Toate produsele sunt listate direct in storefront, organizate pe public, categorii si branduri.",
+                  "Use filters only if you want to narrow the catalog fast.",
+                  "Foloseste filtrele doar daca vrei sa restrangi catalogul rapid.",
                 )}
               </p>
             </div>
@@ -322,7 +429,7 @@ const Shop = () => {
 
         <div className="mt-8">
           {isLoading ? (
-            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 md:gap-6 xl:grid-cols-4">
               {Array.from({ length: 8 }, (_, index) => (
                 <div
                   key={`catalog-loading-${index}`}
@@ -344,7 +451,7 @@ const Shop = () => {
             </div>
           ) : (
             <>
-              <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+              <div className="grid grid-cols-2 gap-3 sm:gap-4 md:gap-6 xl:grid-cols-4">
                 {visibleProducts.map((product, index) => (
                   <ProductCard key={product.id} product={product} index={index} />
                 ))}
@@ -391,7 +498,7 @@ const Shop = () => {
               )}
             </SheetDescription>
           </SheetHeader>
-          <div className="mt-6">{renderFilterControls("catalog-sort-mobile")}</div>
+          <div className="mt-6">{renderMobileFilterControls()}</div>
         </SheetContent>
       </Sheet>
     </div>
