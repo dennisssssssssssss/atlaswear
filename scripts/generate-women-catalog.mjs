@@ -6,6 +6,7 @@ import {
 } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { detectCategory } from "./utils/detectCategory.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -1050,53 +1051,6 @@ function detectBrand(title, fallbackBrand = "") {
   return fallbackBrand || "Designer";
 }
 
-function detectCategory(title, fallbackCategory) {
-  const normalized = decodeHtml(title).toLowerCase();
-
-  if (/bikini|swim/.test(normalized)) {
-    return "swimwear";
-  }
-  if (/\b(bucket hat|hat|cap|caps|beanie)\b/.test(normalized)) {
-    return "hats";
-  }
-  if (/watch/.test(normalized)) {
-    return "watches";
-  }
-  if (/jewelry|jewellery|bracelet|\bring\b|earring|necklace/.test(normalized)) {
-    return "jewellery";
-  }
-  if (/dress|gown|midi|mini/.test(normalized)) {
-    return "dresses";
-  }
-  if (/\bt[-\s]?shirt\b|\btee\b|\bshirt\b|\bjacket\b|\bcoat\b|\bhoodie\b|\bpants\b|\bshorts\b/.test(normalized)) {
-    return "clothing";
-  }
-  if (
-    /bag|hobo|tote|shoulder|satchel|puzzle|flamenco|handle|clutch|pochette|bucket|crossbody/.test(
-      normalized,
-    )
-  ) {
-    return "bags";
-  }
-  if (/boot|boots|hoka|anacapa/.test(normalized)) {
-    return "boots";
-  }
-  if (/mule|loafer|espadrille|flat|boston/.test(normalized)) {
-    return "mules";
-  }
-  if (/sandal|slide|heel|pump/.test(normalized)) {
-    return "sandals";
-  }
-  if (/sneaker|trainer|runner|ballet|530|574|327|shoe/.test(normalized)) {
-    return "sneakers";
-  }
-  if (/scarf|belt|glasses|sunglasses|hair|perfume/.test(normalized)) {
-    return "accessories";
-  }
-
-  return fallbackCategory;
-}
-
 function stripBrandFromTitle(title, brand) {
   if (!brand) {
     return title;
@@ -1258,7 +1212,8 @@ function createSourceItem(base) {
   const sizeLabel = extractSizeLabel(base.title);
   const sizes = expandSizeLabel(sizeLabel);
   const brand = detectBrand(base.title, base.defaultBrand);
-  const category = detectCategory(base.title, base.defaultCategory);
+  const audience = inferAudience(base, sizes);
+  const category = detectCategory(base.title, audience);
   const name = buildSourceName(base.title, brand, category);
   const tags = new Set(base.tags);
 
@@ -1280,7 +1235,7 @@ function createSourceItem(base) {
     tags: Array.from(tags),
     sourceCollection: base.sourceCollection,
     originalTitle: base.title,
-    audience: inferAudience(base, sizes),
+    audience,
     sourcePriceRon: extractSourcePriceRon(base.title),
   };
 }
