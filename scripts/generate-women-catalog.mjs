@@ -813,6 +813,14 @@ const CATEGORY_NOUNS = {
   hats: "Hat",
   watches: "Watch",
   jewellery: "Jewellery",
+  "polo-shirts": "Polo Shirt",
+  hoodies: "Hoodie",
+  caps: "Cap",
+  sunglasses: "Sunglasses",
+  "men-sneakers": "Sneaker",
+  "men-watches": "Watch",
+  jackets: "Jacket",
+  pants: "Pants",
 };
 
 function hasFile(filePath) {
@@ -1219,6 +1227,7 @@ function translateChineseFashionTitle(title, category) {
 function buildSourceName(title, brand, category) {
   const decoded = decodeHtml(title);
   const sizeLabel = extractSizeLabel(decoded);
+  const categoryNoun = CATEGORY_NOUNS[category] ?? CATEGORY_NOUNS.clothing;
   let working = decoded
     .replace(sizeLabel, " ")
     .replace(/\b\d{6,}\b/g, " ")
@@ -1243,9 +1252,9 @@ function buildSourceName(title, brand, category) {
     .trim();
 
   if (!working) {
-    working = CATEGORY_NOUNS[category];
+    working = categoryNoun;
   } else if (/^\d+$/.test(working)) {
-    working = `${CATEGORY_NOUNS[category]} ${working}`;
+    working = `${categoryNoun} ${working}`;
   }
 
   if (!working.toLowerCase().startsWith(brand.toLowerCase())) {
