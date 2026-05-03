@@ -7,10 +7,7 @@ import CatalogImage from "@/components/CatalogImage";
 import { Button } from "@/components/ui/button";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { useLanguage } from "@/contexts/LanguageContext";
-import {
-  getCatalogCategoryLabel,
-  type CatalogProduct,
-} from "@/lib/catalog";
+import { type CatalogProduct } from "@/lib/catalog";
 import { getPreferredProductContactLink } from "@/lib/contact";
 
 interface ProductCardProps {
@@ -38,7 +35,7 @@ const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
       className="flex h-full min-w-0 flex-col rounded-lg border border-border bg-card p-3 sm:p-4"
     >
       <Link to={`/product/${product.id}`} className="group block">
-        <div className="relative overflow-hidden rounded-md bg-surface">
+        <div className="overflow-hidden rounded-md bg-surface">
           <div className="aspect-[4/5] overflow-hidden">
             <CatalogImage
               src={product.images[0]}
@@ -47,20 +44,6 @@ const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
               loading="lazy"
               fallbackClassName="p-4"
             />
-          </div>
-
-          <div className="absolute left-2 right-2 top-2 flex flex-wrap gap-1 sm:left-3 sm:right-3 sm:top-3 sm:gap-2">
-            <span className="max-w-full truncate rounded-full border border-border bg-background/90 px-2 py-1 text-[9px] uppercase tracking-[0.12em] text-gold backdrop-blur sm:px-3 sm:text-[10px] sm:tracking-[0.24em]">
-              {getCatalogCategoryLabel(product.category, lang)}
-            </span>
-            <span className="hidden rounded-full border border-border bg-background/90 px-3 py-1 text-[10px] uppercase tracking-[0.24em] text-foreground backdrop-blur sm:inline-flex">
-              {t("common.authenticSealed")}
-            </span>
-            {product.bestPrice ? (
-              <span className="max-w-full truncate rounded-full bg-gold px-2 py-1 text-[9px] uppercase tracking-[0.12em] text-primary-foreground sm:px-3 sm:text-[10px] sm:tracking-[0.24em]">
-                {t("common.bestPrice")}
-              </span>
-            ) : null}
           </div>
         </div>
       </Link>

@@ -6,6 +6,7 @@ import {
 } from "@/lib/i18n";
 import { useQuery } from "@tanstack/react-query";
 import { resolveAssetUrl } from "@/lib/assets";
+import type { CatalogProduct } from "@/lib/catalog";
 
 export { getLocalizedText } from "@/lib/i18n";
 
@@ -149,11 +150,11 @@ export const fetchProducts = async () => {
     throw new Error(`Failed to load product catalog: ${response.status}`);
   }
 
-  return response.json() as Promise<Product[]>;
+  return response.json() as Promise<CatalogProduct[]>;
 };
 
 export const useProducts = () =>
-  useQuery<Product[]>({
+  useQuery<CatalogProduct[]>({
     queryKey: productsQueryKey,
     queryFn: fetchProducts,
     staleTime: 1000 * 60 * 15,
