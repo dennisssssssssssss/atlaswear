@@ -26,449 +26,703 @@
     }
   },
   "approvedProducts": {
-    "total": 8352,
+    "total": 7467,
     "byCategory": {
-      "dresses": 2354,
-      "clothing": 948,
-      "bags": 1623,
-      "sneakers": 1531,
-      "sandals": 653,
-      "mules": 11,
-      "boots": 188,
-      "swimwear": 30,
-      "accessories": 294,
-      "hats": 104,
-      "watches": 121,
-      "jewellery": 38,
+      "dresses": 2347,
+      "clothing": 691,
+      "bags": 1520,
+      "sneakers": 1393,
+      "sandals": 579,
+      "mules": 9,
+      "boots": 185,
+      "swimwear": 24,
+      "accessories": 195,
+      "hats": 70,
+      "watches": 32,
+      "jewellery": 27,
       "polo-shirts": 66,
-      "hoodies": 3,
-      "men-sneakers": 388
+      "hoodies": 1,
+      "men-sneakers": 328
     }
   },
   "reviewProducts": {
-    "total": 28,
+    "total": 913,
     "byCategory": {
-      "clothing": 2,
+      "dresses": 7,
+      "clothing": 259,
+      "bags": 103,
+      "sneakers": 138,
+      "sandals": 74,
+      "mules": 2,
+      "boots": 3,
+      "swimwear": 6,
+      "accessories": 99,
+      "hats": 34,
+      "watches": 89,
+      "jewellery": 11,
       "polo-shirts": 5,
-      "hoodies": 2,
+      "hoodies": 4,
       "caps": 3,
       "sunglasses": 3,
-      "men-sneakers": 10,
+      "men-sneakers": 70,
       "men-watches": 3
     },
     "examples": [
       {
-        "id": "air-jordan-1-retro-high-og-chicago",
-        "name": "Air Jordan 1 Retro High OG \"Chicago\"",
-        "brand": "Jordan",
-        "category": "men-sneakers",
+        "id": "qiqiyg-designer-designer-2025moschino-0827-vapufs",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "missing-image",
-            "message": "Product has no images."
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
           }
         ]
       },
       {
-        "id": "air-jordan-1-retro-high-og-royal-blue",
-        "name": "Air Jordan 1 Retro High OG \"Royal Blue\"",
-        "brand": "Jordan",
-        "category": "men-sneakers",
+        "id": "qiqiyg-designer-designer-2025stefano-belt-38mm-0827-1ef49bu",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "missing-image",
-            "message": "Product has no images."
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
           }
         ]
       },
       {
-        "id": "air-jordan-4-retro-military-black",
-        "name": "Air Jordan 4 Retro \"Military Black\"",
-        "brand": "Jordan",
-        "category": "men-sneakers",
+        "id": "qiqiyg-designer-designer-2026-bercoc-belt-0411-cinch6",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "missing-image",
-            "message": "Product has no images."
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
           }
         ]
       },
       {
-        "id": "nike-air-force-1-low-white",
-        "name": "Nike Air Force 1 Low White",
-        "brand": "Nike",
-        "category": "men-sneakers",
+        "id": "qiqiyg-designer-designer-2026-bugatti-glasses-0331-1o5v06h",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "missing-image",
-            "message": "Product has no images."
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
           }
         ]
       },
       {
-        "id": "nike-dunk-low-panda",
-        "name": "Nike Dunk Low \"Panda\"",
-        "brand": "Nike",
-        "category": "men-sneakers",
+        "id": "qiqiyg-designer-designer-2026-pp-belt-0411-f77hga",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "missing-image",
-            "message": "Product has no images."
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
           }
         ]
       },
       {
-        "id": "nike-air-max-90-infrared",
-        "name": "Nike Air Max 90 \"Infrared\"",
-        "brand": "Nike",
-        "category": "men-sneakers",
+        "id": "qiqiyg-designer-designer-25-oversleeve-0403-1muyunv",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "missing-image",
-            "message": "Product has no images."
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
           }
         ]
       },
       {
-        "id": "adidas-samba-og-white-gum",
-        "name": "Adidas Samba OG White Gum",
-        "brand": "Adidas",
-        "category": "men-sneakers",
+        "id": "qiqiyg-designer-designer-acqua-di-parma-perfume-0313-1a2gpuf",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "missing-image",
-            "message": "Product has no images."
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
           }
         ]
       },
       {
-        "id": "adidas-campus-00s-grey",
-        "name": "Adidas Campus 00s Grey",
-        "brand": "Adidas",
-        "category": "men-sneakers",
+        "id": "qiqiyg-designer-designer-aesop-perfume-0407-e4lcav",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "missing-image",
-            "message": "Product has no images."
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
           }
         ]
       },
       {
-        "id": "off-white-out-of-office-ooo-white",
-        "name": "Off-White Out Of Office \"OOO\" White",
-        "brand": "Off-White",
-        "category": "men-sneakers",
+        "id": "qiqiyg-designer-designer-af-perfume-0313-1jw2ugv",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "missing-image",
-            "message": "Product has no images."
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
           }
         ]
       },
       {
-        "id": "balenciaga-triple-s-black",
-        "name": "Balenciaga Triple S Black",
-        "brand": "Balenciaga",
-        "category": "men-sneakers",
+        "id": "qiqiyg-designer-designer-afnan-perfume-0313-1wdp3ar",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "missing-image",
-            "message": "Product has no images."
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
           }
         ]
       },
       {
-        "id": "ralph-lauren-custom-slim-fit-polo-white",
-        "name": "Ralph Lauren Custom Slim Fit Polo White",
-        "brand": "Ralph Lauren",
-        "category": "polo-shirts",
+        "id": "qiqiyg-designer-designer-al-haramain-perfume-0313-1bar0pj",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "missing-image",
-            "message": "Product has no images."
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
           }
         ]
       },
       {
-        "id": "ralph-lauren-custom-slim-fit-polo-navy",
-        "name": "Ralph Lauren Custom Slim Fit Polo Navy",
-        "brand": "Ralph Lauren",
-        "category": "polo-shirts",
+        "id": "qiqiyg-designer-designer-ami-socks-1229-191qy4o",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "missing-image",
-            "message": "Product has no images."
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
           }
         ]
       },
       {
-        "id": "lacoste-l1212-polo-white",
-        "name": "Lacoste L.12.12 Polo White",
-        "brand": "Lacoste",
-        "category": "polo-shirts",
+        "id": "qiqiyg-designer-designer-amouage-perfume-0428-ivprj3",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "missing-image",
-            "message": "Product has no images."
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
           }
         ]
       },
       {
-        "id": "lacoste-l1212-polo-black",
-        "name": "Lacoste L.12.12 Polo Black",
-        "brand": "Lacoste",
-        "category": "polo-shirts",
+        "id": "qiqiyg-designer-designer-ann-andelman-scarf-0322-1exf6p1",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "missing-image",
-            "message": "Product has no images."
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
           }
         ]
       },
       {
-        "id": "moncler-logo-polo-white",
-        "name": "Moncler Logo Polo White",
-        "brand": "Moncler",
-        "category": "polo-shirts",
+        "id": "qiqiyg-designer-designer-anna-sui-perfume-0312-lm6fpr",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "missing-image",
-            "message": "Product has no images."
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
           }
         ]
       },
       {
-        "id": "stone-island-compass-patch-tee-white",
-        "name": "Stone Island Compass Patch Tee White",
-        "brand": "Stone Island",
-        "category": "clothing",
+        "id": "qiqiyg-designer-designer-antonio-banderas-perfume-0312-1hzv1b",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "missing-image",
-            "message": "Product has no images."
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
           }
         ]
       },
       {
-        "id": "stone-island-compass-patch-tee-black",
-        "name": "Stone Island Compass Patch Tee Black",
-        "brand": "Stone Island",
-        "category": "clothing",
+        "id": "qiqiyg-designer-designer-arcteryx-socks-1102-146x536",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "missing-image",
-            "message": "Product has no images."
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
           }
         ]
       },
       {
-        "id": "off-white-arrow-hoodie-black",
-        "name": "Off-White Arrow Hoodie Black",
-        "brand": "Off-White",
-        "category": "hoodies",
+        "id": "qiqiyg-designer-designer-ariana-grande-perfume-0312-jl7zbv",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "missing-image",
-            "message": "Product has no images."
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
           }
         ]
       },
       {
-        "id": "balenciaga-bb-logo-hoodie-black",
-        "name": "Balenciaga BB Logo Hoodie Black",
-        "brand": "Balenciaga",
-        "category": "hoodies",
+        "id": "qiqiyg-designer-designer-armaf-perfume-0407-1l07nr",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "missing-image",
-            "message": "Product has no images."
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
           }
         ]
       },
       {
-        "id": "nike-air-cap-black",
-        "name": "Nike Air Cap Black",
-        "brand": "Nike",
-        "category": "caps",
+        "id": "qiqiyg-designer-designer-armain-glasses-0331-sfsomx",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "missing-image",
-            "message": "Product has no images."
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
           }
         ]
       },
       {
-        "id": "jordan-jumpman-cap-black",
-        "name": "Jordan Jumpman Cap Black",
-        "brand": "Jordan",
-        "category": "caps",
+        "id": "qiqiyg-designer-designer-artisan-perfume-0312-3btnsf",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "missing-image",
-            "message": "Product has no images."
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
           }
         ]
       },
       {
-        "id": "gucci-gg-canvas-baseball-cap-beige",
-        "name": "Gucci GG Canvas Baseball Cap Beige",
-        "brand": "Gucci",
-        "category": "caps",
+        "id": "qiqiyg-designer-designer-astier-de-villatte-perfume-0313-1wa3err",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "missing-image",
-            "message": "Product has no images."
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
           }
         ]
       },
       {
-        "id": "gucci-gg0061s-square-sunglasses-black",
-        "name": "Gucci GG0061S Square Sunglasses Black",
-        "brand": "Gucci",
-        "category": "sunglasses",
+        "id": "qiqiyg-designer-designer-atelier-cologne-perfume-0312-11rtsuj",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "missing-image",
-            "message": "Product has no images."
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
           }
         ]
       },
       {
-        "id": "dior-blacksuit-ri-sunglasses",
-        "name": "Dior BlackSuit RI Sunglasses",
-        "brand": "Dior",
-        "category": "sunglasses",
+        "id": "qiqiyg-designer-designer-atkinsons-perfume-0312-zhse17",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "missing-image",
-            "message": "Product has no images."
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
           }
         ]
       },
       {
-        "id": "versace-ve2262-medusa-biggie-sunglasses-gold",
-        "name": "Versace VE2262 Medusa Biggie Sunglasses Gold",
-        "brand": "Versace",
-        "category": "sunglasses",
+        "id": "qiqiyg-designer-designer-attar-perfume-0324-ypov5r",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "missing-image",
-            "message": "Product has no images."
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
           }
         ]
       },
       {
-        "id": "rolex-submariner-date-black-dial",
-        "name": "Rolex Submariner Date Black Dial",
-        "brand": "Rolex",
-        "category": "men-watches",
+        "id": "qiqiyg-designer-designer-azzaro-perfume-0422-1n23ztj",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "missing-image",
-            "message": "Product has no images."
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
           }
         ]
       },
       {
-        "id": "rolex-datejust-41-silver-dial",
-        "name": "Rolex Datejust 41 Silver Dial",
-        "brand": "Rolex",
-        "category": "men-watches",
+        "id": "qiqiyg-designer-designer-b-b-simon-belt-1218-16yixp2",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "missing-image",
-            "message": "Product has no images."
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
           }
         ]
       },
       {
-        "id": "audemars-piguet-royal-oak-black",
-        "name": "Audemars Piguet Royal Oak Black",
-        "brand": "Audemars Piguet",
-        "category": "men-watches",
+        "id": "qiqiyg-designer-designer-bdk-perfume-0312-88wucv",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "missing-image",
-            "message": "Product has no images."
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+          }
+        ]
+      },
+      {
+        "id": "qiqiyg-designer-designer-belt-0716-1moxdpk",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+          }
+        ]
+      },
+      {
+        "id": "qiqiyg-designer-designer-billie-eilish-perfume-0312-rsa3j",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+          }
+        ]
+      },
+      {
+        "id": "qiqiyg-designer-designer-blrhe-huerhrrr-glasses-0331-100clxb",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+          }
+        ]
+      },
+      {
+        "id": "qiqiyg-designer-designer-bond-no-9-perfume-0428-1jnghrj",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+          }
+        ]
+      },
+      {
+        "id": "qiqiyg-designer-designer-boucheron-perfume-0312-14fjhur",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+          }
+        ]
+      },
+      {
+        "id": "qiqiyg-designer-designer-byredo-perfume-0422-1y4m8qn",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+          }
+        ]
+      },
+      {
+        "id": "qiqiyg-designer-designer-calabasas-socks-0723-imh26o",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+          }
+        ]
+      },
+      {
+        "id": "qiqiyg-designer-designer-carin-glasses-0331-5nggef",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+          }
+        ]
+      },
+      {
+        "id": "qiqiyg-designer-designer-carolina-perfume-0428-1ivpmvj",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+          }
+        ]
+      },
+      {
+        "id": "qiqiyg-designer-designer-caron-perfume-0311-1xj5w33",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+          }
+        ]
+      },
+      {
+        "id": "qiqiyg-designer-designer-carrera-glasses-0331-1nqgvhp",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+          }
+        ]
+      },
+      {
+        "id": "qiqiyg-designer-designer-casamorati-perfume-0312-gwiqkv",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+          }
+        ]
+      },
+      {
+        "id": "qiqiyg-designer-designer-cazal-glasses-0326-1k9aakx",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+          }
+        ]
+      },
+      {
+        "id": "qiqiyg-designer-designer-cazal-glasses-xh-1ruaor9",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+          }
+        ]
+      },
+      {
+        "id": "qiqiyg-designer-designer-champion-socks-1102-1lfmy64",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+          }
+        ]
+      },
+      {
+        "id": "qiqiyg-designer-designer-chloe-glasses-0331-hntusx",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+          }
+        ]
+      },
+      {
+        "id": "qiqiyg-designer-designer-chloe-perfume-0324-1p9i5nz",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+          }
+        ]
+      },
+      {
+        "id": "qiqiyg-designer-designer-chopard-glasses-0331-ska29t",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+          }
+        ]
+      },
+      {
+        "id": "qiqiyg-designer-designer-chopard-perfume-0311-paio1j",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+          }
+        ]
+      },
+      {
+        "id": "qiqiyg-designer-designer-choppers-belt-1218-kytyjk",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+          }
+        ]
+      },
+      {
+        "id": "qiqiyg-designer-designer-clinique-perfume-0311-10pixpz",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+          }
+        ]
+      },
+      {
+        "id": "qiqiyg-designer-designer-clive-perfume-0428-1oldftj",
+        "name": "ATLAS Accessory",
+        "brand": "ATLAS Selection",
+        "category": "accessories",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "generic-atlas-selection",
+            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
           }
         ]
       }
     ]
   },
   "warningProducts": {
-    "total": 3,
-    "examples": [
-      {
-        "id": "qiqiyg-designer-designer-beach-bag-0427-4fvjue",
-        "name": "ATLAS Bag",
-        "brand": "ATLAS Selection",
-        "category": "bags",
-        "issues": [
-          {
-            "severity": "warning",
-            "code": "hat-outside-accessories",
-            "message": "Hat text is categorized outside hat/accessory categories.",
-            "expectedCategory": "hats"
-          }
-        ]
-      },
-      {
-        "id": "qiqiyg-designer-designer-beach-bag-hat-2pcs-0414-yqshu6",
-        "name": "ATLAS Bag",
-        "brand": "ATLAS Selection",
-        "category": "bags",
-        "issues": [
-          {
-            "severity": "warning",
-            "code": "hat-outside-accessories",
-            "message": "Hat text is categorized outside hat/accessory categories.",
-            "expectedCategory": "hats"
-          }
-        ]
-      },
-      {
-        "id": "qiqiyg-designer-designer-that-t-shirt-0416-1lbk91s",
-        "name": "ATLAS Cap",
-        "brand": "ATLAS Selection",
-        "category": "clothing",
-        "issues": [
-          {
-            "severity": "warning",
-            "code": "hat-outside-accessories",
-            "message": "Hat text is categorized outside hat/accessory categories.",
-            "expectedCategory": "hats"
-          }
-        ]
-      }
-    ]
+    "total": 0,
+    "examples": []
   },
   "duplicateIds": []
 }

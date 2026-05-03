@@ -80,6 +80,8 @@ const dressExceptionPattern =
   /\b(?:dress\s*shoes?\d*|dress\s*shirts?|dress\s*pants|dress\s*socks?)\b/i;
 const clothingPattern =
   /\b(?:t[-\s]?shirts?|tees?|shirts?|jackets?|coats?|hoodies?|sweaters?|pants?|shorts?|jeans?|vests?|suits?|tracksuits?)\b/i;
+const genericAtlasNamePattern =
+  /^ATLAS\s+(?:Dress|Piece|Bag|Sneaker|Sandal|Mule|Boot|Swimwear|Accessory|Hat|Watch|Jewellery|Polo Shirt|Hoodie|Cap|Sunglasses|Jacket|Pants)$/i;
 
 const expectedFootwearCategory = (text, audience, fallbackCategory) => {
   if (bootPattern.test(text)) {
@@ -163,6 +165,15 @@ export const auditCatalogProduct = (product) => {
 
   if (!Number.isFinite(product.priceRon) || product.priceRon <= 0) {
     addIssue(issues, "blocker", "invalid-price", "Product has invalid price.");
+  }
+
+  if (product.brand === "ATLAS Selection" && genericAtlasNamePattern.test(product.name)) {
+    addIssue(
+      issues,
+      "blocker",
+      "generic-atlas-selection",
+      "Generic ATLAS Selection product is not premium enough for the storefront.",
+    );
   }
 
   if (category === "dresses" && footwearPattern.test(text)) {

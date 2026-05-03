@@ -315,6 +315,9 @@ const cleanDisplayText = (value: string) =>
   value
     .replace(/ï¿½/g, " ")
     .replace(/[^\x20-\x7E]/g, " ")
+    .replace(/\bgf[_\s-]*\d+\b/gi, " ")
+    .replace(/\bts\b/gi, " ")
+    .replace(/\b\d+(?:[.,]\d+)?(?:\s*x\s*\d+(?:[.,]\d+)?){1,3}\s*cm\b/gi, " ")
     .replace(/\b\d{2,}\s*-\s*\d{2,}\b/g, " ")
     .replace(/\b\d{6,}\b/g, " ")
     .replace(/\b1\s*:\s*1\b/gi, " ")
@@ -322,9 +325,83 @@ const cleanDisplayText = (value: string) =>
     .replace(/\s+/g, " ")
     .trim();
 
+const brandAliases: Array<[string, RegExp]> = [
+  ["Louis Vuitton", /\b(?:Louis\s+Vuitton|LV)\b/i],
+  ["Saint Laurent", /\b(?:Saint\s+Laurent|YSL)\b/i],
+  ["Bottega Veneta", /\b(?:Bottega\s+Veneta|BV)\b/i],
+  ["Miu Miu", /\b(?:Miu\s*Miu|MiuMiu)\b/i],
+  ["Ralph Lauren", /\b(?:Ralph\s+Lauren|Polo\s+Ralph\s+Lauren)\b/i],
+  ["Michael Kors", /\b(?:Michael\s+Kors|MK)\b/i],
+  ["Alexander McQueen", /\bAlexander\s+McQueen\b/i],
+  ["Audemars Piguet", /\bAudemars\s+Piguet\b/i],
+  ["Chrome Hearts", /\bChrome\s+Hearts\b/i],
+  ["Canada Goose", /\bCanada\s+Goose\b/i],
+  ["Dolce & Gabbana", /\b(?:Dolce\s*&?\s*Gabbana|D&G|DG)\b/i],
+  ["Maison Margiela", /\bMaison\s+Margiela\b/i],
+  ["New Balance", /\bNew\s+Balance\b/i],
+  ["The Row", /\bThe\s+Row\b/i],
+  ["Acne Studios", /\bAcne\b/i],
+  ["Amiri", /\bAmiri\b/i],
+  ["Armani", /\bArmani\b/i],
+  ["Balenciaga", /\bBalenciaga\b/i],
+  ["Balmain", /\bBalmain\b/i],
+  ["Birkenstock", /\bBirkenstock\b/i],
+  ["Boss", /\bBoss\b/i],
+  ["Burberry", /\bBurberry\b/i],
+  ["Cartier", /\bCartier\b/i],
+  ["Celine", /\bCeline\b/i],
+  ["Chanel", /\bChanel\b/i],
+  ["Coach", /\bCoach\b/i],
+  ["Dior", /\bDior\b/i],
+  ["Diesel", /\bDiesel\b/i],
+  ["Fendi", /\bFendi\b/i],
+  ["Ferragamo", /\bFerragamo\b/i],
+  ["Givenchy", /\bGivenchy\b/i],
+  ["Gucci", /\bGucci\b/i],
+  ["Hermes", /\bHermes\b/i],
+  ["HOKA", /\bHOKA\b/i],
+  ["Jacquemus", /\bJacquemus\b/i],
+  ["Jimmy Choo", /\bJimmy\s+Choo\b/i],
+  ["Kiton", /\bKiton\b/i],
+  ["Lacoste", /\bLacoste\b/i],
+  ["Loewe", /\bLoewe\b/i],
+  ["Loro Piana", /\bLoro\s+Piana\b/i],
+  ["Lululemon", /\bLululemon\b/i],
+  ["Moncler", /\bMoncler\b/i],
+  ["Nike", /\bNike\b/i],
+  ["Off-White", /\bOff[-\s]?White\b/i],
+  ["Prada", /\bPrada\b/i],
+  ["Rolex", /\bRolex\b/i],
+  ["Stone Island", /\bStone\s+Island\b/i],
+  ["Tory Burch", /\bTory\s+Burch\b/i],
+  ["UGG", /\bUGG\b/i],
+  ["Valentino", /\bValentino\b/i],
+  ["Versace", /\bVersace\b/i],
+  ["Zimmermann", /\bZimmermann\b/i],
+];
+
+const detectBrandFromText = (text: string) =>
+  brandAliases.find(([, pattern]) => pattern.test(text))?.[0] ?? null;
+
 const getDisplayBrand = (product: SourceProduct) => {
   const cleaned = cleanDisplayText(product.brand);
-  return genericBrands.has(cleaned) ? "ATLAS Selection" : cleaned;
+
+  if (!genericBrands.has(cleaned)) {
+    return cleaned;
+  }
+
+  return (
+    detectBrandFromText(
+      cleanDisplayText(
+        [
+          product.name,
+          product.originalTitle,
+          getLocalizedText(product.sourceCollection, "en"),
+          getLocalizedText(product.sourceCollection, "ro"),
+        ].join(" "),
+      ),
+    ) ?? "ATLAS Selection"
+  );
 };
 
 const categoryNouns: Record<SourceCategory, LocalizedText> = {
