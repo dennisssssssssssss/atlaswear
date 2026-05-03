@@ -4,10 +4,18 @@ import { fileURLToPath } from "node:url";
 
 import { createServer } from "vite";
 
+import {
+  auditCatalogProducts,
+  buildQualityReport,
+} from "./utils/catalogQuality.mjs";
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const outputDir = path.resolve(__dirname, "../public/data");
 const outputPath = path.join(outputDir, "products.json");
+const reportsDir = path.resolve(__dirname, "../reports");
+const reviewProductsPath = path.join(reportsDir, "review-products.json");
+const qualityReportPath = path.join(reportsDir, "catalog-quality-report.json");
 const sourceProductsPath = path.resolve(
   __dirname,
   "../public/source-data/source-products.json",
@@ -43,15 +51,44 @@ try {
     throw new TypeError(`${sourceProductsPath} must contain a JSON array`);
   }
 
-  const products = attachRelatedProducts([
+  const normalizedProducts = [
     ...sourceProducts.map(mapSourceProductToCatalogProduct),
     ...[...womenProducts, ...menProducts].map(mapProductToCatalogProduct),
+  ];
+  const qualityAudit = auditCatalogProducts(normalizedProducts);
+  const products = attachRelatedProducts(qualityAudit.approvedProducts);
+  const reviewProducts = qualityAudit.reviewProducts;
+  const qualityReport = buildQualityReport({
+    sourceProducts,
+    normalizedProducts,
+    approvedProducts: products,
+    reviewProducts,
+    warningProducts: qualityAudit.warningProducts,
+    duplicateIds: qualityAudit.duplicateIds,
+  });
+
+  await Promise.all([
+    mkdir(outputDir, { recursive: true }),
+    mkdir(reportsDir, { recursive: true }),
+  ]);
+  await Promise.all([
+    writeFile(outputPath, `${JSON.stringify(products, null, 2)}\n`, "utf8"),
+    writeFile(
+      reviewProductsPath,
+      `${JSON.stringify(reviewProducts, null, 2)}\n`,
+      "utf8",
+    ),
+    writeFile(
+      qualityReportPath,
+      `${JSON.stringify(qualityReport, null, 2)}\n`,
+      "utf8",
+    ),
   ]);
 
-  await mkdir(outputDir, { recursive: true });
-  await writeFile(outputPath, `${JSON.stringify(products, null, 2)}\n`, "utf8");
-
-  console.log(`Wrote ${products.length} products to ${outputPath}`);
+  console.log(`Wrote ${products.length} approved products to ${outputPath}`);
+  console.log(
+    `Quarantined ${reviewProducts.length} product(s) to ${reviewProductsPath}`,
+  );
 } finally {
   await server.close();
 }

@@ -1,0 +1,474 @@
+{
+  "sourceProducts": {
+    "total": 7151
+  },
+  "normalizedProducts": {
+    "total": 8380,
+    "byCategory": {
+      "dresses": 2354,
+      "clothing": 950,
+      "bags": 1623,
+      "sneakers": 1531,
+      "sandals": 653,
+      "mules": 11,
+      "boots": 188,
+      "swimwear": 30,
+      "accessories": 294,
+      "hats": 104,
+      "watches": 121,
+      "jewellery": 38,
+      "polo-shirts": 71,
+      "hoodies": 5,
+      "caps": 3,
+      "sunglasses": 3,
+      "men-sneakers": 398,
+      "men-watches": 3
+    }
+  },
+  "approvedProducts": {
+    "total": 8352,
+    "byCategory": {
+      "dresses": 2354,
+      "clothing": 948,
+      "bags": 1623,
+      "sneakers": 1531,
+      "sandals": 653,
+      "mules": 11,
+      "boots": 188,
+      "swimwear": 30,
+      "accessories": 294,
+      "hats": 104,
+      "watches": 121,
+      "jewellery": 38,
+      "polo-shirts": 66,
+      "hoodies": 3,
+      "men-sneakers": 388
+    }
+  },
+  "reviewProducts": {
+    "total": 28,
+    "byCategory": {
+      "clothing": 2,
+      "polo-shirts": 5,
+      "hoodies": 2,
+      "caps": 3,
+      "sunglasses": 3,
+      "men-sneakers": 10,
+      "men-watches": 3
+    },
+    "examples": [
+      {
+        "id": "air-jordan-1-retro-high-og-chicago",
+        "name": "Air Jordan 1 Retro High OG \"Chicago\"",
+        "brand": "Jordan",
+        "category": "men-sneakers",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "missing-image",
+            "message": "Product has no images."
+          }
+        ]
+      },
+      {
+        "id": "air-jordan-1-retro-high-og-royal-blue",
+        "name": "Air Jordan 1 Retro High OG \"Royal Blue\"",
+        "brand": "Jordan",
+        "category": "men-sneakers",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "missing-image",
+            "message": "Product has no images."
+          }
+        ]
+      },
+      {
+        "id": "air-jordan-4-retro-military-black",
+        "name": "Air Jordan 4 Retro \"Military Black\"",
+        "brand": "Jordan",
+        "category": "men-sneakers",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "missing-image",
+            "message": "Product has no images."
+          }
+        ]
+      },
+      {
+        "id": "nike-air-force-1-low-white",
+        "name": "Nike Air Force 1 Low White",
+        "brand": "Nike",
+        "category": "men-sneakers",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "missing-image",
+            "message": "Product has no images."
+          }
+        ]
+      },
+      {
+        "id": "nike-dunk-low-panda",
+        "name": "Nike Dunk Low \"Panda\"",
+        "brand": "Nike",
+        "category": "men-sneakers",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "missing-image",
+            "message": "Product has no images."
+          }
+        ]
+      },
+      {
+        "id": "nike-air-max-90-infrared",
+        "name": "Nike Air Max 90 \"Infrared\"",
+        "brand": "Nike",
+        "category": "men-sneakers",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "missing-image",
+            "message": "Product has no images."
+          }
+        ]
+      },
+      {
+        "id": "adidas-samba-og-white-gum",
+        "name": "Adidas Samba OG White Gum",
+        "brand": "Adidas",
+        "category": "men-sneakers",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "missing-image",
+            "message": "Product has no images."
+          }
+        ]
+      },
+      {
+        "id": "adidas-campus-00s-grey",
+        "name": "Adidas Campus 00s Grey",
+        "brand": "Adidas",
+        "category": "men-sneakers",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "missing-image",
+            "message": "Product has no images."
+          }
+        ]
+      },
+      {
+        "id": "off-white-out-of-office-ooo-white",
+        "name": "Off-White Out Of Office \"OOO\" White",
+        "brand": "Off-White",
+        "category": "men-sneakers",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "missing-image",
+            "message": "Product has no images."
+          }
+        ]
+      },
+      {
+        "id": "balenciaga-triple-s-black",
+        "name": "Balenciaga Triple S Black",
+        "brand": "Balenciaga",
+        "category": "men-sneakers",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "missing-image",
+            "message": "Product has no images."
+          }
+        ]
+      },
+      {
+        "id": "ralph-lauren-custom-slim-fit-polo-white",
+        "name": "Ralph Lauren Custom Slim Fit Polo White",
+        "brand": "Ralph Lauren",
+        "category": "polo-shirts",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "missing-image",
+            "message": "Product has no images."
+          }
+        ]
+      },
+      {
+        "id": "ralph-lauren-custom-slim-fit-polo-navy",
+        "name": "Ralph Lauren Custom Slim Fit Polo Navy",
+        "brand": "Ralph Lauren",
+        "category": "polo-shirts",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "missing-image",
+            "message": "Product has no images."
+          }
+        ]
+      },
+      {
+        "id": "lacoste-l1212-polo-white",
+        "name": "Lacoste L.12.12 Polo White",
+        "brand": "Lacoste",
+        "category": "polo-shirts",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "missing-image",
+            "message": "Product has no images."
+          }
+        ]
+      },
+      {
+        "id": "lacoste-l1212-polo-black",
+        "name": "Lacoste L.12.12 Polo Black",
+        "brand": "Lacoste",
+        "category": "polo-shirts",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "missing-image",
+            "message": "Product has no images."
+          }
+        ]
+      },
+      {
+        "id": "moncler-logo-polo-white",
+        "name": "Moncler Logo Polo White",
+        "brand": "Moncler",
+        "category": "polo-shirts",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "missing-image",
+            "message": "Product has no images."
+          }
+        ]
+      },
+      {
+        "id": "stone-island-compass-patch-tee-white",
+        "name": "Stone Island Compass Patch Tee White",
+        "brand": "Stone Island",
+        "category": "clothing",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "missing-image",
+            "message": "Product has no images."
+          }
+        ]
+      },
+      {
+        "id": "stone-island-compass-patch-tee-black",
+        "name": "Stone Island Compass Patch Tee Black",
+        "brand": "Stone Island",
+        "category": "clothing",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "missing-image",
+            "message": "Product has no images."
+          }
+        ]
+      },
+      {
+        "id": "off-white-arrow-hoodie-black",
+        "name": "Off-White Arrow Hoodie Black",
+        "brand": "Off-White",
+        "category": "hoodies",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "missing-image",
+            "message": "Product has no images."
+          }
+        ]
+      },
+      {
+        "id": "balenciaga-bb-logo-hoodie-black",
+        "name": "Balenciaga BB Logo Hoodie Black",
+        "brand": "Balenciaga",
+        "category": "hoodies",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "missing-image",
+            "message": "Product has no images."
+          }
+        ]
+      },
+      {
+        "id": "nike-air-cap-black",
+        "name": "Nike Air Cap Black",
+        "brand": "Nike",
+        "category": "caps",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "missing-image",
+            "message": "Product has no images."
+          }
+        ]
+      },
+      {
+        "id": "jordan-jumpman-cap-black",
+        "name": "Jordan Jumpman Cap Black",
+        "brand": "Jordan",
+        "category": "caps",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "missing-image",
+            "message": "Product has no images."
+          }
+        ]
+      },
+      {
+        "id": "gucci-gg-canvas-baseball-cap-beige",
+        "name": "Gucci GG Canvas Baseball Cap Beige",
+        "brand": "Gucci",
+        "category": "caps",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "missing-image",
+            "message": "Product has no images."
+          }
+        ]
+      },
+      {
+        "id": "gucci-gg0061s-square-sunglasses-black",
+        "name": "Gucci GG0061S Square Sunglasses Black",
+        "brand": "Gucci",
+        "category": "sunglasses",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "missing-image",
+            "message": "Product has no images."
+          }
+        ]
+      },
+      {
+        "id": "dior-blacksuit-ri-sunglasses",
+        "name": "Dior BlackSuit RI Sunglasses",
+        "brand": "Dior",
+        "category": "sunglasses",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "missing-image",
+            "message": "Product has no images."
+          }
+        ]
+      },
+      {
+        "id": "versace-ve2262-medusa-biggie-sunglasses-gold",
+        "name": "Versace VE2262 Medusa Biggie Sunglasses Gold",
+        "brand": "Versace",
+        "category": "sunglasses",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "missing-image",
+            "message": "Product has no images."
+          }
+        ]
+      },
+      {
+        "id": "rolex-submariner-date-black-dial",
+        "name": "Rolex Submariner Date Black Dial",
+        "brand": "Rolex",
+        "category": "men-watches",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "missing-image",
+            "message": "Product has no images."
+          }
+        ]
+      },
+      {
+        "id": "rolex-datejust-41-silver-dial",
+        "name": "Rolex Datejust 41 Silver Dial",
+        "brand": "Rolex",
+        "category": "men-watches",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "missing-image",
+            "message": "Product has no images."
+          }
+        ]
+      },
+      {
+        "id": "audemars-piguet-royal-oak-black",
+        "name": "Audemars Piguet Royal Oak Black",
+        "brand": "Audemars Piguet",
+        "category": "men-watches",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "missing-image",
+            "message": "Product has no images."
+          }
+        ]
+      }
+    ]
+  },
+  "warningProducts": {
+    "total": 3,
+    "examples": [
+      {
+        "id": "qiqiyg-designer-designer-beach-bag-0427-4fvjue",
+        "name": "ATLAS Bag",
+        "brand": "ATLAS Selection",
+        "category": "bags",
+        "issues": [
+          {
+            "severity": "warning",
+            "code": "hat-outside-accessories",
+            "message": "Hat text is categorized outside hat/accessory categories.",
+            "expectedCategory": "hats"
+          }
+        ]
+      },
+      {
+        "id": "qiqiyg-designer-designer-beach-bag-hat-2pcs-0414-yqshu6",
+        "name": "ATLAS Bag",
+        "brand": "ATLAS Selection",
+        "category": "bags",
+        "issues": [
+          {
+            "severity": "warning",
+            "code": "hat-outside-accessories",
+            "message": "Hat text is categorized outside hat/accessory categories.",
+            "expectedCategory": "hats"
+          }
+        ]
+      },
+      {
+        "id": "qiqiyg-designer-designer-that-t-shirt-0416-1lbk91s",
+        "name": "ATLAS Cap",
+        "brand": "ATLAS Selection",
+        "category": "clothing",
+        "issues": [
+          {
+            "severity": "warning",
+            "code": "hat-outside-accessories",
+            "message": "Hat text is categorized outside hat/accessory categories.",
+            "expectedCategory": "hats"
+          }
+        ]
+      }
+    ]
+  },
+  "duplicateIds": []
+}
