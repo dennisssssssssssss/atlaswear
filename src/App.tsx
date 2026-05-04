@@ -20,7 +20,9 @@ const routerBase =
     : import.meta.env.BASE_URL.replace(/\/$/, "");
 
 const Index = lazy(() => import("./pages/Index"));
+const Brands = lazy(() => import("./pages/Brands"));
 const Contact = lazy(() => import("./pages/Contact"));
+const NewArrivals = lazy(() => import("./pages/NewArrivals"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Privacy = lazy(() => import("./pages/Privacy"));
 const ProductDetail = lazy(() => import("./pages/ProductDetail"));
@@ -53,6 +55,8 @@ const App = () => (
                 <Routes>
                   <Route path="/" element={<Index />} />
                   <Route path="/shop" element={<Shop />} />
+                  <Route path="/branduri" element={<Brands />} />
+                  <Route path="/nou" element={<NewArrivals />} />
                   <Route path="/product/:id" element={<ProductDetail />} />
                   <Route path="/catalog" element={<Navigate to="/shop" replace />} />
                   <Route

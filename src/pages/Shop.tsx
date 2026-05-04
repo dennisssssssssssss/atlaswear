@@ -4,6 +4,7 @@ import { useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Search, SlidersHorizontal, X } from "lucide-react";
 
+import CatalogCategoryStrip from "@/components/CatalogCategoryStrip";
 import ProductCard from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,6 +23,11 @@ import {
 import { useLanguage } from "@/contexts/LanguageContext";
 import { usePageMeta } from "@/hooks/use-page-meta";
 import { useCatalogProducts } from "@/hooks/use-catalog-products";
+import {
+  filterCatalogProductsByNavigation,
+  getCatalogUmbrellaLabel,
+  normalizeCatalogUmbrella,
+} from "@/lib/catalog-filters";
 import {
   getCatalogCategoryLabel,
   searchCatalogProducts,
@@ -44,21 +50,6 @@ const sortOptions: { id: CatalogSort; labelEn: string; labelRo: string }[] = [
   { id: "name-asc", labelEn: "Name: A to Z", labelRo: "Nume: A-Z" },
 ];
 
-const matchesAudience = (
-  productAudience: SourceProductAudience | undefined,
-  activeAudience: SourceProductAudience | null,
-) => {
-  if (!activeAudience) {
-    return true;
-  }
-
-  if (activeAudience === "unisex") {
-    return productAudience === "unisex";
-  }
-
-  return productAudience === activeAudience || productAudience === "unisex";
-};
-
 const Shop = () => {
   const { lang, t } = useLanguage();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -67,6 +58,7 @@ const Shop = () => {
   const [filtersOpen, setFiltersOpen] = useState(false);
 
   const activeCategory = searchParams.get("category") as SourceCategory | null;
+  const activeUmbrella = normalizeCatalogUmbrella(searchParams.get("umbrella"));
   const activeBrand = searchParams.get("brand");
   const activeAudience = searchParams.get("audience") as SourceProductAudience | null;
   const query = searchParams.get("q") ?? "";
@@ -75,6 +67,8 @@ const Shop = () => {
   const currentCategory = categories.find((category) => category.id === activeCategory);
   const currentTitle = currentCategory
     ? getCatalogCategoryLabel(currentCategory.id, lang)
+    : activeUmbrella
+      ? getCatalogUmbrellaLabel(activeUmbrella, lang)
     : t("shop.title");
 
   usePageMeta({
@@ -84,39 +78,47 @@ const Shop = () => {
   });
 
   const availableBrands = useMemo(() => {
-    const audienceFiltered = activeAudience
-      ? products.filter((product) => matchesAudience(product.audience, activeAudience))
-      : products;
-    const base = activeCategory
-      ? audienceFiltered.filter((product) => product.category === activeCategory)
-      : audienceFiltered;
+    const base = filterCatalogProductsByNavigation(
+      products,
+      activeAudience,
+      activeCategory,
+      activeUmbrella,
+    );
 
     return Array.from(new Set(base.map((product) => product.brand))).sort((a, b) =>
       a.localeCompare(b),
     );
-  }, [activeAudience, activeCategory, products]);
+  }, [activeAudience, activeCategory, activeUmbrella, products]);
 
   const filteredProducts = useMemo(() => {
-    const audienceFiltered = activeAudience
-      ? products.filter((product) => matchesAudience(product.audience, activeAudience))
-      : products;
-    const categoryFiltered = activeCategory
-      ? audienceFiltered.filter((product) => product.category === activeCategory)
-      : audienceFiltered;
-
+    const navigationFiltered = filterCatalogProductsByNavigation(
+      products,
+      activeAudience,
+      activeCategory,
+      activeUmbrella,
+    );
     const brandFiltered = activeBrand
-      ? categoryFiltered.filter((product) => product.brand === activeBrand)
-      : categoryFiltered;
+      ? navigationFiltered.filter((product) => product.brand === activeBrand)
+      : navigationFiltered;
 
     return sortCatalogProducts(
       searchCatalogProducts(brandFiltered, query, lang),
       activeSort,
     );
-  }, [activeAudience, activeBrand, activeCategory, activeSort, lang, products, query]);
+  }, [
+    activeAudience,
+    activeBrand,
+    activeCategory,
+    activeSort,
+    activeUmbrella,
+    lang,
+    products,
+    query,
+  ]);
 
   useEffect(() => {
     setVisibleCount(PAGE_SIZE);
-  }, [activeAudience, activeBrand, activeCategory, activeSort, query]);
+  }, [activeAudience, activeBrand, activeCategory, activeSort, activeUmbrella, query]);
 
   const visibleProducts = filteredProducts.slice(0, visibleCount);
   const hasMoreProducts = filteredProducts.length > visibleCount;
@@ -124,22 +126,26 @@ const Shop = () => {
     activeAudience,
     activeBrand,
     activeCategory,
+    activeUmbrella,
     query.trim() ? query : null,
     activeSort !== "featured" ? activeSort : null,
   ].filter(Boolean).length;
 
   const updateParam = (key: string, value?: string) => {
     const nextParams = new URLSearchParams(searchParams);
-    const nextValue = key === "q" ? value?.trim() : value;
 
-    if (nextValue) {
-      nextParams.set(key, nextValue);
+    if (value?.trim()) {
+      nextParams.set(key, value);
     } else {
       nextParams.delete(key);
     }
 
     if (key === "audience" || key === "category") {
       nextParams.delete("brand");
+    }
+
+    if (key === "category") {
+      nextParams.delete("umbrella");
     }
 
     setSearchParams(nextParams);
@@ -260,7 +266,8 @@ const Shop = () => {
   );
 
   return (
-    <div className="min-h-screen bg-background px-4 pb-20 pt-32 text-foreground">
+    <div className="min-h-screen bg-background px-4 pb-20 pt-64 text-foreground lg:pt-48">
+      <CatalogCategoryStrip />
       <div className="container">
         <motion.div
           initial={{ opacity: 0, y: 18 }}
