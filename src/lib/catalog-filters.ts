@@ -6,11 +6,12 @@ import type { CatalogProduct } from "@/lib/catalog";
 import { localize, getLocalizedText, type Lang, type LocalizedText } from "@/lib/i18n";
 
 export type CatalogUmbrella =
-  | "bags"
   | "footwear"
-  | "clothing"
+  | "bags"
+  | "dresses"
+  | "watches"
   | "accessories"
-  | "swimwear";
+  | "clothing";
 
 export interface CatalogUmbrellaOption {
   id: CatalogUmbrella;
@@ -20,27 +21,30 @@ export interface CatalogUmbrellaOption {
 
 export const catalogUmbrellaOptions: CatalogUmbrellaOption[] = [
   {
-    id: "bags",
-    label: localize("Bags", "Genti"),
-    categories: ["bags"],
-  },
-  {
     id: "footwear",
     label: localize("Footwear", "Incaltaminte"),
     categories: ["sneakers", "sandals", "mules", "boots", "men-sneakers"],
   },
   {
-    id: "clothing",
-    label: localize("Clothing", "Imbracaminte"),
-    categories: ["clothing", "dresses", "polo-shirts", "hoodies"],
+    id: "bags",
+    label: localize("Bags", "Genti"),
+    categories: ["bags"],
+  },
+  {
+    id: "dresses",
+    label: localize("Dresses", "Rochii"),
+    categories: ["dresses"],
+  },
+  {
+    id: "watches",
+    label: localize("Watches", "Ceasuri"),
+    categories: ["watches", "men-watches"],
   },
   {
     id: "accessories",
     label: localize("Accessories", "Accesorii"),
     categories: [
       "accessories",
-      "watches",
-      "men-watches",
       "jewellery",
       "sunglasses",
       "hats",
@@ -48,9 +52,9 @@ export const catalogUmbrellaOptions: CatalogUmbrellaOption[] = [
     ],
   },
   {
-    id: "swimwear",
-    label: localize("Swimwear", "Swimwear"),
-    categories: ["swimwear"],
+    id: "clothing",
+    label: localize("Clothing", "Imbracaminte"),
+    categories: ["clothing", "polo-shirts", "hoodies", "jackets", "pants", "swimwear"],
   },
 ];
 

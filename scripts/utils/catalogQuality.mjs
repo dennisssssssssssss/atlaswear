@@ -1,3 +1,8 @@
+import { existsSync, statSync } from "node:fs";
+import path from "node:path";
+
+import { getMinimumPublicPriceRon } from "./pricingCalculator.mjs";
+
 export const knownCategories = [
   "dresses",
   "clothing",
@@ -82,6 +87,24 @@ const clothingPattern =
   /\b(?:t[-\s]?shirts?|tees?|shirts?|jackets?|coats?|hoodies?|sweaters?|pants?|shorts?|jeans?|vests?|suits?|tracksuits?)\b/i;
 const genericAtlasNamePattern =
   /^ATLAS\s+(?:Dress|Piece|Bag|Sneaker|Sandal|Mule|Boot|Swimwear|Accessory|Hat|Watch|Jewellery|Polo Shirt|Hoodie|Cap|Sunglasses|Jacket|Pants)$/i;
+const nonStorefrontProductPattern =
+  /\b(?:perfumes?|fragrances?|socks?|oversleeves?)\b/i;
+const weakStorefrontNamePattern =
+  /^(?:touch|single|other|low|high|piece|man\s+bagb?|single\s+shoulder\s+bag|other\s+women'?s\s+bag\s+single|women'?s\s+bag|single\s+bag)$/i;
+
+const getLocalImageFileSize = (image) => {
+  if (!image?.startsWith("/")) {
+    return null;
+  }
+
+  const imagePath = path.join(process.cwd(), "public", image);
+
+  if (!existsSync(imagePath)) {
+    return null;
+  }
+
+  return statSync(imagePath).size;
+};
 
 const expectedFootwearCategory = (text, audience, fallbackCategory) => {
   if (bootPattern.test(text)) {
@@ -161,10 +184,43 @@ export const auditCatalogProduct = (product) => {
     addIssue(issues, "blocker", "missing-image", "Product has no images.");
   } else if (!normalize(product.images[0])) {
     addIssue(issues, "blocker", "empty-image", "Product primary image is empty.");
+  } else {
+    const imageFileSize = getLocalImageFileSize(product.images[0]);
+
+    if (imageFileSize === 0) {
+      addIssue(issues, "blocker", "empty-image-file", "Product image file is empty.");
+    } else if (imageFileSize !== null && imageFileSize < 5000) {
+      addIssue(
+        issues,
+        "blocker",
+        "image-file-too-small",
+        "Product image file is too small to be reliable.",
+      );
+    }
   }
 
   if (!Number.isFinite(product.priceRon) || product.priceRon <= 0) {
     addIssue(issues, "blocker", "invalid-price", "Product has invalid price.");
+  } else {
+    const minimumPublicPriceRon = getMinimumPublicPriceRon(product);
+
+    if (product.priceRon < minimumPublicPriceRon) {
+      addIssue(
+        issues,
+        "blocker",
+        "luxury-price-too-low",
+        `Product price is below the public minimum of ${minimumPublicPriceRon} RON.`,
+      );
+    }
+  }
+
+  if (product.brand === "ATLAS Selection") {
+    addIssue(
+      issues,
+      "blocker",
+      "fallback-brand-atlas-selection",
+      "Fallback brand is not strong enough for the public storefront.",
+    );
   }
 
   if (product.brand === "ATLAS Selection" && genericAtlasNamePattern.test(product.name)) {
@@ -173,6 +229,46 @@ export const auditCatalogProduct = (product) => {
       "blocker",
       "generic-atlas-selection",
       "Generic ATLAS Selection product is not premium enough for the storefront.",
+    );
+  }
+
+  if (weakStorefrontNamePattern.test(product.name)) {
+    addIssue(
+      issues,
+      "blocker",
+      "weak-storefront-name",
+      "Product name is too vague for the public storefront.",
+    );
+  }
+
+  if (nonStorefrontProductPattern.test(text)) {
+    addIssue(
+      issues,
+      "blocker",
+      "outside-atlas-category-focus",
+      "Product type is outside the current ATLAS fashion and accessories focus.",
+    );
+  }
+
+  if (product.photoCount !== null && product.photoCount < 4) {
+    addIssue(
+      issues,
+      "blocker",
+      "too-few-reference-photos",
+      "Product has too few reference photos for storefront quality.",
+    );
+  }
+
+  if (
+    Number.isFinite(product.compareAtRon) &&
+    Number.isFinite(product.priceRon) &&
+    product.compareAtRon <= product.priceRon
+  ) {
+    addIssue(
+      issues,
+      "blocker",
+      "invalid-compare-price",
+      "Compare-at price must be higher than sale price.",
     );
   }
 

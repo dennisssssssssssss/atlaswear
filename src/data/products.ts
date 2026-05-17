@@ -44,7 +44,6 @@ export interface Product {
   brand: string;
   category: Category;
   audience: "men" | "women" | "unisex";
-  costUsd?: number;
   description: LocalizedText;
   details: LocalizedText[];
   priceRon: number;

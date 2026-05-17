@@ -39,8 +39,6 @@ export interface CatalogProduct {
   originalTitle: string;
   relatedProductIds: string[];
   audience: SourceProduct["audience"];
-  sourcePriceRon: number | null;
-  priceConfidence: "source" | "estimated";
 }
 
 export interface CatalogCategory {
@@ -427,23 +425,205 @@ const categoryNouns: Record<SourceCategory, LocalizedText> = {
   pants: localize("Pants", "Pantaloni"),
 };
 
-const getDisplayName = (product: SourceProduct, brand: string) => {
-  const rawName = cleanDisplayText(product.name);
-  const rawTitle = cleanDisplayText(product.originalTitle);
+const genericNamePattern =
+  /^(?:new|hot|sale|best|fashion|designer|luxury|classic|premium|original|quality|high quality|product|item)$/i;
+
+const weakNamePattern =
+  /^(?:dress|piece|bag|pochette|shoe|shoes|dress shoes?|sneaker|sandal|mule|boot|swimwear|accessory|hat|watch|jewellery|jewelry|polo shirt|hoodie|cap|sunglasses|jacket|pants|belt|glasses|socks|touch|single|low|high|other)$/i;
+
+const titleCaseWords = (value: string) =>
+  value
+    .toLowerCase()
+    .replace(/\b\w/g, (letter) => letter.toUpperCase())
+    .replace(/\bT Shirt\b/g, "T-Shirt");
+
+const normalizeDisplayNameCasing = (value: string) => {
+  const lettersOnly = value.replace(/[^A-Za-z]/g, "");
+
+  if (!lettersOnly) {
+    return value;
+  }
+
+  if (value === value.toUpperCase() || value === value.toLowerCase()) {
+    return titleCaseWords(value);
+  }
+
+  return value;
+};
+
+const sanitizeDisplayNameCandidate = (value: string, brand: string) => {
+  const escapedBrand = brand.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+  return cleanDisplayText(value)
+    .replace(new RegExp(escapedBrand, "ig"), " ")
+    .replace(/\b(?:19|20)\d{2}(?=\b|[A-Za-z])/g, " ")
+    .replace(/\b\d+(?:[.,]\d+)?(?:\s*x\s*\d+(?:[.,]\d+)?){1,3}\s*cm\b/gi, " ")
+    .replace(/\b\d+(?:[.,]\d+)?(?:\s*x\s*\d+(?:[.,]\d+)?){1,3}\b/gi, " ")
+    .replace(/\b\d+\s*(?:mm|cm)\b/gi, " ")
+    .replace(/\b(?=[a-z0-9_]*\d)[a-z0-9_]{4,}\b/gi, " ")
+    .replace(/\b\d{1,5}[a-z]{1,8}\d{0,3}\b/gi, " ")
+    .replace(/\b[a-z]{1,8}\d{1,5}\b/gi, " ")
+    .replace(/\b\d{2,}[a-z]?\b/gi, " ")
+    .replace(/\b(?:mp|wp|xz|yg|yz|cd)\b/gi, " ")
+    .replace(/\b(?:new|hot\s*sale|sale|best|fashion|designer|luxury|high\s+quality|top\s+quality|original|sold\s+like\s+hot)\b/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+};
+
+const isStrongDisplayName = (value: string) => {
+  const normalizedValue = value.trim();
+
+  if (normalizedValue.length < 4) {
+    return false;
+  }
+
+  if (genericNamePattern.test(normalizedValue) || weakNamePattern.test(normalizedValue)) {
+    return false;
+  }
+
+  if (
+    /^\d+$/.test(normalizedValue) ||
+    /^\d+\s*(?:pieces?|pcs?)\b/i.test(normalizedValue) ||
+    /^dress\s+(?:man|men|woman|women)$/i.test(normalizedValue) ||
+    /^(?:single\s+shoulder\s+bag|other\s+women'?s\s+bag\s+single|man\s+bagb?|women'?s\s+bag|single\s+bag)$/i.test(
+      normalizedValue,
+    ) ||
+    /\bshoes?\d*\b/i.test(normalizedValue) ||
+    /\bdress\s*shoes?\d*\b/i.test(normalizedValue) ||
+    /\b(?:casual|low\s*cut|high|male|female|woman|women|man|men|women's)\b.*\bshoes?\b/i.test(
+      normalizedValue,
+    ) ||
+    /\d+\s*x\s*\d+/i.test(normalizedValue) ||
+    /\b\d{3,}\b/.test(normalizedValue)
+  ) {
+    return false;
+  }
+
+  return true;
+};
+
+const getNeutralFallbackName = (category: SourceCategory, text: string) => {
+  const normalizedText = text.toLowerCase();
+
+  if (
+    category === "mules" ||
+    /\b(?:loafer|oxford|derby|moccasin|monk|brogue|dress\s*(?:shoes?|man|men))\b/.test(
+      normalizedText,
+    )
+  ) {
+    return "Classic Loafer";
+  }
+
+  if (category === "sneakers" || category === "men-sneakers") {
+    if (/\brunner|running\b/.test(normalizedText)) {
+      return "Logo Runner Sneaker";
+    }
+
+    if (/\bminimal|plain|low\s*top\b/.test(normalizedText)) {
+      return "Minimal Leather Sneaker";
+    }
+
+    return "Leather Low Top Sneaker";
+  }
+
+  if (category === "bags") {
+    return "Leather Shoulder Bag";
+  }
+
+  if (category === "dresses") {
+    return "Classic Dress";
+  }
+
+  if (category === "watches" || category === "men-watches") {
+    return "Statement Watch";
+  }
+
+  if (category === "accessories") {
+    if (/\bbelt|curea\b/.test(normalizedText)) {
+      return "Logo Belt";
+    }
+
+    if (/\bglasses|sunglasses|ochelari\b/.test(normalizedText)) {
+      return "Designer Sunglasses";
+    }
+
+    if (/\bsocks?|sosete\b/.test(normalizedText)) {
+      return "Logo Socks";
+    }
+
+    return "Premium Accessory";
+  }
+
+  if (category === "jewellery") {
+    return "Statement Jewellery";
+  }
+
+  if (category === "sunglasses") {
+    return "Designer Sunglasses";
+  }
+
+  if (category === "hats" || category === "caps") {
+    return "Logo Cap";
+  }
+
+  if (category === "polo-shirts") {
+    return "Classic Polo Shirt";
+  }
+
+  if (category === "hoodies") {
+    return "Premium Hoodie";
+  }
+
+  if (category === "boots") {
+    return "Leather Boot";
+  }
+
+  if (category === "sandals") {
+    return "Leather Sandal";
+  }
+
+  if (category === "jackets") {
+    return "Premium Jacket";
+  }
+
+  if (category === "pants") {
+    return "Tailored Pants";
+  }
+
+  if (category === "swimwear") {
+    return "Premium Swimwear";
+  }
+
+  return "Premium Clothing Piece";
+};
+
+const getDisplayName = (
+  product: SourceProduct,
+  brand: string,
+  category: SourceCategory,
+) => {
+  const rawName = sanitizeDisplayNameCandidate(product.name, brand);
+  const rawTitle = sanitizeDisplayNameCandidate(product.originalTitle, brand);
   const categoryNoun = getLocalizedText(categoryNouns[product.category], "en");
 
   const candidate = [rawName, rawTitle]
     .filter(Boolean)
-    .map((value) => value.replace(new RegExp(brand, "ig"), "").trim())
     .find((value) => value && !/^ATLAS Selection/i.test(value));
 
-  if (candidate && !/^Designer\b/i.test(candidate)) {
-    return candidate;
+  if (candidate && isStrongDisplayName(candidate)) {
+    return normalizeDisplayNameCasing(candidate);
   }
 
-  return brand === "ATLAS Selection"
-    ? `ATLAS ${categoryNoun}`
-    : `${brand} ${categoryNoun}`;
+  const neutralName = getNeutralFallbackName(
+    category,
+    [product.name, product.originalTitle].join(" "),
+  );
+
+  if (brand === "ATLAS Selection") {
+    return neutralName;
+  }
+
+  return `${brand} ${neutralName || categoryNoun}`;
 };
 
 const hashToUnit = (value: string) => {
@@ -460,29 +640,6 @@ const hashToUnit = (value: string) => {
 const roundRetailPrice = (value: number) => {
   const rounded = Math.round(value / 10) * 10 - 1;
   return Math.max(79, rounded);
-};
-
-const extractSourcePriceRon = (product: SourceProduct) => {
-  if (typeof product.sourcePriceRon === "number" && product.sourcePriceRon > 0) {
-    return product.sourcePriceRon;
-  }
-
-  const text = `${product.originalTitle} ${product.name}`;
-  const currencyMatch = text.match(
-    /(?:¥|￥|RMB|CNY|yuan|元)\s*(\d{2,5})|(\d{2,5})\s*(?:RMB|CNY|yuan|元)/i,
-  );
-
-  if (!currencyMatch) {
-    return null;
-  }
-
-  const cnyPrice = Number(currencyMatch[1] ?? currencyMatch[2]);
-
-  if (!Number.isFinite(cnyPrice) || cnyPrice <= 0) {
-    return null;
-  }
-
-  return Math.round(cnyPrice * 0.65);
 };
 
 const getBrandMultiplier = (brand: string) => {
@@ -666,16 +823,6 @@ const getAccessiblePrice = (
   brand: string,
   category: SourceCategory,
 ) => {
-  const sourcePriceRon = extractSourcePriceRon(product);
-
-  if (sourcePriceRon) {
-    return {
-      priceRon: roundRetailPrice(sourcePriceRon * 1.25 + 29),
-      sourcePriceRon,
-      priceConfidence: "source" as const,
-    };
-  }
-
   const [minPrice, maxPrice] = categoryPriceBands[category];
   const seed = hashToUnit(`${product.id}:${product.originalTitle}:${product.image}`);
   const bandPrice = minPrice + (maxPrice - minPrice) * seed;
@@ -689,8 +836,6 @@ const getAccessiblePrice = (
 
   return {
     priceRon,
-    sourcePriceRon: null,
-    priceConfidence: "estimated" as const,
   };
 };
 
@@ -754,9 +899,9 @@ export const mapSourceProductToCatalogProduct = (
   product: SourceProduct,
 ): CatalogProduct => {
   const brand = getDisplayBrand(product);
-  const name = getDisplayName(product, brand);
   const category = normalizeCatalogCategory(product);
-  const { priceRon, sourcePriceRon, priceConfidence } = getAccessiblePrice(
+  const name = getDisplayName(product, brand, category);
+  const { priceRon } = getAccessiblePrice(
     product,
     brand,
     category,
@@ -795,19 +940,46 @@ export const mapSourceProductToCatalogProduct = (
     originalTitle: product.originalTitle,
     relatedProductIds: [],
     audience: product.audience ?? "women",
-    sourcePriceRon,
-    priceConfidence,
   };
+};
+
+const normalizeCuratedProductCategory = (product: Product): SourceCategory => {
+  const text = cleanDisplayText(
+    [
+      product.name,
+      product.brand,
+      getLocalizedText(product.description, "en"),
+      getLocalizedText(product.description, "ro"),
+    ].join(" "),
+  ).toLowerCase();
+
+  if (
+    product.category === "clothing" &&
+    (hasBagText(text) ||
+      /\b(?:pochette|lady|flap|handle|tote|hobo|wallet|crossbody)\b/.test(text) ||
+      /\b\d+(?:[.,]\d+)?(?:\s*x\s*\d+(?:[.,]\d+)?){1,3}\b/i.test(text))
+  ) {
+    return "bags";
+  }
+
+  return product.category;
 };
 
 export const mapProductToCatalogProduct = (product: Product): CatalogProduct => {
   const collectionLabel = localize("ATLAS Curated Catalog", "Catalog curatat ATLAS");
+  const category = normalizeCuratedProductCategory(product);
+  const sanitizedName = sanitizeDisplayNameCandidate(product.name, product.brand);
+  const name = isStrongDisplayName(sanitizedName)
+    ? normalizeDisplayNameCasing(sanitizedName)
+    : product.brand === "ATLAS Selection"
+      ? getNeutralFallbackName(category, product.name)
+      : `${product.brand} ${getNeutralFallbackName(category, product.name)}`;
 
   return {
     id: product.id,
-    name: product.name,
+    name,
     brand: product.brand,
-    category: product.category,
+    category,
     description: product.description,
     details: product.details,
     priceRon: product.priceRon,
@@ -820,12 +992,10 @@ export const mapProductToCatalogProduct = (product: Product): CatalogProduct => 
     bestPrice: product.bestPrice,
     photoCount: product.images.length || null,
     sourceCollection: collectionLabel,
-    collectionKey: [product.category, product.brand, "ATLAS Curated Catalog"].join("::"),
+    collectionKey: [category, product.brand, "ATLAS Curated Catalog"].join("::"),
     originalTitle: product.name,
     relatedProductIds: [],
     audience: product.audience,
-    sourcePriceRon: null,
-    priceConfidence: "estimated",
   };
 };
 

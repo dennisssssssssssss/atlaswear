@@ -1,6 +1,8 @@
+import { useMemo } from "react";
 import { Link } from "react-router-dom";
 
 import {
+  ArrowRight,
   MessageCircle,
   ShieldCheck,
   Sparkles,
@@ -16,7 +18,22 @@ import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { usePageMeta } from "@/hooks/use-page-meta";
 import { useCatalogProducts } from "@/hooks/use-catalog-products";
-import { getCatalogCategoryLabel, sortCatalogProducts } from "@/lib/catalog";
+import {
+  getCatalogCategoryLabel,
+  sortCatalogProducts,
+  type CatalogProduct,
+} from "@/lib/catalog";
+
+const featuredBrandNames = [
+  "Gucci",
+  "Prada",
+  "Louis Vuitton",
+  "Chanel",
+  "Dior",
+  "Hermes",
+  "Celine",
+  "Saint Laurent",
+];
 
 const trustItems = [
   {
@@ -45,7 +62,7 @@ const homepageReviews = [
   {
     name: "Mara Stoian",
     city: "Cluj-Napoca",
-    date: "12 februarie 2026",
+    date: "20 februarie 2026",
     rating: 5,
     text:
       "Am comandat o geanta pentru birou si am primit poze inainte sa fie trimisa. Ambalajul a fost curat, iar coletul a ajuns in doua zile.",
@@ -108,101 +125,127 @@ const homepageReviews = [
   },
 ];
 
+const getBrandUrl = (brand: string) => `/shop?brand=${encodeURIComponent(brand)}`;
+
+const getHeroProduct = (products: CatalogProduct[]) =>
+  products.find(
+    (product) =>
+      product.featured &&
+      product.imageFit === "cover" &&
+      ["bags", "dresses", "sneakers", "men-sneakers", "watches"].includes(
+        product.category,
+      ),
+  ) ?? products.find((product) => product.imageFit === "cover") ?? products[0];
+
+const sortNewestFirst = (products: CatalogProduct[]) =>
+  [...products].sort((left, right) => right.id.localeCompare(left.id));
+
+const buildFeaturedBrandCards = (products: CatalogProduct[]) =>
+  featuredBrandNames
+    .map((brand) => {
+      const brandProducts = products.filter((product) => product.brand === brand);
+      const product =
+        brandProducts.find(
+          (entry) => entry.featured && entry.imageFit === "cover",
+        ) ??
+        [...brandProducts].sort(
+          (left, right) => (right.photoCount ?? 0) - (left.photoCount ?? 0),
+        )[0];
+
+      return product ? { brand, product } : null;
+    })
+    .filter((entry): entry is { brand: string; product: CatalogProduct } =>
+      Boolean(entry),
+    );
+
 const Index = () => {
   const { lang, t } = useLanguage();
   const { products, categories, isLoading } = useCatalogProducts();
 
   usePageMeta({ path: "/" });
 
-  const sortedProducts = sortCatalogProducts(products, "featured");
-  const featuredProducts = sortedProducts.slice(0, 4);
-  const highlightedProducts = sortedProducts.slice(0, 8);
+  const sortedProducts = useMemo(
+    () => sortCatalogProducts(products, "featured"),
+    [products],
+  );
+  const heroProduct = useMemo(() => getHeroProduct(sortedProducts), [sortedProducts]);
+  const featuredBrandCards = useMemo(
+    () => buildFeaturedBrandCards(products),
+    [products],
+  );
+  const newArrivalProducts = useMemo(
+    () => sortNewestFirst(products).slice(0, 4),
+    [products],
+  );
+  const bestSellerProducts = useMemo(
+    () =>
+      sortedProducts
+        .filter((product) => product.featured || product.bestPrice)
+        .slice(0, 4),
+    [sortedProducts],
+  );
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <section className="relative flex min-h-[90vh] overflow-hidden bg-[#070707] px-4 pb-16 pt-32 md:pt-40">
-        <div className="absolute inset-0 bg-[linear-gradient(110deg,rgba(194,162,96,0.12),transparent_35%),radial-gradient(circle_at_80%_20%,rgba(255,255,255,0.08),transparent_28%)]" />
+      <section
+        className="relative flex min-h-[78vh] overflow-hidden bg-[#070707] bg-cover bg-center px-4 pb-14 pt-32 md:pt-40"
+        style={
+          heroProduct?.images[0]
+            ? {
+                backgroundImage: `linear-gradient(90deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.72) 46%, rgba(0,0,0,0.18) 100%), url(${heroProduct.images[0]})`,
+              }
+            : undefined
+        }
+      >
         <div className="container relative flex items-center">
-          <div className="grid w-full gap-12 lg:grid-cols-[3fr_2fr] lg:items-center">
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="min-w-0"
-            >
-              <p className="text-xs uppercase tracking-[0.42em] text-gold">
-                {t("hero.kicker")}
-              </p>
-              <h1 className="mt-6 max-w-[11ch] font-heading text-5xl leading-[0.9] text-foreground sm:text-6xl lg:text-7xl">
-                {t("hero.title")}
-              </h1>
-              <p className="mt-6 max-w-xl text-base leading-8 text-muted-foreground md:text-lg">
-                {t("hero.description")}
-              </p>
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="max-w-3xl"
+          >
+            <p className="text-xs uppercase tracking-[0.42em] text-gold">
+              {t("hero.kicker")}
+            </p>
+            <h1 className="mt-6 max-w-[12ch] font-heading text-5xl leading-[0.9] text-foreground sm:text-6xl lg:text-7xl">
+              {t("hero.title")}
+            </h1>
+            <p className="mt-6 max-w-2xl text-base leading-8 text-white/75 md:text-lg">
+              {t("hero.description")}
+            </p>
 
-              <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-                <Link to="/shop?audience=women">
-                  <Button variant="gold" size="lg" className="w-full sm:w-auto">
-                    {t("Shop Women", "Shop femei")}
-                  </Button>
-                </Link>
-                <Link to="/shop?audience=men">
-                  <Button
-                    variant="gold-outline"
-                    size="lg"
-                    className="w-full sm:w-auto"
-                  >
-                    {t("Shop Men", "Shop barbati")}
-                  </Button>
-                </Link>
-              </div>
-            </motion.div>
+            <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+              <Link to="/nou">
+                <Button variant="gold" size="lg" className="w-full sm:w-auto">
+                  {t("New arrivals", "Produse noi")}
+                  <ArrowRight size={17} />
+                </Button>
+              </Link>
+              <Link to="/shop">
+                <Button
+                  variant="gold-outline"
+                  size="lg"
+                  className="w-full bg-black/40 sm:w-auto"
+                >
+                  {t("hero.ctaShop")}
+                </Button>
+              </Link>
+            </div>
 
-            <motion.div
-              initial={{ opacity: 0, scale: 0.97 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.55, delay: 0.1 }}
-              className="grid gap-4 md:grid-cols-2 lg:grid-cols-1"
-            >
-              {isLoading
-                ? Array.from({ length: 2 }, (_, index) => (
-                    <div
-                      key={`hero-loading-${index}`}
-                      className={`aspect-[3/4] animate-pulse rounded-lg border border-border bg-card ${
-                        index === 1 ? "hidden md:block" : ""
-                      }`}
-                    />
-                  ))
-                : featuredProducts.slice(0, 2).map((product, index) => (
-                    <Link
-                      key={product.id}
-                      to={`/product/${product.id}`}
-                      className={`group relative overflow-hidden rounded-lg border border-border bg-card transition-transform duration-300 hover:-translate-y-1 ${
-                        index === 1 ? "hidden md:block" : ""
-                      }`}
-                    >
-                      <div className="aspect-[3/4] overflow-hidden">
-                        <CatalogImage
-                          src={product.images[0]}
-                          alt={`${product.brand} ${product.name}`}
-                          className={`h-full w-full ${
-                            product.imageFit === "contain"
-                              ? "object-contain bg-[#f8f5ef] p-6"
-                              : "object-cover"
-                          }`}
-                          loading="lazy"
-                          fallbackClassName="p-6"
-                        />
-                      </div>
-                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-5">
-                        <p className="text-xs uppercase tracking-[0.28em] text-gold">
-                          {product.brand}
-                        </p>
-                      </div>
-                    </Link>
-                  ))}
-            </motion.div>
-          </div>
+            {heroProduct ? (
+              <Link
+                to={`/product/${heroProduct.id}`}
+                className="mt-10 inline-flex max-w-full flex-col border-l border-gold pl-4 text-left transition-colors hover:text-gold"
+              >
+                <span className="text-xs uppercase tracking-[0.28em] text-gold">
+                  {heroProduct.brand}
+                </span>
+                <span className="mt-2 max-w-[28rem] truncate font-heading text-xl text-foreground">
+                  {heroProduct.name}
+                </span>
+              </Link>
+            ) : null}
+          </motion.div>
         </div>
       </section>
 
@@ -229,19 +272,106 @@ const Index = () => {
         </div>
       </section>
 
+      <section className="px-4 py-16 md:py-20">
+        <div className="container">
+          <div className="mb-8 flex items-end justify-between gap-6">
+            <div>
+              <p className="text-xs uppercase tracking-[0.35em] text-gold">
+                {t("Featured brands", "Branduri principale")}
+              </p>
+              <h2 className="mt-4 font-heading text-4xl">
+                {t("Names customers ask for", "Branduri cautate constant")}
+              </h2>
+            </div>
+            <Link
+              to="/branduri"
+              className="hidden text-sm uppercase tracking-[0.24em] text-gold transition-colors hover:text-gold-light md:inline-flex"
+            >
+              {t("All brands", "Toate brandurile")}
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-5">
+            {isLoading
+              ? Array.from({ length: 8 }, (_, index) => (
+                  <div
+                    key={`brand-loading-${index}`}
+                    className="aspect-square animate-pulse rounded-lg border border-border bg-card"
+                  />
+                ))
+              : featuredBrandCards.map((card) => (
+                  <Link
+                    key={card.brand}
+                    to={getBrandUrl(card.brand)}
+                    className="group block"
+                  >
+                    <div className="overflow-hidden rounded-lg border border-border bg-card transition-colors duration-200 group-hover:border-gold">
+                      <div className="aspect-square">
+                        <CatalogImage
+                          src={card.product.images[0]}
+                          alt={card.brand}
+                          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                          loading="lazy"
+                          fallbackLabel={card.brand}
+                        />
+                      </div>
+                    </div>
+                    <p className="mt-3 text-center text-xs uppercase tracking-[0.22em] text-gold">
+                      {card.brand}
+                    </p>
+                  </Link>
+                ))}
+          </div>
+        </div>
+      </section>
+
       <section className="px-4 py-20 md:py-24">
         <div className="container">
           <div className="mb-10 flex items-end justify-between gap-6">
             <div>
               <p className="text-xs uppercase tracking-[0.35em] text-gold">
-                {t("home.newArrivalsEyebrow")}
+                {t("New arrivals", "Produse noi")}
               </p>
               <h2 className="mt-4 font-heading text-4xl">
-                {t("home.newArrivalsTitle")}
+                {t("Recently added", "Adaugate recent")}
               </h2>
             </div>
             <Link
-              to="/shop"
+              to="/nou"
+              className="hidden text-sm uppercase tracking-[0.24em] text-gold transition-colors hover:text-gold-light md:inline-flex"
+            >
+              {t("See all", "Vezi toate")}
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 md:gap-6 xl:grid-cols-4">
+            {isLoading
+              ? Array.from({ length: 4 }, (_, index) => (
+                  <div
+                    key={`product-loading-${index}`}
+                    className="h-[430px] animate-pulse rounded-lg border border-border bg-card"
+                  />
+                ))
+              : newArrivalProducts.map((product, index) => (
+                  <ProductCard key={product.id} product={product} index={index} />
+                ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-card px-4 py-20 md:py-24">
+        <div className="container">
+          <div className="mb-10 flex items-end justify-between gap-6">
+            <div>
+              <p className="text-xs uppercase tracking-[0.35em] text-gold">
+                {t("Best sellers", "Best sellers")}
+              </p>
+              <h2 className="mt-4 font-heading text-4xl">
+                {t("Strong picks right now", "Piese care se cer acum")}
+              </h2>
+            </div>
+            <Link
+              to="/shop?sort=featured"
               className="hidden text-sm uppercase tracking-[0.24em] text-gold transition-colors hover:text-gold-light md:inline-flex"
             >
               {t("nav.shop")}
@@ -250,20 +380,20 @@ const Index = () => {
 
           <div className="grid grid-cols-2 gap-3 sm:gap-4 md:gap-6 xl:grid-cols-4">
             {isLoading
-              ? Array.from({ length: 8 }, (_, index) => (
+              ? Array.from({ length: 4 }, (_, index) => (
                   <div
-                    key={`product-loading-${index}`}
-                    className="h-[430px] animate-pulse rounded-lg border border-border bg-card"
+                    key={`best-loading-${index}`}
+                    className="h-[430px] animate-pulse rounded-lg border border-border bg-background"
                   />
                 ))
-              : highlightedProducts.map((product, index) => (
+              : bestSellerProducts.map((product, index) => (
                   <ProductCard key={product.id} product={product} index={index} />
                 ))}
           </div>
         </div>
       </section>
 
-      <section className="bg-card px-4 py-20 md:py-24">
+      <section className="px-4 py-20 md:py-24">
         <div className="container">
           <p className="text-xs uppercase tracking-[0.35em] text-gold">
             {t("home.categoriesEyebrow")}

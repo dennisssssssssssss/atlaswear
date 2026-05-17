@@ -2,8 +2,6 @@ import type { Product, ProductColor } from "@/data/products";
 import { localize } from "@/lib/i18n";
 import { resolveAssetUrl } from "@/lib/assets";
 import {
-  calcCompareAtRon,
-  calcPriceRon,
   estimateCompareAtRon,
   estimatePriceRon,
 } from "@/lib/pricing";
@@ -28,16 +26,9 @@ type ProductInput = Omit<Product, "audience" | "priceRon" | "compareAtRon"> & {
 };
 
 const product = (entry: ProductInput): Product => {
-  const priceRon =
-    entry.priceRon ??
-    (entry.costUsd
-      ? calcPriceRon(entry.costUsd)
-      : estimatePriceRon(entry.brand, entry.category));
+  const priceRon = entry.priceRon ?? estimatePriceRon(entry.brand, entry.category);
   const compareAtRon =
-    entry.compareAtRon ??
-    (entry.costUsd
-      ? calcCompareAtRon(priceRon)
-      : estimateCompareAtRon(priceRon));
+    entry.compareAtRon ?? estimateCompareAtRon(priceRon);
 
   return {
     ...entry,

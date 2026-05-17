@@ -6,8 +6,8 @@
     "total": 8380,
     "byCategory": {
       "dresses": 2354,
-      "clothing": 950,
-      "bags": 1623,
+      "clothing": 903,
+      "bags": 1670,
       "sneakers": 1531,
       "sandals": 653,
       "mules": 11,
@@ -26,695 +26,810 @@
     }
   },
   "approvedProducts": {
-    "total": 7467,
+    "total": 5837,
     "byCategory": {
-      "dresses": 2347,
-      "clothing": 691,
-      "bags": 1520,
-      "sneakers": 1393,
-      "sandals": 579,
-      "mules": 9,
+      "dresses": 1922,
+      "clothing": 321,
+      "bags": 907,
+      "sneakers": 1235,
+      "sandals": 564,
+      "mules": 7,
       "boots": 185,
       "swimwear": 24,
-      "accessories": 195,
+      "accessories": 154,
       "hats": 70,
       "watches": 32,
       "jewellery": 27,
-      "polo-shirts": 66,
+      "polo-shirts": 63,
       "hoodies": 1,
-      "men-sneakers": 328
+      "men-sneakers": 325
     }
   },
   "reviewProducts": {
-    "total": 913,
+    "total": 2543,
     "byCategory": {
-      "dresses": 7,
-      "clothing": 259,
-      "bags": 103,
-      "sneakers": 138,
-      "sandals": 74,
-      "mules": 2,
+      "dresses": 432,
+      "clothing": 582,
+      "bags": 763,
+      "sneakers": 296,
+      "sandals": 89,
+      "mules": 4,
       "boots": 3,
       "swimwear": 6,
-      "accessories": 99,
+      "accessories": 140,
       "hats": 34,
       "watches": 89,
       "jewellery": 11,
-      "polo-shirts": 5,
+      "polo-shirts": 8,
       "hoodies": 4,
       "caps": 3,
       "sunglasses": 3,
-      "men-sneakers": 70,
+      "men-sneakers": 73,
       "men-watches": 3
     },
     "examples": [
       {
+        "id": "qiqiyg-adidas-adidas-socks-1127-jhc9s8",
+        "name": "Adidas Logo Socks",
+        "brand": "Adidas",
+        "category": "accessories",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "outside-atlas-category-focus",
+            "message": "Product type is outside the current ATLAS fashion and accessories focus."
+          }
+        ]
+      },
+      {
+        "id": "qiqiyg-alo-alo-socks-1219-1iajsb4",
+        "name": "ALO Logo Socks",
+        "brand": "ALO",
+        "category": "accessories",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "outside-atlas-category-focus",
+            "message": "Product type is outside the current ATLAS fashion and accessories focus."
+          }
+        ]
+      },
+      {
+        "id": "qiqiyg-balenciaga-balenciaga-socks-1127-jlogeo",
+        "name": "Balenciaga Logo Socks",
+        "brand": "Balenciaga",
+        "category": "accessories",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "outside-atlas-category-focus",
+            "message": "Product type is outside the current ATLAS fashion and accessories focus."
+          }
+        ]
+      },
+      {
+        "id": "qiqiyg-boss-boss-perfume-0324-hhiptn",
+        "name": "Perfume",
+        "brand": "BOSS",
+        "category": "accessories",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "outside-atlas-category-focus",
+            "message": "Product type is outside the current ATLAS fashion and accessories focus."
+          }
+        ]
+      },
+      {
+        "id": "qiqiyg-boss-boss-socks-1127-19thgqu",
+        "name": "BOSS Logo Socks",
+        "brand": "BOSS",
+        "category": "accessories",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "outside-atlas-category-focus",
+            "message": "Product type is outside the current ATLAS fashion and accessories focus."
+          }
+        ]
+      },
+      {
+        "id": "qiqiyg-bottega-veneta-bottega-veneta-perfume-0312-8gf7lb",
+        "name": "Perfume",
+        "brand": "Bottega Veneta",
+        "category": "accessories",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "outside-atlas-category-focus",
+            "message": "Product type is outside the current ATLAS fashion and accessories focus."
+          }
+        ]
+      },
+      {
+        "id": "qiqiyg-bottega-veneta-bottega-veneta-socks-0902-zur8dq",
+        "name": "Bottega Veneta Logo Socks",
+        "brand": "Bottega Veneta",
+        "category": "accessories",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "outside-atlas-category-focus",
+            "message": "Product type is outside the current ATLAS fashion and accessories focus."
+          }
+        ]
+      },
+      {
+        "id": "qiqiyg-brunello-cucinelli-brunello-cucinelli-perfume-0422-n5ckrv",
+        "name": "Perfume",
+        "brand": "Brunello Cucinelli",
+        "category": "accessories",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "outside-atlas-category-focus",
+            "message": "Product type is outside the current ATLAS fashion and accessories focus."
+          },
+          {
+            "severity": "blocker",
+            "code": "too-few-reference-photos",
+            "message": "Product has too few reference photos for storefront quality."
+          }
+        ]
+      },
+      {
+        "id": "qiqiyg-burberry-burberry-perfume-0428-1l2jj4r",
+        "name": "Perfume",
+        "brand": "Burberry",
+        "category": "accessories",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "outside-atlas-category-focus",
+            "message": "Product type is outside the current ATLAS fashion and accessories focus."
+          }
+        ]
+      },
+      {
+        "id": "qiqiyg-burberry-burberry-socks-0109-oapvug",
+        "name": "Burberry Logo Socks",
+        "brand": "Burberry",
+        "category": "accessories",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "outside-atlas-category-focus",
+            "message": "Product type is outside the current ATLAS fashion and accessories focus."
+          }
+        ]
+      },
+      {
+        "id": "qiqiyg-bvlgari-bvlgari-perfume-0312-f5z177",
+        "name": "Perfume",
+        "brand": "Bvlgari",
+        "category": "accessories",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "outside-atlas-category-focus",
+            "message": "Product type is outside the current ATLAS fashion and accessories focus."
+          }
+        ]
+      },
+      {
+        "id": "qiqiyg-calvin-klein-calvin-klein-ck-perfume-0312-2vyk5b",
+        "name": "CK Perfume",
+        "brand": "Calvin Klein",
+        "category": "accessories",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "outside-atlas-category-focus",
+            "message": "Product type is outside the current ATLAS fashion and accessories focus."
+          }
+        ]
+      },
+      {
+        "id": "qiqiyg-calvin-klein-calvin-klein-ck-socks-1102-18mbe5o",
+        "name": "CK socks",
+        "brand": "Calvin Klein",
+        "category": "accessories",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "outside-atlas-category-focus",
+            "message": "Product type is outside the current ATLAS fashion and accessories focus."
+          }
+        ]
+      },
+      {
+        "id": "qiqiyg-celine-celine-perfume-0312-afe3ib",
+        "name": "Perfume",
+        "brand": "Celine",
+        "category": "accessories",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "outside-atlas-category-focus",
+            "message": "Product type is outside the current ATLAS fashion and accessories focus."
+          }
+        ]
+      },
+      {
+        "id": "qiqiyg-celine-celine-socks-1229-1ut3qu",
+        "name": "Celine Logo Socks",
+        "brand": "Celine",
+        "category": "accessories",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "outside-atlas-category-focus",
+            "message": "Product type is outside the current ATLAS fashion and accessories focus."
+          }
+        ]
+      },
+      {
+        "id": "qiqiyg-chanel-chanel-perfume-0428-j8o74b",
+        "name": "Perfume",
+        "brand": "Chanel",
+        "category": "accessories",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "outside-atlas-category-focus",
+            "message": "Product type is outside the current ATLAS fashion and accessories focus."
+          }
+        ]
+      },
+      {
+        "id": "qiqiyg-chanel-chanel-socks-1229-1ey3yee",
+        "name": "Chanel Logo Socks",
+        "brand": "Chanel",
+        "category": "accessories",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "outside-atlas-category-focus",
+            "message": "Product type is outside the current ATLAS fashion and accessories focus."
+          }
+        ]
+      },
+      {
+        "id": "qiqiyg-christian-louboutin-christian-louboutin-perfume-0311-6vx3tb",
+        "name": "Perfume",
+        "brand": "Christian Louboutin",
+        "category": "accessories",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "outside-atlas-category-focus",
+            "message": "Product type is outside the current ATLAS fashion and accessories focus."
+          }
+        ]
+      },
+      {
+        "id": "qiqiyg-chrome-hearts-chrome-hearts-socks-0723-14jdu7e",
+        "name": "Chrome Hearts Logo Socks",
+        "brand": "Chrome Hearts",
+        "category": "accessories",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "outside-atlas-category-focus",
+            "message": "Product type is outside the current ATLAS fashion and accessories focus."
+          },
+          {
+            "severity": "blocker",
+            "code": "too-few-reference-photos",
+            "message": "Product has too few reference photos for storefront quality."
+          }
+        ]
+      },
+      {
+        "id": "qiqiyg-coach-coach-perfume-0422-1eoskir",
+        "name": "Perfume",
+        "brand": "Coach",
+        "category": "accessories",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "outside-atlas-category-focus",
+            "message": "Product type is outside the current ATLAS fashion and accessories focus."
+          },
+          {
+            "severity": "blocker",
+            "code": "too-few-reference-photos",
+            "message": "Product has too few reference photos for storefront quality."
+          }
+        ]
+      },
+      {
         "id": "qiqiyg-designer-designer-2025moschino-0827-vapufs",
-        "name": "ATLAS Accessory",
+        "name": "Moschino",
         "brand": "ATLAS Selection",
         "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+            "code": "fallback-brand-atlas-selection",
+            "message": "Fallback brand is not strong enough for the public storefront."
           }
         ]
       },
       {
         "id": "qiqiyg-designer-designer-2025stefano-belt-38mm-0827-1ef49bu",
-        "name": "ATLAS Accessory",
+        "name": "Stefano belt",
         "brand": "ATLAS Selection",
         "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+            "code": "fallback-brand-atlas-selection",
+            "message": "Fallback brand is not strong enough for the public storefront."
           }
         ]
       },
       {
         "id": "qiqiyg-designer-designer-2026-bercoc-belt-0411-cinch6",
-        "name": "ATLAS Accessory",
+        "name": "Bercoc belt",
         "brand": "ATLAS Selection",
         "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+            "code": "fallback-brand-atlas-selection",
+            "message": "Fallback brand is not strong enough for the public storefront."
           }
         ]
       },
       {
         "id": "qiqiyg-designer-designer-2026-bugatti-glasses-0331-1o5v06h",
-        "name": "ATLAS Accessory",
+        "name": "Bugatti Glasses",
         "brand": "ATLAS Selection",
         "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+            "code": "fallback-brand-atlas-selection",
+            "message": "Fallback brand is not strong enough for the public storefront."
           }
         ]
       },
       {
         "id": "qiqiyg-designer-designer-2026-pp-belt-0411-f77hga",
-        "name": "ATLAS Accessory",
+        "name": "PP Belt",
         "brand": "ATLAS Selection",
         "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+            "code": "fallback-brand-atlas-selection",
+            "message": "Fallback brand is not strong enough for the public storefront."
           }
         ]
       },
       {
         "id": "qiqiyg-designer-designer-25-oversleeve-0403-1muyunv",
-        "name": "ATLAS Accessory",
+        "name": "Oversleeve",
         "brand": "ATLAS Selection",
         "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+            "code": "fallback-brand-atlas-selection",
+            "message": "Fallback brand is not strong enough for the public storefront."
+          },
+          {
+            "severity": "blocker",
+            "code": "outside-atlas-category-focus",
+            "message": "Product type is outside the current ATLAS fashion and accessories focus."
           }
         ]
       },
       {
         "id": "qiqiyg-designer-designer-acqua-di-parma-perfume-0313-1a2gpuf",
-        "name": "ATLAS Accessory",
+        "name": "Acqua Di Parma perfume",
         "brand": "ATLAS Selection",
         "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+            "code": "fallback-brand-atlas-selection",
+            "message": "Fallback brand is not strong enough for the public storefront."
+          },
+          {
+            "severity": "blocker",
+            "code": "outside-atlas-category-focus",
+            "message": "Product type is outside the current ATLAS fashion and accessories focus."
           }
         ]
       },
       {
         "id": "qiqiyg-designer-designer-aesop-perfume-0407-e4lcav",
-        "name": "ATLAS Accessory",
+        "name": "Aesop Perfume",
         "brand": "ATLAS Selection",
         "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+            "code": "fallback-brand-atlas-selection",
+            "message": "Fallback brand is not strong enough for the public storefront."
+          },
+          {
+            "severity": "blocker",
+            "code": "outside-atlas-category-focus",
+            "message": "Product type is outside the current ATLAS fashion and accessories focus."
           }
         ]
       },
       {
         "id": "qiqiyg-designer-designer-af-perfume-0313-1jw2ugv",
-        "name": "ATLAS Accessory",
+        "name": "AF Perfume",
         "brand": "ATLAS Selection",
         "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+            "code": "fallback-brand-atlas-selection",
+            "message": "Fallback brand is not strong enough for the public storefront."
+          },
+          {
+            "severity": "blocker",
+            "code": "outside-atlas-category-focus",
+            "message": "Product type is outside the current ATLAS fashion and accessories focus."
+          },
+          {
+            "severity": "blocker",
+            "code": "too-few-reference-photos",
+            "message": "Product has too few reference photos for storefront quality."
           }
         ]
       },
       {
         "id": "qiqiyg-designer-designer-afnan-perfume-0313-1wdp3ar",
-        "name": "ATLAS Accessory",
+        "name": "Afnan Perfume",
         "brand": "ATLAS Selection",
         "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+            "code": "fallback-brand-atlas-selection",
+            "message": "Fallback brand is not strong enough for the public storefront."
+          },
+          {
+            "severity": "blocker",
+            "code": "outside-atlas-category-focus",
+            "message": "Product type is outside the current ATLAS fashion and accessories focus."
           }
         ]
       },
       {
         "id": "qiqiyg-designer-designer-al-haramain-perfume-0313-1bar0pj",
-        "name": "ATLAS Accessory",
+        "name": "AL Haramain Perfume",
         "brand": "ATLAS Selection",
         "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+            "code": "fallback-brand-atlas-selection",
+            "message": "Fallback brand is not strong enough for the public storefront."
+          },
+          {
+            "severity": "blocker",
+            "code": "outside-atlas-category-focus",
+            "message": "Product type is outside the current ATLAS fashion and accessories focus."
           }
         ]
       },
       {
         "id": "qiqiyg-designer-designer-ami-socks-1229-191qy4o",
-        "name": "ATLAS Accessory",
+        "name": "Ami socks",
         "brand": "ATLAS Selection",
         "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+            "code": "fallback-brand-atlas-selection",
+            "message": "Fallback brand is not strong enough for the public storefront."
+          },
+          {
+            "severity": "blocker",
+            "code": "outside-atlas-category-focus",
+            "message": "Product type is outside the current ATLAS fashion and accessories focus."
+          }
+        ]
+      },
+      {
+        "id": "qiqiyg-designer-designer-amiri-socks-0928-jvkjze",
+        "name": "Amiri Logo Socks",
+        "brand": "Amiri",
+        "category": "accessories",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "outside-atlas-category-focus",
+            "message": "Product type is outside the current ATLAS fashion and accessories focus."
           }
         ]
       },
       {
         "id": "qiqiyg-designer-designer-amouage-perfume-0428-ivprj3",
-        "name": "ATLAS Accessory",
+        "name": "Amouage Perfume",
         "brand": "ATLAS Selection",
         "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+            "code": "fallback-brand-atlas-selection",
+            "message": "Fallback brand is not strong enough for the public storefront."
+          },
+          {
+            "severity": "blocker",
+            "code": "outside-atlas-category-focus",
+            "message": "Product type is outside the current ATLAS fashion and accessories focus."
           }
         ]
       },
       {
         "id": "qiqiyg-designer-designer-ann-andelman-scarf-0322-1exf6p1",
-        "name": "ATLAS Accessory",
+        "name": "Ann Andelman scarf",
         "brand": "ATLAS Selection",
         "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+            "code": "fallback-brand-atlas-selection",
+            "message": "Fallback brand is not strong enough for the public storefront."
           }
         ]
       },
       {
         "id": "qiqiyg-designer-designer-anna-sui-perfume-0312-lm6fpr",
-        "name": "ATLAS Accessory",
+        "name": "Anna Sui Perfume",
         "brand": "ATLAS Selection",
         "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+            "code": "fallback-brand-atlas-selection",
+            "message": "Fallback brand is not strong enough for the public storefront."
+          },
+          {
+            "severity": "blocker",
+            "code": "outside-atlas-category-focus",
+            "message": "Product type is outside the current ATLAS fashion and accessories focus."
           }
         ]
       },
       {
         "id": "qiqiyg-designer-designer-antonio-banderas-perfume-0312-1hzv1b",
-        "name": "ATLAS Accessory",
+        "name": "Antonio Banderas Perfume",
         "brand": "ATLAS Selection",
         "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+            "code": "fallback-brand-atlas-selection",
+            "message": "Fallback brand is not strong enough for the public storefront."
+          },
+          {
+            "severity": "blocker",
+            "code": "outside-atlas-category-focus",
+            "message": "Product type is outside the current ATLAS fashion and accessories focus."
           }
         ]
       },
       {
         "id": "qiqiyg-designer-designer-arcteryx-socks-1102-146x536",
-        "name": "ATLAS Accessory",
+        "name": "Arcteryx socks",
         "brand": "ATLAS Selection",
         "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+            "code": "fallback-brand-atlas-selection",
+            "message": "Fallback brand is not strong enough for the public storefront."
+          },
+          {
+            "severity": "blocker",
+            "code": "outside-atlas-category-focus",
+            "message": "Product type is outside the current ATLAS fashion and accessories focus."
           }
         ]
       },
       {
         "id": "qiqiyg-designer-designer-ariana-grande-perfume-0312-jl7zbv",
-        "name": "ATLAS Accessory",
+        "name": "Ariana Grande Perfume",
         "brand": "ATLAS Selection",
         "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+            "code": "fallback-brand-atlas-selection",
+            "message": "Fallback brand is not strong enough for the public storefront."
+          },
+          {
+            "severity": "blocker",
+            "code": "outside-atlas-category-focus",
+            "message": "Product type is outside the current ATLAS fashion and accessories focus."
           }
         ]
       },
       {
         "id": "qiqiyg-designer-designer-armaf-perfume-0407-1l07nr",
-        "name": "ATLAS Accessory",
+        "name": "Armaf Perfume",
         "brand": "ATLAS Selection",
         "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+            "code": "fallback-brand-atlas-selection",
+            "message": "Fallback brand is not strong enough for the public storefront."
+          },
+          {
+            "severity": "blocker",
+            "code": "outside-atlas-category-focus",
+            "message": "Product type is outside the current ATLAS fashion and accessories focus."
           }
         ]
       },
       {
         "id": "qiqiyg-designer-designer-armain-glasses-0331-sfsomx",
-        "name": "ATLAS Accessory",
+        "name": "Armain Glasses",
         "brand": "ATLAS Selection",
         "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+            "code": "fallback-brand-atlas-selection",
+            "message": "Fallback brand is not strong enough for the public storefront."
+          }
+        ]
+      },
+      {
+        "id": "qiqiyg-designer-designer-armani-perfume-0422-m6k0hn",
+        "name": "Perfume",
+        "brand": "Armani",
+        "category": "accessories",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "outside-atlas-category-focus",
+            "message": "Product type is outside the current ATLAS fashion and accessories focus."
+          }
+        ]
+      },
+      {
+        "id": "qiqiyg-designer-designer-armani-sock-0401-1le1gym",
+        "name": "Sock",
+        "brand": "Armani",
+        "category": "accessories",
+        "qualityIssues": [
+          {
+            "severity": "blocker",
+            "code": "outside-atlas-category-focus",
+            "message": "Product type is outside the current ATLAS fashion and accessories focus."
           }
         ]
       },
       {
         "id": "qiqiyg-designer-designer-artisan-perfume-0312-3btnsf",
-        "name": "ATLAS Accessory",
+        "name": "Artisan Perfume",
         "brand": "ATLAS Selection",
         "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+            "code": "fallback-brand-atlas-selection",
+            "message": "Fallback brand is not strong enough for the public storefront."
+          },
+          {
+            "severity": "blocker",
+            "code": "outside-atlas-category-focus",
+            "message": "Product type is outside the current ATLAS fashion and accessories focus."
           }
         ]
       },
       {
         "id": "qiqiyg-designer-designer-astier-de-villatte-perfume-0313-1wa3err",
-        "name": "ATLAS Accessory",
+        "name": "Astier de Villatte Perfume",
         "brand": "ATLAS Selection",
         "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+            "code": "fallback-brand-atlas-selection",
+            "message": "Fallback brand is not strong enough for the public storefront."
+          },
+          {
+            "severity": "blocker",
+            "code": "outside-atlas-category-focus",
+            "message": "Product type is outside the current ATLAS fashion and accessories focus."
           }
         ]
       },
       {
         "id": "qiqiyg-designer-designer-atelier-cologne-perfume-0312-11rtsuj",
-        "name": "ATLAS Accessory",
+        "name": "Atelier Cologne Perfume",
         "brand": "ATLAS Selection",
         "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+            "code": "fallback-brand-atlas-selection",
+            "message": "Fallback brand is not strong enough for the public storefront."
+          },
+          {
+            "severity": "blocker",
+            "code": "outside-atlas-category-focus",
+            "message": "Product type is outside the current ATLAS fashion and accessories focus."
           }
         ]
       },
       {
         "id": "qiqiyg-designer-designer-atkinsons-perfume-0312-zhse17",
-        "name": "ATLAS Accessory",
+        "name": "Atkinsons Perfume",
         "brand": "ATLAS Selection",
         "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+            "code": "fallback-brand-atlas-selection",
+            "message": "Fallback brand is not strong enough for the public storefront."
+          },
+          {
+            "severity": "blocker",
+            "code": "outside-atlas-category-focus",
+            "message": "Product type is outside the current ATLAS fashion and accessories focus."
           }
         ]
       },
       {
         "id": "qiqiyg-designer-designer-attar-perfume-0324-ypov5r",
-        "name": "ATLAS Accessory",
+        "name": "Attar Perfume",
         "brand": "ATLAS Selection",
         "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+            "code": "fallback-brand-atlas-selection",
+            "message": "Fallback brand is not strong enough for the public storefront."
+          },
+          {
+            "severity": "blocker",
+            "code": "outside-atlas-category-focus",
+            "message": "Product type is outside the current ATLAS fashion and accessories focus."
           }
         ]
       },
       {
         "id": "qiqiyg-designer-designer-azzaro-perfume-0422-1n23ztj",
-        "name": "ATLAS Accessory",
+        "name": "Azzaro Perfume",
         "brand": "ATLAS Selection",
         "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+            "code": "fallback-brand-atlas-selection",
+            "message": "Fallback brand is not strong enough for the public storefront."
+          },
+          {
+            "severity": "blocker",
+            "code": "outside-atlas-category-focus",
+            "message": "Product type is outside the current ATLAS fashion and accessories focus."
           }
         ]
       },
       {
         "id": "qiqiyg-designer-designer-b-b-simon-belt-1218-16yixp2",
-        "name": "ATLAS Accessory",
+        "name": "B.b.simon belt",
         "brand": "ATLAS Selection",
         "category": "accessories",
         "qualityIssues": [
           {
             "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
-          }
-        ]
-      },
-      {
-        "id": "qiqiyg-designer-designer-bdk-perfume-0312-88wucv",
-        "name": "ATLAS Accessory",
-        "brand": "ATLAS Selection",
-        "category": "accessories",
-        "qualityIssues": [
-          {
-            "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
-          }
-        ]
-      },
-      {
-        "id": "qiqiyg-designer-designer-belt-0716-1moxdpk",
-        "name": "ATLAS Accessory",
-        "brand": "ATLAS Selection",
-        "category": "accessories",
-        "qualityIssues": [
-          {
-            "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
-          }
-        ]
-      },
-      {
-        "id": "qiqiyg-designer-designer-billie-eilish-perfume-0312-rsa3j",
-        "name": "ATLAS Accessory",
-        "brand": "ATLAS Selection",
-        "category": "accessories",
-        "qualityIssues": [
-          {
-            "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
-          }
-        ]
-      },
-      {
-        "id": "qiqiyg-designer-designer-blrhe-huerhrrr-glasses-0331-100clxb",
-        "name": "ATLAS Accessory",
-        "brand": "ATLAS Selection",
-        "category": "accessories",
-        "qualityIssues": [
-          {
-            "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
-          }
-        ]
-      },
-      {
-        "id": "qiqiyg-designer-designer-bond-no-9-perfume-0428-1jnghrj",
-        "name": "ATLAS Accessory",
-        "brand": "ATLAS Selection",
-        "category": "accessories",
-        "qualityIssues": [
-          {
-            "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
-          }
-        ]
-      },
-      {
-        "id": "qiqiyg-designer-designer-boucheron-perfume-0312-14fjhur",
-        "name": "ATLAS Accessory",
-        "brand": "ATLAS Selection",
-        "category": "accessories",
-        "qualityIssues": [
-          {
-            "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
-          }
-        ]
-      },
-      {
-        "id": "qiqiyg-designer-designer-byredo-perfume-0422-1y4m8qn",
-        "name": "ATLAS Accessory",
-        "brand": "ATLAS Selection",
-        "category": "accessories",
-        "qualityIssues": [
-          {
-            "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
-          }
-        ]
-      },
-      {
-        "id": "qiqiyg-designer-designer-calabasas-socks-0723-imh26o",
-        "name": "ATLAS Accessory",
-        "brand": "ATLAS Selection",
-        "category": "accessories",
-        "qualityIssues": [
-          {
-            "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
-          }
-        ]
-      },
-      {
-        "id": "qiqiyg-designer-designer-carin-glasses-0331-5nggef",
-        "name": "ATLAS Accessory",
-        "brand": "ATLAS Selection",
-        "category": "accessories",
-        "qualityIssues": [
-          {
-            "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
-          }
-        ]
-      },
-      {
-        "id": "qiqiyg-designer-designer-carolina-perfume-0428-1ivpmvj",
-        "name": "ATLAS Accessory",
-        "brand": "ATLAS Selection",
-        "category": "accessories",
-        "qualityIssues": [
-          {
-            "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
-          }
-        ]
-      },
-      {
-        "id": "qiqiyg-designer-designer-caron-perfume-0311-1xj5w33",
-        "name": "ATLAS Accessory",
-        "brand": "ATLAS Selection",
-        "category": "accessories",
-        "qualityIssues": [
-          {
-            "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
-          }
-        ]
-      },
-      {
-        "id": "qiqiyg-designer-designer-carrera-glasses-0331-1nqgvhp",
-        "name": "ATLAS Accessory",
-        "brand": "ATLAS Selection",
-        "category": "accessories",
-        "qualityIssues": [
-          {
-            "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
-          }
-        ]
-      },
-      {
-        "id": "qiqiyg-designer-designer-casamorati-perfume-0312-gwiqkv",
-        "name": "ATLAS Accessory",
-        "brand": "ATLAS Selection",
-        "category": "accessories",
-        "qualityIssues": [
-          {
-            "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
-          }
-        ]
-      },
-      {
-        "id": "qiqiyg-designer-designer-cazal-glasses-0326-1k9aakx",
-        "name": "ATLAS Accessory",
-        "brand": "ATLAS Selection",
-        "category": "accessories",
-        "qualityIssues": [
-          {
-            "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
-          }
-        ]
-      },
-      {
-        "id": "qiqiyg-designer-designer-cazal-glasses-xh-1ruaor9",
-        "name": "ATLAS Accessory",
-        "brand": "ATLAS Selection",
-        "category": "accessories",
-        "qualityIssues": [
-          {
-            "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
-          }
-        ]
-      },
-      {
-        "id": "qiqiyg-designer-designer-champion-socks-1102-1lfmy64",
-        "name": "ATLAS Accessory",
-        "brand": "ATLAS Selection",
-        "category": "accessories",
-        "qualityIssues": [
-          {
-            "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
-          }
-        ]
-      },
-      {
-        "id": "qiqiyg-designer-designer-chloe-glasses-0331-hntusx",
-        "name": "ATLAS Accessory",
-        "brand": "ATLAS Selection",
-        "category": "accessories",
-        "qualityIssues": [
-          {
-            "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
-          }
-        ]
-      },
-      {
-        "id": "qiqiyg-designer-designer-chloe-perfume-0324-1p9i5nz",
-        "name": "ATLAS Accessory",
-        "brand": "ATLAS Selection",
-        "category": "accessories",
-        "qualityIssues": [
-          {
-            "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
-          }
-        ]
-      },
-      {
-        "id": "qiqiyg-designer-designer-chopard-glasses-0331-ska29t",
-        "name": "ATLAS Accessory",
-        "brand": "ATLAS Selection",
-        "category": "accessories",
-        "qualityIssues": [
-          {
-            "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
-          }
-        ]
-      },
-      {
-        "id": "qiqiyg-designer-designer-chopard-perfume-0311-paio1j",
-        "name": "ATLAS Accessory",
-        "brand": "ATLAS Selection",
-        "category": "accessories",
-        "qualityIssues": [
-          {
-            "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
-          }
-        ]
-      },
-      {
-        "id": "qiqiyg-designer-designer-choppers-belt-1218-kytyjk",
-        "name": "ATLAS Accessory",
-        "brand": "ATLAS Selection",
-        "category": "accessories",
-        "qualityIssues": [
-          {
-            "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
-          }
-        ]
-      },
-      {
-        "id": "qiqiyg-designer-designer-clinique-perfume-0311-10pixpz",
-        "name": "ATLAS Accessory",
-        "brand": "ATLAS Selection",
-        "category": "accessories",
-        "qualityIssues": [
-          {
-            "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
-          }
-        ]
-      },
-      {
-        "id": "qiqiyg-designer-designer-clive-perfume-0428-1oldftj",
-        "name": "ATLAS Accessory",
-        "brand": "ATLAS Selection",
-        "category": "accessories",
-        "qualityIssues": [
-          {
-            "severity": "blocker",
-            "code": "generic-atlas-selection",
-            "message": "Generic ATLAS Selection product is not premium enough for the storefront."
+            "code": "fallback-brand-atlas-selection",
+            "message": "Fallback brand is not strong enough for the public storefront."
           }
         ]
       }

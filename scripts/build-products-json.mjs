@@ -8,6 +8,10 @@ import {
   auditCatalogProducts,
   buildQualityReport,
 } from "./utils/catalogQuality.mjs";
+import {
+  applyPrivatePricingToProduct,
+  stripPrivatePricingFields,
+} from "./utils/pricingCalculator.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -54,13 +58,15 @@ try {
   const normalizedProducts = [
     ...sourceProducts.map(mapSourceProductToCatalogProduct),
     ...[...womenProducts, ...menProducts].map(mapProductToCatalogProduct),
-  ];
+  ].map(applyPrivatePricingToProduct);
   const qualityAudit = auditCatalogProducts(normalizedProducts);
-  const products = attachRelatedProducts(qualityAudit.approvedProducts);
-  const reviewProducts = qualityAudit.reviewProducts;
+  const products = attachRelatedProducts(qualityAudit.approvedProducts).map(
+    stripPrivatePricingFields,
+  );
+  const reviewProducts = qualityAudit.reviewProducts.map(stripPrivatePricingFields);
   const qualityReport = buildQualityReport({
     sourceProducts,
-    normalizedProducts,
+    normalizedProducts: normalizedProducts.map(stripPrivatePricingFields),
     approvedProducts: products,
     reviewProducts,
     warningProducts: qualityAudit.warningProducts,

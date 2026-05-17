@@ -96,7 +96,7 @@ const NewArrivals = () => {
         <div className="max-w-3xl">
           <p className="text-xs uppercase tracking-[0.4em] text-gold">NOU</p>
           <h1 className="mt-4 font-heading text-4xl leading-tight md:text-6xl">
-            Adăugate recent
+            Adaugate recent
           </h1>
         </div>
 

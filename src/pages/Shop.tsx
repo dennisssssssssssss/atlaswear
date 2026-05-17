@@ -50,6 +50,29 @@ const sortOptions: { id: CatalogSort; labelEn: string; labelRo: string }[] = [
   { id: "name-asc", labelEn: "Name: A to Z", labelRo: "Nume: A-Z" },
 ];
 
+const parsePriceParam = (value: string | null) => {
+  const parsedValue = Number(value);
+
+  return Number.isFinite(parsedValue) && parsedValue > 0 ? parsedValue : null;
+};
+
+const sizeSort = (left: string, right: string) =>
+  left.localeCompare(right, undefined, {
+    numeric: true,
+    sensitivity: "base",
+  });
+
+const getProductSizeValues = (product: { sizes: string[]; sizeLabel: string }) => {
+  if (product.sizes.length > 0) {
+    return product.sizes;
+  }
+
+  return product.sizeLabel
+    .split(/[,/| ]+/)
+    .map((size) => size.trim())
+    .filter((size) => size.length > 0 && size.length <= 8);
+};
+
 const Shop = () => {
   const { lang, t } = useLanguage();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -61,6 +84,11 @@ const Shop = () => {
   const activeUmbrella = normalizeCatalogUmbrella(searchParams.get("umbrella"));
   const activeBrand = searchParams.get("brand");
   const activeAudience = searchParams.get("audience") as SourceProductAudience | null;
+  const activeSize = searchParams.get("size");
+  const minPriceValue = searchParams.get("minPrice") ?? "";
+  const maxPriceValue = searchParams.get("maxPrice") ?? "";
+  const activeMinPrice = parsePriceParam(minPriceValue);
+  const activeMaxPrice = parsePriceParam(maxPriceValue);
   const query = searchParams.get("q") ?? "";
   const activeSort = (searchParams.get("sort") as CatalogSort | null) ?? "featured";
 
@@ -90,7 +118,7 @@ const Shop = () => {
     );
   }, [activeAudience, activeCategory, activeUmbrella, products]);
 
-  const filteredProducts = useMemo(() => {
+  const availableSizes = useMemo(() => {
     const navigationFiltered = filterCatalogProductsByNavigation(
       products,
       activeAudience,
@@ -101,14 +129,49 @@ const Shop = () => {
       ? navigationFiltered.filter((product) => product.brand === activeBrand)
       : navigationFiltered;
 
+    return Array.from(
+      new Set(brandFiltered.flatMap((product) => getProductSizeValues(product))),
+    ).sort(sizeSort);
+  }, [activeAudience, activeBrand, activeCategory, activeUmbrella, products]);
+
+  const filteredProducts = useMemo(() => {
+    const navigationFiltered = filterCatalogProductsByNavigation(
+      products,
+      activeAudience,
+      activeCategory,
+      activeUmbrella,
+    );
+    const brandFiltered = activeBrand
+      ? navigationFiltered.filter((product) => product.brand === activeBrand)
+      : navigationFiltered;
+    const sizeFiltered = activeSize
+      ? brandFiltered.filter((product) =>
+          getProductSizeValues(product).includes(activeSize),
+        )
+      : brandFiltered;
+    const priceFiltered = sizeFiltered.filter((product) => {
+      if (activeMinPrice !== null && product.priceRon < activeMinPrice) {
+        return false;
+      }
+
+      if (activeMaxPrice !== null && product.priceRon > activeMaxPrice) {
+        return false;
+      }
+
+      return true;
+    });
+
     return sortCatalogProducts(
-      searchCatalogProducts(brandFiltered, query, lang),
+      searchCatalogProducts(priceFiltered, query, lang),
       activeSort,
     );
   }, [
     activeAudience,
     activeBrand,
     activeCategory,
+    activeMaxPrice,
+    activeMinPrice,
+    activeSize,
     activeSort,
     activeUmbrella,
     lang,
@@ -118,7 +181,17 @@ const Shop = () => {
 
   useEffect(() => {
     setVisibleCount(PAGE_SIZE);
-  }, [activeAudience, activeBrand, activeCategory, activeSort, activeUmbrella, query]);
+  }, [
+    activeAudience,
+    activeBrand,
+    activeCategory,
+    activeMaxPrice,
+    activeMinPrice,
+    activeSize,
+    activeSort,
+    activeUmbrella,
+    query,
+  ]);
 
   const visibleProducts = filteredProducts.slice(0, visibleCount);
   const hasMoreProducts = filteredProducts.length > visibleCount;
@@ -127,6 +200,9 @@ const Shop = () => {
     activeBrand,
     activeCategory,
     activeUmbrella,
+    activeSize,
+    activeMinPrice !== null ? minPriceValue : null,
+    activeMaxPrice !== null ? maxPriceValue : null,
     query.trim() ? query : null,
     activeSort !== "featured" ? activeSort : null,
   ].filter(Boolean).length;
@@ -140,8 +216,9 @@ const Shop = () => {
       nextParams.delete(key);
     }
 
-    if (key === "audience" || key === "category") {
+    if (key === "audience" || key === "category" || key === "umbrella") {
       nextParams.delete("brand");
+      nextParams.delete("size");
     }
 
     if (key === "category") {
@@ -156,7 +233,7 @@ const Shop = () => {
     "mt-2 h-12 w-full rounded-md border border-border bg-background px-4 text-sm text-foreground outline-none transition-colors focus:border-gold";
 
   const renderFilterControls = (idPrefix: string) => (
-    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-[1.4fr_0.8fr_1fr_1fr_1fr]">
+    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
       <div>
         <label htmlFor={`${idPrefix}-search`} className={filterLabelClass}>
           {t("Search", "Cauta")}
@@ -243,6 +320,60 @@ const Shop = () => {
             </option>
           ))}
         </select>
+      </div>
+
+      <div>
+        <label htmlFor={`${idPrefix}-size`} className={filterLabelClass}>
+          {t("Size", "Marime")}
+        </label>
+        <select
+          id={`${idPrefix}-size`}
+          value={activeSize ?? ""}
+          onChange={(event) => updateParam("size", event.target.value || undefined)}
+          className={cn(filterControlClass, "disabled:opacity-60")}
+          disabled={availableSizes.length === 0}
+        >
+          <option value="">{t("All sizes", "Toate marimile")}</option>
+          {availableSizes.map((size) => (
+            <option key={size} value={size}>
+              {size}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div>
+        <label htmlFor={`${idPrefix}-min-price`} className={filterLabelClass}>
+          {t("Min price", "Pret minim")}
+        </label>
+        <Input
+          id={`${idPrefix}-min-price`}
+          type="number"
+          inputMode="numeric"
+          min={0}
+          step={10}
+          value={minPriceValue}
+          onChange={(event) => updateParam("minPrice", event.target.value)}
+          placeholder="0"
+          className="mt-2 h-12 rounded-md border-border bg-background px-4 text-sm focus-visible:ring-1 focus-visible:ring-gold focus-visible:ring-offset-0"
+        />
+      </div>
+
+      <div>
+        <label htmlFor={`${idPrefix}-max-price`} className={filterLabelClass}>
+          {t("Max price", "Pret maxim")}
+        </label>
+        <Input
+          id={`${idPrefix}-max-price`}
+          type="number"
+          inputMode="numeric"
+          min={0}
+          step={10}
+          value={maxPriceValue}
+          onChange={(event) => updateParam("maxPrice", event.target.value)}
+          placeholder="999"
+          className="mt-2 h-12 rounded-md border-border bg-background px-4 text-sm focus-visible:ring-1 focus-visible:ring-gold focus-visible:ring-offset-0"
+        />
       </div>
 
       <div>

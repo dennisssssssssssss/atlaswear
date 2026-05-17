@@ -1264,24 +1264,6 @@ function buildSourceName(title, brand, category) {
   return working.replace(/\s+/g, " ").trim();
 }
 
-function extractSourcePriceRon(title) {
-  const match = decodeHtml(title).match(
-    /(?:¥|￥|RMB|CNY|yuan|元)\s*(\d{2,5})|(\d{2,5})\s*(?:RMB|CNY|yuan|元)/i,
-  );
-
-  if (!match) {
-    return null;
-  }
-
-  const value = Number.parseInt(match[1] ?? match[2], 10);
-
-  if (!Number.isFinite(value) || value <= 0) {
-    return null;
-  }
-
-  return Math.round(value * 0.65);
-}
-
 function inferAudience(base, sizes) {
   if (base.audience) {
     return base.audience;
@@ -1341,7 +1323,6 @@ function createSourceItem(base) {
     sourceCollection: base.sourceCollection,
     originalTitle: base.title,
     audience,
-    sourcePriceRon: extractSourcePriceRon(base.title),
   };
 }
 

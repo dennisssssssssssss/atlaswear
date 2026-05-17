@@ -1,14 +1,4 @@
-export const USD_TO_RON = 4.6;
-export const MARGIN = 1.55;
 export const COMPARE_MULTIPLIER = 2.4;
-
-export function calcPriceRon(costUsd: number): number {
-  return Math.round((costUsd * USD_TO_RON * MARGIN) / 10) * 10;
-}
-
-export function calcCompareAtRon(priceRon: number): number {
-  return Math.round((priceRon * COMPARE_MULTIPLIER) / 10) * 10;
-}
 
 type BrandTier = "accessible" | "mid-luxury" | "luxury";
 

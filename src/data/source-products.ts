@@ -24,7 +24,6 @@ export interface SourceProduct {
   sourceCollection: LocalizedText;
   originalTitle: string;
   audience?: SourceProductAudience;
-  sourcePriceRon?: number | null;
 }
 
 const basePath =
